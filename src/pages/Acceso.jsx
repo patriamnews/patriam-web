@@ -92,13 +92,10 @@ export default function Acceso() {
             {CLIENTES_DEMO.map((u) => <button key={u.id} className="btn btn-claro" onClick={() => entrarDemo(u)}>{u.nombre} · {u.etiqueta}</button>)}
           </div>
           <span className="etiqueta">Equipo (panel de gestión)</span>
-          <div className="cuentas-demo">
-            {USUARIOS_DEMO.map((u) => (
-              <button key={u.id} className="btn btn-claro" onClick={() => entrarDemo(u)}>
-                <b>{u.email}</b> · {u.etiqueta}
-              </button>
-            ))}
-          </div>
+          <p className="letra-pequena">Isabel, Carlos, Álvaro y Laura entran con su propio correo y la contraseña inicial que se les ha comunicado. La primera vez, la web les pide cambiarla.</p>
+          <ul className="letra-pequena equipo-demo">
+            {USUARIOS_DEMO.map((u) => <li key={u.id}><b>{u.nombre}</b> · {u.etiqueta}</li>)}
+          </ul>
           <button className="btn-texto" onClick={reiniciarDemo}>Reiniciar los datos de prueba</button>
         </div>
       )}

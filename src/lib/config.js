@@ -45,7 +45,8 @@ export const SECCIONES = {
 }
 
 // Responsable de aprobar todo el contenido antes de publicarse
-export const APROBADOR = { nombre: 'Carlos', email: 'carlos@patriam.es' }
+// En producción el aviso se envía al correo del perfil con rol 'director' (Carlos Rubio); aquí no se escribe el correo real
+export const APROBADOR = { nombre: 'Carlos', email: 'car…@yahoo.es' }
 
 // Tipos de recomendación (sección Recomendaciones de la revista)
 export const TIPOS_RECOMENDACION = {

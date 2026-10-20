@@ -45,7 +45,7 @@ export default function Escritorio() {
         <h3>Cómo funciona la publicación</h3>
         <ol>
           <li>Cualquier miembro del equipo escribe el artículo, la acción o la campaña y lo <b>envía a aprobación</b>.</li>
-          <li>Le llega un aviso por correo a <b>Carlos (carlos@patriam.es)</b>, que lo revisa y lo <b>aprueba y publica</b> o lo <b>devuelve</b> con comentarios. El autor recibe la respuesta por correo.</li>
+          <li>Le llega un aviso por correo a <b>Carlos Rubio</b>, que lo revisa y lo <b>aprueba y publica</b> o lo <b>devuelve</b> con comentarios. El autor recibe la respuesta por correo.</li>
           <li>Nada se publica sin la aprobación de una persona responsable. Queda registrado quién y cuándo lo aprobó.</li>
           <li>Si se ha usado inteligencia artificial, hay que indicarlo en el artículo. Es obligatorio por el Reglamento europeo de IA.</li>
         </ol>

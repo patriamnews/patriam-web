@@ -1,5 +1,5 @@
 // Datos iniciales de la SIMULACIÓN (sin Supabase).
-// Cuentas de prueba: contraseña "demo1234" para todas.
+// Cuentas de prueba de asociados y clientes: contraseña "demo1234". El equipo usa su correo real (ver USUARIOS_DEMO).
 import { DOCUMENTOS_ADHESION, TEXTOS_ADHESION } from '../documentos'
 import cartelValladolid from '../../assets/carteles/valladolid-8-octubre.jpg'
 import imgIdeario from '../../assets/ideario.png'
@@ -14,10 +14,13 @@ const hace = (dias) => new Date(Date.now() - dias * 864e5).toISOString()
 const dia = (n, h = 19, min = 0) => { const d = new Date(); d.setDate(d.getDate() + n); d.setHours(h, min, 0, 0); return d.toISOString() }
 const id = (n) => `00000000-0000-0000-0000-0000000000${String(n).padStart(2, '0')}`
 
+// Equipo: en el código solo van las huellas SHA-256 del correo y de la contraseña inicial (no se ven los correos ni la clave).
+// Contraseña inicial de todos: la que se comunicó al equipo. La primera vez que entran, la web les obliga a cambiarla.
 export const USUARIOS_DEMO = [
-  { id: id(1), email: 'isabel@patriam.es', password: 'demo1234', nombre: 'Isabel', rol: 'admin', area: null, gestiona_redes: true, gestiona_tienda: true, etiqueta: 'Gestión completa (sus publicaciones las aprueba Carlos)' },
-  { id: id(2), email: 'carlos@patriam.es', password: 'demo1234', nombre: 'Carlos', rol: 'director', area: null, gestiona_redes: true, gestiona_tienda: true, etiqueta: 'Gestión completa y único que aprueba las publicaciones' },
-  { id: id(3), email: 'alvaro@patriam.es', password: 'demo1234', nombre: 'Álvaro', rol: 'admin', area: null, gestiona_redes: true, gestiona_tienda: true, etiqueta: 'Gestión completa (sus publicaciones las aprueba Carlos)' },
+  { id: id(1), email_hash: 'ca8ba4587a5cafab739d6e1fa306b3c1a93ffb0c44a0edf97da0eede6573cf2b', clave_hash: '7445e378e3b4da66ad1f48845adccbc70215c941a3cb348cf8a76b8bdbecd6a3', email: 'pat…@outlook.es', nombre: 'Isabel', rol: 'admin', area: null, gestiona_redes: true, gestiona_tienda: true, cambiar_clave: true, etiqueta: 'Gestión completa (sus publicaciones las aprueba Carlos)' },
+  { id: id(2), email_hash: 'd54107075e0767501597996cde12d533654a7db1d73af49bbae6c823ab549943', clave_hash: '44add1006634e6982ff5aff79610b1c5a7da755ef5e03eef3df582285c6283d3', email: 'car…@yahoo.es', nombre: 'Carlos Rubio', rol: 'director', area: null, gestiona_redes: true, gestiona_tienda: true, cambiar_clave: true, etiqueta: 'Gestión completa y único que aprueba las publicaciones' },
+  { id: id(3), email_hash: '49d20e0445b618d5987582aaa7afd95fdd73df7c879b8a8dee630b2c029988bf', clave_hash: '39d7373390b4b69d4cf42766d463c17322c38bdbf2bec72da835e2acd694bf74', email: 'mov…@gmail.com', nombre: 'Álvaro Mencos', rol: 'admin', area: null, gestiona_redes: true, gestiona_tienda: true, cambiar_clave: true, etiqueta: 'Gestión completa (sus publicaciones las aprueba Carlos)' },
+  { id: id(4), email_hash: '69fe153ddbb033c702aad048cd9433e0de4a793cd71d62ca7d512afbcec1d347', clave_hash: '5a3ac93e2c63894d28a3c33c14cb285f7ad9f8f41fa77fccd0c795b94e6cfadb', email: 'lau…@yahoo.es', nombre: 'Laura', rol: 'admin', area: null, gestiona_redes: true, gestiona_tienda: true, cambiar_clave: true, etiqueta: 'Gestión completa, igual que Álvaro (sus publicaciones las aprueba Carlos)' },
 ]
 
 // Cuentas de prueba del área de clientes y asociados (Mi cuenta)
@@ -51,9 +54,12 @@ const art = (n, seccion, titulo, resumen, extra = {}) => ({
 
 export function semilla() {
   return {
-    usuarios: [...USUARIOS_DEMO, ...CLIENTES_DEMO].map(({ id, email, password }) => ({ id, email, password })),
+    usuarios: [
+      ...USUARIOS_DEMO.map(({ id, email, email_hash, clave_hash }) => ({ id, email, email_hash, clave_hash })),
+      ...CLIENTES_DEMO.map(({ id, email, password }) => ({ id, email, password })),
+    ],
     perfiles: [
-      ...USUARIOS_DEMO.map(({ password, etiqueta, ...p }) => ({ ...p, activo: true, creado_at: hace(30) })),
+      ...USUARIOS_DEMO.map(({ email_hash, clave_hash, etiqueta, ...p }) => ({ ...p, activo: true, creado_at: hace(30) })),
       ...CLIENTES_DEMO.map(({ password, etiqueta, ...p }) => ({ ...p, area: null, activo: true, creado_at: hace(200) })),
     ],
     articulos: [
@@ -219,8 +225,8 @@ export function semilla() {
       { id: 2, fecha: hace(9).slice(0, 10), tipo: 'gasto', categoria: 'bancos', concepto: 'Comisiones bancarias', importe: 6.5, creado_at: hace(9) },
     ],
     correos: [
-      { id: 1, para: 'carlos@patriam.es', de: 'alvaro@patriam.es', asunto: 'Pendiente de aprobación: artículo «Borrador enviado a revisión»', cuerpo: 'Álvaro ha enviado un artículo para su aprobación.', enlace: '/gestion/editar/7', creado_at: hace(1) },
-      { id: 2, para: 'carlos@patriam.es', de: 'alvaro@patriam.es', asunto: 'Pendiente de aprobación: acción «Reparto de octavillas en el barrio»', cuerpo: 'Álvaro ha creado una acción en Acción ciudadana que necesita su aprobación.', enlace: '/gestion/aprobaciones', creado_at: hace(0.5) },
+      { id: 1, para: 'car…@yahoo.es', de: 'mov…@gmail.com', asunto: 'Pendiente de aprobación: artículo «Borrador enviado a revisión»', cuerpo: 'Álvaro ha enviado un artículo para su aprobación.', enlace: '/gestion/editar/7', creado_at: hace(1) },
+      { id: 2, para: 'car…@yahoo.es', de: 'mov…@gmail.com', asunto: 'Pendiente de aprobación: acción «Reparto de octavillas en el barrio»', cuerpo: 'Álvaro ha creado una acción en Acción ciudadana que necesita su aprobación.', enlace: '/gestion/aprobaciones', creado_at: hace(0.5) },
     ],
     productos: [
       { id: 1, nombre: 'Programa de PATRIAM (edición impresa)', slug: 'programa-patriam', categoria: 'libros', descripcion: 'El programa completo de PATRIAM: introducción, Sistema político, economía y medidas. Edición impresa en rústica. [Número de páginas y formato.]', precio: 18, opciones: '', stock: 40, fecha: null, lugar: null, plazas: null, imagen_url: null, activo: true, orden: 1 },

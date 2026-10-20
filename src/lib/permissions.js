@@ -5,7 +5,7 @@ export const activo = (p) => p && p.activo && !['pendiente', 'cliente'].includes
 // Todo el equipo tiene la misma gestión
 export const equipo = (p) => activo(p) && ['autor', 'editor', 'director', 'admin'].includes(p.rol)
 
-// Solo una persona aprueba y publica: el rol "director" (carlos@patriam.es)
+// Solo una persona aprueba y publica: el rol "director" (Carlos Rubio)
 export const puedeAprobar = (p) => equipo(p) && p.rol === 'director'
 // eslint-disable-next-line no-unused-vars
 export const puedePublicar = (p, _seccion) => puedeAprobar(p)

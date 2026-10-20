@@ -18,6 +18,7 @@ create table perfiles (
   rol rol_usuario not null default 'pendiente',
   area seccion_web,                 -- solo para editores de área
   activo boolean not null default false,
+  cambiar_clave boolean not null default false,   -- obliga a cambiar la contraseña inicial al entrar
   creado_at timestamptz not null default now()
 );
 
@@ -844,7 +845,18 @@ La Economía debe estar subordinada al Bien Común, poniendo a las personas en e
   ('tienda', 'Tienda', 'Libros, ropa y actividades de la asociación.');
 
 -- =====================================================================
--- PRIMER ADMINISTRADOR
+-- EQUIPO (misma gestión para todos; solo el rol 'director' aprueba y publica)
+-- 1) En Authentication › Users › Add user, crear estos usuarios con la contraseña inicial
+--    comunicada al equipo y marcando "Auto Confirm User":
+--      patriam-merc@outlook.es · carlosrubioromo@yahoo.es · movimientopatriam@gmail.com · lauraolivareses@yahoo.es
+-- 2) Ejecutar en el SQL Editor (allí no aplica la protección de roles):
+--    update perfiles set activo = true, cambiar_clave = true, rol = 'admin', nombre = 'Isabel'        where email = 'patriam-merc@outlook.es';
+--    update perfiles set activo = true, cambiar_clave = true, rol = 'director', nombre = 'Carlos Rubio' where email = 'carlosrubioromo@yahoo.es';
+--    update perfiles set activo = true, cambiar_clave = true, rol = 'admin', nombre = 'Álvaro Mencos'  where email = 'movimientopatriam@gmail.com';
+--    update perfiles set activo = true, cambiar_clave = true, rol = 'admin', nombre = 'Laura'          where email = 'lauraolivareses@yahoo.es';
+--    La primera vez que entren, la web les obliga a poner una contraseña nueva.
+-- =====================================================================
+-- -- PRIMER ADMINISTRADOR
 -- 1) Cree su usuario en Authentication › Users › Add user (o Invite user)
 -- 2) Ejecute (cambiando el email):
 --    update perfiles set rol = 'admin', activo = true, nombre = 'Administración'

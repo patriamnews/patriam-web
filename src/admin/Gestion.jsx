@@ -23,6 +23,7 @@ import Aprobaciones from './Aprobaciones'
 import Correos from './Correos'
 import RecomendacionesAdmin from './RecomendacionesAdmin'
 import Administracion from './Administracion'
+import CambiarClave from './CambiarClave'
 
 export default function Gestion() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
@@ -39,6 +40,8 @@ export default function Gestion() {
         <button className="btn" onClick={salir}>Salir</button>
       </div>
     )
+
+  if (perfil.cambiar_clave) return <CambiarClave />
 
   const p = perfil
   return (

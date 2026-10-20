@@ -4,7 +4,7 @@
 
 import { semilla } from './seed'
 
-const CLAVE = 'patriam-demo-v16'
+const CLAVE = 'patriam-demo-v17'
 const SESION = 'patriam-demo-sesion'
 
 const leer = (k) => {
@@ -44,7 +44,7 @@ const miSocio = () => db.socios.find((s) => esMio(s))
 const rol = () => yo()?.rol || null
 // Equipo interno: todos con la misma gestión. Solo 'director' (Carlos) aprueba y publica.
 const equipo = () => ['autor', 'editor', 'director', 'admin'].includes(rol())
-// Solo el aprobador (rol director: carlos@patriam.es) publica y aprueba contenidos
+// Solo el aprobador (rol director: Carlos Rubio) publica y aprueba contenidos
 const puedePublicar = () => rol() === 'director'
 // Pueden proponer acciones: administración, aprobador y el editor del área
 // eslint-disable-next-line no-unused-vars
@@ -114,7 +114,7 @@ const antes = {
       error('No tiene permiso para editar este artículo')
     nuevo.actualizado_at = ahora()
     if (nuevo.estado === 'publicado' && viejo?.estado !== 'publicado') {
-      if (!puedePublicar(nuevo.seccion)) error('Solo el responsable de aprobación (carlos@patriam.es) puede publicar')
+      if (!puedePublicar(nuevo.seccion)) error('Solo el responsable de aprobación (Carlos Rubio) puede publicar')
       nuevo.revisado_por = uid()
       nuevo.publicado_at = nuevo.publicado_at || ahora()
     }
@@ -307,6 +307,9 @@ class Consulta {
 }
 
 // ---------- Autenticación simulada ----------
+// Huella SHA-256 (las cuentas del equipo no guardan el correo ni la clave en claro)
+const sha = async (t) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))).map((b) => b.toString(16).padStart(2, '0')).join('')
+
 const auth = {
   async getSession() {
     return { data: { session: sesion } }
@@ -316,15 +319,25 @@ const auth = {
     return { data: { subscription: { unsubscribe: () => oyentes.delete(fn) } } }
   },
   async signInWithPassword({ email, password }) {
-    const u = db.usuarios.find((x) => x.email.toLowerCase() === email.toLowerCase() && x.password === password)
+    const correo = email.trim().toLowerCase()
+    const eh = await sha(correo)
+    const ch = await sha(correo + ':' + password)
+    const u = db.usuarios.find((x) => (x.email_hash ? x.email_hash === eh && x.clave_hash === ch : x.email.toLowerCase() === correo && x.password === password))
     if (!u) return { error: { message: 'Credenciales incorrectas' } }
-    sesion = { user: { id: u.id, email: u.email } }
+    if (u.email_hash) {
+      // Se muestra el correo real solo en este navegador, una vez que la persona ha entrado
+      const p = db.perfiles.find((x) => x.id === u.id)
+      if (p) p.email = correo
+      guardar()
+    }
+    sesion = { user: { id: u.id, email: u.email_hash ? correo : u.email } }
     escribir(SESION, sesion)
     avisar()
     return { data: { session: sesion }, error: null }
   },
   async signUp({ email, password, options }) {
-    if (db.usuarios.some((x) => x.email.toLowerCase() === email.toLowerCase())) return { error: { message: 'Ese email ya está registrado' } }
+    const eh = await sha(email.trim().toLowerCase())
+    if (db.usuarios.some((x) => x.email_hash === eh || (x.email || '').toLowerCase() === email.toLowerCase())) return { error: { message: 'Ese email ya está registrado' } }
     const id = crypto.randomUUID()
     db.usuarios.push({ id, email, password })
     const cliente = options?.data?.tipo === 'cliente'
@@ -348,7 +361,16 @@ const auth = {
   },
   async updateUser({ password }) {
     const u = db.usuarios.find((x) => x.id === uid())
-    if (u && password) u.password = password
+    if (u && password) {
+      if (u.email_hash) {
+        const nueva = await sha(miEmail() + ':' + password)
+        if (nueva === u.clave_hash) return { error: { message: 'elija una contraseña distinta de la actual' } }
+        u.clave_hash = nueva
+      }
+      else u.password = password
+      const p = db.perfiles.find((x) => x.id === uid())
+      if (p) p.cambiar_clave = false
+    }
     guardar()
     return { error: null }
   },
