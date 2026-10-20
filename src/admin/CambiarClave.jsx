@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
-import logoClaro from '../assets/logo-claro.png'
+import logoClaro from '../assets/logo.png'
 
 // Primera entrada: obligatorio cambiar la contraseña inicial antes de usar el panel
 export default function CambiarClave() {

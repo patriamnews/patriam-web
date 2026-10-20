@@ -1,5 +1,5 @@
 import { Link, Navigate, NavLink, Route, Routes } from 'react-router-dom'
-import logoClaro from '../assets/logo-claro.png'
+import logoClaro from '../assets/logo.png'
 import { useAuth } from '../lib/auth'
 import { ROLES, SECCIONES } from '../lib/config'
 import { activo, puedeEditarPaginas, puedeGestionarUsuarios, puedeRedes, puedeTienda, puedeGestionarArea, puedeAprobar, puedeCampanas, puedeVerCorreos, puedeVerMensajes, puedeAdministracion } from '../lib/permissions'
