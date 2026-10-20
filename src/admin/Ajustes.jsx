@@ -16,7 +16,7 @@ const CAMPOS = [
     ['recogida', 'Texto de la opción de recogida'],
   ]],
   ['Boletín semanal', [
-    ['boletin_url', 'Dirección del boletín «Lo que hay que saber» (p. ej. https://patriamboletin.netlify.app/)'],
+    ['boletin_url', 'Dirección del boletín «Lo que hay que saber» (p. ej. https://boletinpatriam.netlify.app/)'],
   ]],
   ['Contacto y redes sociales', [
     ['email_contacto', 'Email de contacto público'],

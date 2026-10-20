@@ -327,7 +327,7 @@ create table ajustes (
   titular_cuenta text, iban text, bizum text,
   cuotas text default '5,10,20', donativos text default '10,25,50,100',
   email_contacto text, x text, instagram text, facebook text, youtube text, telegram text, tiktok text,
-  boletin_url text default 'https://patriamboletin.netlify.app/'
+  boletin_url text default 'https://boletinpatriam.netlify.app/'
 );
 insert into ajustes (id) values (1);
 alter table ajustes enable row level security;

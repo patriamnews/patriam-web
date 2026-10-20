@@ -276,7 +276,7 @@ export function semilla() {
         youtube: '',
         telegram: 'https://t.me/',
         tiktok: '',
-        boletin_url: 'https://patriamboletin.netlify.app/',
+        boletin_url: 'https://boletinpatriam.netlify.app/',
       },
     ],
   }
