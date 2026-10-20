@@ -32,6 +32,9 @@ export function cargarBoletin(base) {
         editorial: ultimo.editorial ? { ...ultimo.editorial, imagen: abs(ultimo.editorial.imagen) } : null,
         noticias: (ultimo.noticias || []).slice(0, 3).map((n) => ({ ...n, imagen: abs(n.imagen) })),
         banner: abs(cfg.banner),
+        tarjeta: abs(ultimo.tarjeta),
+        frase: String(ultimo.fraseMes || cfg.fraseMes || '').replace(/^["«“]+|["»”]+$/g, ''),
+        fraseAutor: ultimo.fraseMes ? ultimo.fraseMesAutor : cfg.fraseMesAutor,
       } : null)
     }
     s.onerror = () => resolver(null)

@@ -4,6 +4,7 @@ import { SECCIONES } from '../lib/config'
 import { DEMO } from '../lib/supabase'
 import { getAjustes } from '../lib/data'
 import Redes from './Redes'
+import Lateral from './Lateral'
 import logo from '../assets/logo.png'
 import logoClaro from '../assets/logo-claro.png'
 import { useAuth, destino } from '../lib/auth'
@@ -93,9 +94,13 @@ export default function Layout() {
         </nav>
       </header>
       {DEMO && <div className="sello-demo" title="Los datos son simulados y se guardan solo en este navegador">Demostración</div>}
-      <main>
-        <Outlet />
-      </main>
+      {/* Todas las páginas llevan a la izquierda la agenda y el boletín de la semana */}
+      <div className="con-lateral">
+        <Lateral conCalendario={!/^\/accion-/.test(pathname)} />
+        <main>
+          <Outlet />
+        </main>
+      </div>
       <footer className="pie">
         <div className="contenedor pie-in">
           <div>

@@ -988,3 +988,93 @@ input, select, textarea, button { font-family: inherit; }
 .boletin-texto small { color: var(--suave); font-size: 0.82rem; }
 .boletin-img img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; border: 1px solid var(--linea); }
 @media (max-width: 800px) { .boletin-in { grid-template-columns: 1fr; } .boletin-img { order: -1; } }
+
+/* =====================================================================
+   VUELTA DE DISEÑO (oct. 2026): más color y la misma identidad del boletín
+   ===================================================================== */
+:root { --fondo: #faf5ec; --crema: #faf5ec; --gualda-claro: #d9bd7a; }
+body { background: var(--fondo); }
+@media (min-width: 1440px) { html, body { background: #efe6d6; } .sitio { background: var(--fondo); } }
+
+/* Cabecera: franja granate y gualda arriba, menú granate como el boletín */
+.cabecera { border-top: 6px solid var(--acento); box-shadow: 0 2px 14px rgba(74,15,25,.08); }
+.cabecera::after { display: none; }
+.menu-principal { background: var(--acento); border-top: 0; box-shadow: inset 0 -3px 0 var(--gualda-claro); }
+.menu-principal a, .menu-principal .despl-btn { color: #f6ebe0 !important; }
+.menu-principal a:hover, .menu-principal .despl-btn:hover { color: #fff !important; }
+.menu-principal a.active, .menu-principal .despl-btn.active { border-bottom-color: var(--gualda-claro) !important; color: var(--gualda-claro) !important; }
+.menu-principal .despl-menu a { color: var(--tinta) !important; }
+.menu-principal .despl-menu a:hover, .menu-principal .despl-menu a.active { color: var(--acento) !important; }
+
+/* Botones en granate (no negros) */
+.btn { background: var(--acento); border-color: var(--acento); color: #fff; border-radius: 999px; letter-spacing: .02em; }
+.btn:hover { background: var(--acento-osc); border-color: var(--acento-osc); color: #fff; }
+.btn-claro { background: transparent; color: var(--acento); border-color: var(--acento); }
+.btn-claro:hover { background: var(--acento); color: #fff; }
+
+/* Títulos de sección con raya granate y gualda */
+.titulo-seccion { position: relative; padding-left: 2.6rem; }
+.titulo-seccion::before { content: ""; position: absolute; left: 0; top: 50%; width: 1.9rem; height: 3px; background: linear-gradient(90deg, var(--acento) 65%, var(--gualda) 65%); }
+
+/* Tarjetas con algo de profundidad */
+.tarjeta { border-radius: 6px; overflow: hidden; box-shadow: 0 2px 10px rgba(74,15,25,.05); transition: transform .18s, box-shadow .18s; }
+.tarjeta:hover { transform: translateY(-3px); box-shadow: 0 10px 26px rgba(74,15,25,.12); }
+
+/* Pie granate oscuro */
+.pie { background: linear-gradient(180deg, #4a0f19, #2c0910); color: #ead9cc; }
+.pie::before { height: 4px; background: linear-gradient(90deg, var(--acento) 50%, var(--gualda) 50%); }
+.pie nav a { color: #ead9cc; }
+
+/* ---------- Columna izquierda en todas las páginas ---------- */
+.con-lateral { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 0 26px; max-width: 1400px; margin: 0 auto; padding: 26px 24px 0; align-items: start; }
+.con-lateral > main { min-width: 0; }
+.con-lateral > main .contenedor { max-width: none; padding-left: 0; padding-right: 0; }
+.con-lateral > main > * > section:first-child, .con-lateral > main .bloque:first-child { padding-top: 0; }
+.lateral { position: sticky; top: 150px; max-height: calc(100vh - 165px); overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-bottom: 20px; scrollbar-width: thin; }
+.lat-bloque { background: var(--papel); border: 1px solid var(--linea); border-top: 4px solid var(--acento); border-radius: 6px; padding: 14px 14px 16px; box-shadow: 0 2px 10px rgba(74,15,25,.05); }
+.lat-titulo { margin: 0 0 10px; font: 700 .74rem var(--sans); letter-spacing: .22em; text-transform: uppercase; color: var(--acento); }
+.lateral .calendario { border: 0; padding: 0; background: none; }
+.lateral .cal-cab { font-size: .95rem; }
+.lateral .cal-cab button { width: 26px; height: 26px; }
+.lateral .cal-dia { font-size: .78rem; }
+.lat-agenda { list-style: none; margin: 10px 0 6px; padding: 0; border-top: 1px solid var(--linea); }
+.lat-agenda li { border-bottom: 1px solid var(--linea); }
+.lat-agenda button { display: flex; gap: 10px; align-items: center; width: 100%; padding: 8px 0; background: none; border: 0; text-align: left; cursor: pointer; font: inherit; color: var(--tinta); }
+.lat-agenda button:hover b { color: var(--acento); }
+.lat-fecha { flex: none; width: 42px; text-align: center; border: 1px solid var(--linea); border-radius: 4px; padding: 3px 0; font-size: .62rem; text-transform: uppercase; color: var(--suave); line-height: 1.1; }
+.lat-fecha b { display: block; font: 700 1.05rem var(--serif); color: var(--acento); }
+.lat-agenda span b { display: block; font-size: .86rem; line-height: 1.25; }
+.lat-agenda small { color: var(--suave); font-size: .74rem; }
+.lat-vacio { padding: 8px 0; color: var(--suave); font-size: .85rem; }
+.lat-mas { font-size: .82rem; font-weight: 600; text-decoration: none; }
+.lat-tarjeta { display: block; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 14px rgba(74,15,25,.15); transition: transform .18s; }
+.lat-tarjeta:hover { transform: scale(1.02); }
+.lat-tarjeta img { width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; }
+.lat-tarjeta-dib { position: relative; display: block; aspect-ratio: 4 / 3.4; background: #e9dcc8 center / cover no-repeat; text-decoration: none; }
+.lat-velo { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px 10px; text-align: center; color: var(--acento);
+  background: linear-gradient(180deg, rgba(250,245,236,.95) 0%, rgba(250,245,236,.82) 55%, rgba(250,245,236,.1) 100%); }
+.lat-velo small { font: 700 .55rem var(--sans); letter-spacing: .3em; text-transform: uppercase; }
+.lat-velo b { font: 800 1.2rem/1.05 var(--serif); text-transform: uppercase; margin-top: 4px; }
+.lat-velo i { font: italic 600 .95rem var(--serif); margin: 2px 0 6px; }
+.lat-velo q { font: italic 500 .7rem/1.35 var(--serif); color: #3b3335; quotes: "«" "»"; }
+.lat-velo em { font: 800 .52rem var(--sans); letter-spacing: .16em; text-transform: uppercase; margin-top: 3px; font-style: normal; }
+.lat-num { position: absolute; right: 8px; bottom: 8px; background: rgba(250,245,236,.95); color: var(--acento); font: 800 1rem var(--serif); padding: 3px 9px; border: 1px solid var(--acento); }
+.lat-edit { margin: 10px 0 8px; font: italic 600 .92rem/1.3 var(--serif); color: var(--tinta); }
+.lat-botones { display: flex; gap: 8px; flex-wrap: wrap; }
+.lat-botones .btn { padding: .4rem .9rem; font-size: .82rem; }
+.lat-socio { background: linear-gradient(160deg, var(--acento), #4a0f19); color: #f6ebe0; border-top-color: var(--gualda-claro); }
+.lat-socio b { font: 700 1.05rem var(--serif); }
+.lat-socio p { margin: 4px 0 10px; font-size: .86rem; }
+.lat-socio .btn { background: var(--gualda-claro); border-color: var(--gualda-claro); color: #2c0910; }
+@media (max-width: 980px) {
+  .con-lateral { grid-template-columns: 1fr; padding: 18px 16px 0; }
+  .lateral { position: static; max-height: none; overflow: visible; order: 2; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 24px; }
+}
+/* Botones destacados y filtros activos en granate (antes negros) */
+.btn-oro { background: var(--acento) !important; border-color: var(--acento) !important; color: #fff !important; }
+.btn-oro:hover { background: var(--acento-osc) !important; }
+.chips button.activo, .tallas button.activo, .cal-dia.sel { background: var(--acento); border-color: var(--acento); color: #fff; }
+.portada .btn { background: var(--gualda-claro); border-color: var(--gualda-claro); color: #2c0910; }
+.banda-campana .btn { background: var(--acento); border-color: var(--acento); }
+.btn-claro-blanco, .presentacion .btn-claro-blanco { border-color: var(--acento); color: var(--acento); border-radius: 999px; }
+.btn-claro-blanco:hover, .presentacion .btn-claro-blanco:hover { background: var(--acento); color: #fff; }
