@@ -1078,3 +1078,12 @@ body { background: var(--fondo); }
 .banda-campana .btn { background: var(--acento); border-color: var(--acento); }
 .btn-claro-blanco, .presentacion .btn-claro-blanco { border-color: var(--acento); color: var(--acento); border-radius: 999px; }
 .btn-claro-blanco:hover, .presentacion .btn-claro-blanco:hover { background: var(--acento); color: #fff; }
+/* Grises fuera: todo en beige */
+:root { --gris: #f3eadb; --gualda-suave: #f2e7d3; --linea: #e6d9c3; }
+.imagen-prueba { background: #efe3cf; color: #a8916d; }
+.presentacion, .banda-campana, .bloque-boletin { background: #f3eadb; }
+.sello-demo { background: rgba(123,28,44,.88); color: #f6ebe0; }
+.tabla th, code { background: #f3eadb; }
+.estado { background: #efe3cf; }
+.tarjeta-img { background: #efe3cf; }
+.prod-sin-img.cat-actividades { background: #efe3cf; }
