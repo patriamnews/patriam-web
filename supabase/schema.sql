@@ -117,7 +117,7 @@ create table articulos (
 create index on articulos (estado, seccion, publicado_at desc);
 
 -- ¿Puede el usuario actual publicar en esta sección?
--- Todo contenido lo aprueba y publica una sola persona: el rol 'director' (carlos@patriam.es)
+-- Todo contenido lo aprueba y publica una sola persona: el rol 'director' (Carlos Rubio)
 create function puede_publicar(s seccion_web) returns boolean
 language sql stable security definer set search_path = public as $$
   select coalesce(mi_rol() = 'director', false)
@@ -580,7 +580,7 @@ create policy "gestión" on acciones for all using (puede_area(seccion)) with ch
 create trigger exigir_aprobacion before insert or update on acciones for each row execute function exigir_aprobacion();
 
 -- ---------- Avisos por correo (bandeja de salida) ----------
--- La web inserta aquí los avisos (p. ej. "pendiente de aprobación" a carlos@patriam.es).
+-- La web inserta aquí los avisos (p. ej. "pendiente de aprobación" a Carlos Rubio).
 -- Una función de Supabase (Edge Function) los envía con un servicio de email y marca enviado_at.
 create table correos (
   id bigint generated always as identity primary key,
