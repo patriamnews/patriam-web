@@ -1,0 +1,8 @@
+node_modules
+dist
+dist-preview
+dist-demo
+.env
+*.local
+*.log
+.DS_Store

@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="t-ideario d-ideario">
+<title id="t-ideario">Ideario de PATRIAM</title><desc id="d-ideario">Arco de piedra cuyas dovelas son Historia, Familia, Municipio, Trabajo, Ley natural, Propiedad, Libertad y Unidad, con el Bien común como clave. Bajo el arco amanece sobre el campo.</desc>
+<defs>
+<linearGradient id="cielo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6efe2"/><stop offset="1" stop-color="#efe2c8"/></linearGradient>
+<linearGradient id="sol" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b25c"/><stop offset="1" stop-color="#b8913a"/></linearGradient>
+<linearGradient id="piedra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efe9df"/><stop offset="1" stop-color="#e3dacb"/></linearGradient>
+<clipPath id="hueco"><path d="M940,620 A240,240 0 0 1 1420,620 L1420,780 L940,780 Z"/></clipPath>
+</defs>
+<defs><path id="dov0" d="M894.0,622.0 A286.0,286.0 0 0 1 911.9,520.3"/><path id="dov1" d="M910.6,524.1 A286.0,286.0 0 0 1 962.2,434.6"/><path id="dov2" d="M959.6,437.7 A286.0,286.0 0 0 1 1038.7,371.3"/><path id="dov3" d="M1035.3,373.3 A286.0,286.0 0 0 1 1132.3,338.0"/><path id="dov4" d="M1128.4,338.7 A286.0,286.0 0 0 1 1231.6,338.7"/><path id="dov5" d="M1227.7,338.0 A286.0,286.0 0 0 1 1324.7,373.3"/><path id="dov6" d="M1321.3,371.3 A286.0,286.0 0 0 1 1400.4,437.7"/><path id="dov7" d="M1397.8,434.6 A286.0,286.0 0 0 1 1449.4,524.1"/><path id="dov8" d="M1448.1,520.3 A286.0,286.0 0 0 1 1466.0,622.0"/></defs>
+<rect width="1600" height="900" fill="#faf8f5"/>
+<g clip-path="url(#hueco)">
+<rect x="940" y="380" width="480" height="400" fill="url(#cielo)"/>
+<line x1="1303.6" y1="586.9" x2="1402.2" y2="560.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1293.5" y1="560.9" x2="1384.0" y2="513.8" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1278.1" y1="537.7" x2="1356.2" y2="472.2" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1257.9" y1="518.5" x2="1320.0" y2="437.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1234.1" y1="504.0" x2="1277.2" y2="411.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1207.7" y1="495.0" x2="1229.8" y2="395.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1180.0" y1="492.0" x2="1180.0" y2="390.0" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1152.3" y1="495.0" x2="1130.2" y2="395.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1125.9" y1="504.0" x2="1082.8" y2="411.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1102.1" y1="518.5" x2="1040.0" y2="437.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1081.9" y1="537.7" x2="1003.8" y2="472.2" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1066.5" y1="560.9" x2="976.0" y2="513.8" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<line x1="1056.4" y1="586.9" x2="957.8" y2="560.5" stroke="#d9b25c" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+<circle cx="1180" cy="620" r="110" fill="url(#sol)"/>
+<rect x="940" y="620" width="480" height="160" fill="#e9dcc0"/>
+<line x1="1144" y1="620" x2="760" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1156" y1="620" x2="900" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1168" y1="620" x2="1040" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1180" y1="620" x2="1180" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1192" y1="620" x2="1320" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1204" y1="620" x2="1460" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="1216" y1="620" x2="1600" y2="780" stroke="#cdb98f" stroke-width="1.5"/>
+<line x1="940" y1="638" x2="1420" y2="638" stroke="#d6c49c" stroke-width="1"/>
+<line x1="940" y1="664" x2="1420" y2="664" stroke="#d6c49c" stroke-width="1"/>
+<line x1="940" y1="702" x2="1420" y2="702" stroke="#d6c49c" stroke-width="1"/>
+<line x1="940" y1="754" x2="1420" y2="754" stroke="#d6c49c" stroke-width="1"/>
+<line x1="940" y1="620" x2="1420" y2="620" stroke="#b8913a" stroke-width="2"/>
+</g>
+<rect x="840" y="620" width="100" height="160" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<line x1="840" y1="660" x2="940" y2="660" stroke="#d3c8b6" stroke-width="1.2"/>
+<line x1="840" y1="700" x2="940" y2="700" stroke="#d3c8b6" stroke-width="1.2"/>
+<line x1="840" y1="740" x2="940" y2="740" stroke="#d3c8b6" stroke-width="1.2"/>
+<rect x="832" y="618" width="116" height="14" fill="#e3dacb" stroke="#d3c8b6" stroke-width="1.5"/>
+<rect x="1420" y="620" width="100" height="160" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<line x1="1420" y1="660" x2="1520" y2="660" stroke="#d3c8b6" stroke-width="1.2"/>
+<line x1="1420" y1="700" x2="1520" y2="700" stroke="#d3c8b6" stroke-width="1.2"/>
+<line x1="1420" y1="740" x2="1520" y2="740" stroke="#d3c8b6" stroke-width="1.2"/>
+<rect x="1412" y="618" width="116" height="14" fill="#e3dacb" stroke="#d3c8b6" stroke-width="1.5"/>
+<path d="M840.0,616.4 A340,340 0 0 1 859.3,507.1 L953.6,540.3 A240,240 0 0 0 940.0,617.5 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1.6" fill="#3a2f2a"><textPath href="#dov0" startOffset="50%" text-anchor="middle">HISTORIA</textPath></text>
+<path d="M861.7,500.4 A340,340 0 0 1 917.3,404.2 L994.5,467.7 A240,240 0 0 0 955.3,535.6 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1.6" fill="#3a2f2a"><textPath href="#dov1" startOffset="50%" text-anchor="middle">FAMILIA</textPath></text>
+<path d="M921.8,398.7 A340,340 0 0 1 1006.9,327.3 L1057.8,413.4 A240,240 0 0 0 997.8,463.8 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1" fill="#3a2f2a"><textPath href="#dov2" startOffset="50%" text-anchor="middle">MUNICIPIO</textPath></text>
+<path d="M1013.1,323.8 A340,340 0 0 1 1117.5,285.8 L1135.9,384.1 A240,240 0 0 0 1062.2,410.9 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1.6" fill="#3a2f2a"><textPath href="#dov3" startOffset="50%" text-anchor="middle">TRABAJO</textPath></text>
+<path d="M1120.9,262.9 A362,362 0 0 1 1239.1,262.9 L1217.6,393.1 A230,230 0 0 0 1142.4,393.1 Z" fill="#7b1c2c" stroke="#5e1421" stroke-width="1.5"/>
+<text x="1180" y="322" text-anchor="middle" font-family="'Spectral',Georgia,serif" font-size="14" font-weight="800" letter-spacing="2" fill="#ffffff">BIEN</text><text x="1180" y="342" text-anchor="middle" font-family="'Spectral',Georgia,serif" font-size="14" font-weight="800" letter-spacing="2" fill="#ffffff">COMÚN</text>
+<path d="M1242.5,285.8 A340,340 0 0 1 1346.9,323.8 L1297.8,410.9 A240,240 0 0 0 1224.1,384.1 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="0.6" fill="#3a2f2a"><textPath href="#dov5" startOffset="50%" text-anchor="middle">LEY NATURAL</textPath></text>
+<path d="M1353.1,327.3 A340,340 0 0 1 1438.2,398.7 L1362.2,463.8 A240,240 0 0 0 1302.2,413.4 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1" fill="#3a2f2a"><textPath href="#dov6" startOffset="50%" text-anchor="middle">PROPIEDAD</textPath></text>
+<path d="M1442.7,404.2 A340,340 0 0 1 1498.3,500.4 L1404.7,535.6 A240,240 0 0 0 1365.5,467.7 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1.6" fill="#3a2f2a"><textPath href="#dov7" startOffset="50%" text-anchor="middle">LIBERTAD</textPath></text>
+<path d="M1500.7,507.1 A340,340 0 0 1 1520.0,616.4 L1420.0,617.5 A240,240 0 0 0 1406.4,540.3 Z" fill="url(#piedra)" stroke="#d3c8b6" stroke-width="1.5"/>
+<text font-family="'Spectral',Georgia,serif" font-size="12.5" font-weight="700" letter-spacing="1.6" fill="#3a2f2a"><textPath href="#dov8" startOffset="50%" text-anchor="middle">UNIDAD</textPath></text>
+<rect x="800" y="780" width="760" height="30" fill="#e3dacb" stroke="#d3c8b6" stroke-width="1.5"/>
+<text x="1180" y="801" text-anchor="middle" font-family="'Spectral',Georgia,serif" font-size="13" font-weight="800" letter-spacing="6" fill="#7b1c2c">DIOS · PATRIA · JUSTICIA</text>
+<line x1="750" y1="810" x2="1610" y2="810" stroke="#d3c8b6" stroke-width="1.5"/>
+<text x="110" y="250" font-family="'Spectral',Georgia,serif" font-size="15" font-weight="700" letter-spacing="4" fill="#7b1c2c">IDEARIO DE PATRIAM</text>
+<rect x="110" y="272" width="56" height="3" fill="#b8913a"/>
+<text x="110" y="352" font-family="'Spectral',Georgia,serif" font-size="66" font-weight="700" letter-spacing="0" fill="#222">Una España unida,</text>
+<text x="110" y="426" font-family="'Spectral',Georgia,serif" font-size="66" font-weight="700" letter-spacing="0" fill="#222">grande, próspera</text>
+<text x="110" y="500" font-family="'Spectral',Georgia,serif" font-size="66" font-weight="700" letter-spacing="0" fill="#222">y libre.</text>
+<text x="110" y="580" font-family="'Spectral',Georgia,serif" font-size="21" fill="#5a524c">La familia, el municipio y el trabajo como cimientos;</text>
+<text x="110" y="614" font-family="'Spectral',Georgia,serif" font-size="21" fill="#5a524c">la ley natural como guía; el bien común como la clave</text>
+<text x="110" y="648" font-family="'Spectral',Georgia,serif" font-size="21" fill="#5a524c">que lo sostiene todo.</text>
+<rect x="110" y="720" width="120" height="5" fill="#7b1c2c"/><rect x="110" y="725" width="120" height="10" fill="#b8913a"/><rect x="110" y="735" width="120" height="5" fill="#7b1c2c"/>
+</svg>
