@@ -44,9 +44,10 @@ export default function Inicio() {
 
   const de = (s, n = 3) => ultimos.filter((a) => a.seccion === s).slice(0, n)
   const [principal] = ultimos.filter((a) => ['revista', 'noticias', 'ciudadana', 'cultural', 'social'].includes(a.seccion))
-  // A la derecha, uno de cada: lo último de la Revista, la recogida de firmas activa y el último comunicado
+  // A la derecha, el resumen de lo más importante: próxima acción, recogida de firmas, último comunicado y lo último de la Revista
   const otro = (s) => ultimos.find((a) => a.seccion === s && a !== principal)
   const latRevista = otro('revista'), latNoticia = otro('noticias')
+  const proxima = acciones[0]
 
   const itemArticulo = (a) => (
     <li key={a.id}>
@@ -73,13 +74,13 @@ export default function Inicio() {
             </div>
           </Link>
           <div className="destacados-laterales">
-            {latRevista && (
-              <Link to={`/articulo/${latRevista.slug}`} className="destacado-lateral">
-                <Portadilla a={latRevista} />
+            {proxima && (
+              <Link to={`/accion/${proxima.slug}`} className="destacado-lateral lat-accion">
+                <span className="firmas-num lat-dia"><b>{new Date(proxima.fecha_inicio).getDate()}</b>{new Date(proxima.fecha_inicio).toLocaleDateString('es-ES', { month: 'short' }).replace('.', '')}</span>
                 <div>
-                  <span className="etiqueta">Revista</span>
-                  <h3>{latRevista.titulo}</h3>
-                  <span className="mini-fecha">{fecha(latRevista.publicado_at)}{latRevista.firma ? ` · ${latRevista.firma}` : ''}</span>
+                  <span className="etiqueta">Próxima acción</span>
+                  <h3>{proxima.titulo}</h3>
+                  <span className="mini-fecha">{new Date(proxima.fecha_inicio).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}{proxima.lugar ? ` · ${proxima.lugar}` : ''}</span>
                 </div>
               </Link>
             )}
@@ -100,6 +101,16 @@ export default function Inicio() {
                   <span className="etiqueta">Noticias y comunicados</span>
                   <h3>{latNoticia.titulo}</h3>
                   <span className="mini-fecha">{fecha(latNoticia.publicado_at)}</span>
+                </div>
+              </Link>
+            )}
+            {latRevista && (
+              <Link to={`/articulo/${latRevista.slug}`} className="destacado-lateral">
+                <Portadilla a={latRevista} />
+                <div>
+                  <span className="etiqueta">Revista</span>
+                  <h3>{latRevista.titulo}</h3>
+                  <span className="mini-fecha">{fecha(latRevista.publicado_at)}{latRevista.firma ? ` · ${latRevista.firma}` : ''}</span>
                 </div>
               </Link>
             )}

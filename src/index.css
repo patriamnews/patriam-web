@@ -1311,3 +1311,7 @@ html, body, .sitio { background: var(--crema) !important; }
 .mega-destacado .mega-tarjeta { display: block; margin-bottom: .8rem; border-radius: 4px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.25); }
 .mega-destacado .mega-tarjeta .lat-tarjeta-dib { aspect-ratio: 1200 / 630; }
 .mega-destacado .mega-tarjeta img { width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; }
+.lat-accion { border-top: 3px solid var(--gualda) !important; }
+.lat-dia { background: var(--gualda); color: #2c0910; font-weight: 700; }
+.lat-dia b { color: #2c0910; }
+.destacados-laterales { gap: 14px; }
