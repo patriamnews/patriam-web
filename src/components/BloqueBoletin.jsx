@@ -41,9 +41,9 @@ export default function BloqueBoletin({ base }) {
           </div>
           <small>Se abre en una pestaña nueva; la web de PATRIAM sigue abierta.</small>
         </div>
-        {b?.editorial?.imagen && (
+        {(b?.tarjeta || b?.editorial?.imagen) && (
           <a className="boletin-img" href={base} {...abrir} tabIndex={-1}>
-            <img src={b.editorial.imagen} alt="" loading="lazy" />
+            <img src={b.tarjeta || b.editorial.imagen} alt={`Boletín Nº ${b.numero || ""}`} loading="lazy" />
           </a>
         )}
       </div>
