@@ -6,27 +6,6 @@ import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
 import { ImagenProducto } from './Tienda'
 import { Foto } from '../components/ImagenPrueba'
-import BloqueBoletin from '../components/BloqueBoletin'
-import { urlBoletin } from '../lib/boletin'
-
-const I = {
-  socio: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0',
-  firma: 'M4 20h16M6 16l9-9 3 3-9 9H6z',
-  tienda: 'M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2',
-  revista: 'M5 4h11l3 3v13H5zM8 9h8M8 13h8M8 17h5',
-}
-const Icono = ({ d }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d={d} />
-  </svg>
-)
-
-const ACCESOS = [
-  { ruta: '/adhierete', icono: I.socio, titulo: 'Hazte socio', texto: 'Forma parte de la asociación' },
-  { ruta: '/campanas', icono: I.firma, titulo: 'Firma una campaña', texto: 'Apoya nuestras iniciativas' },
-  { ruta: '/tienda', icono: I.tienda, titulo: 'Tienda', texto: 'Libros, ropa y actividades' },
-  { ruta: '/revista', icono: I.revista, titulo: 'Revista', texto: 'Artículos y opinión' },
-]
 
 // Imagen del artículo o, si no tiene, un fondo granate con el nombre de la sección
 function Portadilla({ a, grande }) {
@@ -51,7 +30,7 @@ export default function Inicio() {
   const [campana, setCampana] = useState(null)
   const [acciones, setAcciones] = useState([])
   const [productos, setProductos] = useState([])
-  const [aj, setAj] = useState({})
+  const [, setAj] = useState({})
 
   useEffect(() => {
     getPagina('inicio').then(setIntro)
@@ -106,8 +85,6 @@ export default function Inicio() {
         </section>
       )}
 
-      {/* Boletín de la semana (web aparte, se abre en pestaña nueva) */}
-      <BloqueBoletin base={urlBoletin(aj)} />
 
       {/* Presentación breve */}
       <section className="presentacion">
@@ -118,24 +95,10 @@ export default function Inicio() {
           </div>
           <div className="botones">
             <Link to="/sobre-patriam" className="btn btn-oro">Conócenos</Link>
-            <Link to="/adhierete" className="btn btn-claro-blanco">Únete</Link>
           </div>
         </div>
       </section>
 
-      <section className="contenedor bloque">
-        <div className="accesos">
-          {ACCESOS.map((a) => (
-            <Link key={a.ruta} to={a.ruta} className="acceso">
-              <Icono d={a.icono} />
-              <div>
-                <b>{a.titulo}</b>
-                <span>{a.texto}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
 
       {/* Bloques por sección */}
       <div className="contenedor bloques-seccion">
@@ -160,9 +123,6 @@ export default function Inicio() {
           )}
         />
         <Bloque titulo="Revista" ruta="/revista" items={de('revista')} render={itemArticulo} />
-        <Bloque titulo="En los medios" ruta="/en-los-medios" items={de('medios')} render={itemArticulo} />
-        <Bloque titulo="Cultura" ruta="/accion-cultural" items={de('cultural')} render={itemArticulo} />
-        <Bloque titulo="Recomendaciones" ruta="/revista/recomendaciones" items={de('recomendaciones')} render={itemArticulo} />
       </div>
 
       {campana && (
@@ -204,9 +164,9 @@ export default function Inicio() {
       <section className="contenedor bloque sin-arriba">
         <div className="cta-doble">
           <div>
-            <h2>Hazte socio</h2>
+            <h2>Únete</h2>
             <p>Forma parte de la asociación con una cuota periódica.</p>
-            <Link to="/adhierete" className="btn">Quiero ser socio</Link>
+            <Link to="/unete" className="btn">Únete</Link>
           </div>
           <div>
             <h2>Haz un donativo</h2>

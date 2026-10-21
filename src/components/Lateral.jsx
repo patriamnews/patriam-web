@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { getAjustes } from '../lib/data'
@@ -16,6 +16,25 @@ export default function Lateral({ conCalendario = true }) {
   const [acciones, setAcciones] = useState([])
   const [bol, setBol] = useState(null)
   const [base, setBase] = useState(urlBoletin({}))
+  const ref = useRef(null)
+
+  // La columna acompaña siempre al lector: se queda fija debajo del menú. Si es más alta que la pantalla,
+  // baja con la página hasta que se ve entera y entonces se queda fija por abajo (sin barra de desplazamiento propia).
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const ajustar = () => {
+      if (window.innerWidth <= 980) { el.style.top = ''; return }
+      const cab = document.querySelector('.cabecera')
+      const arriba = cab && getComputedStyle(cab).position === 'sticky' ? cab.offsetHeight + 16 : 16
+      el.style.top = Math.min(arriba, window.innerHeight - el.offsetHeight - 16) + 'px'
+    }
+    ajustar()
+    const ro = new ResizeObserver(ajustar)
+    ro.observe(el)
+    window.addEventListener('resize', ajustar)
+    return () => { ro.disconnect(); window.removeEventListener('resize', ajustar) }
+  }, [])
 
   useEffect(() => {
     supabase.from('acciones').select('id, slug, titulo, fecha_inicio, lugar, seccion').eq('publicada', true).eq('aprobada', true).order('fecha_inicio')
@@ -29,7 +48,7 @@ export default function Lateral({ conCalendario = true }) {
   const enlaceBol = bol ? `${base}boletin/${bol.numero}` : base
 
   return (
-    <aside className="lateral" aria-label="Agenda y boletín">
+    <aside className="lateral" ref={ref} aria-label="Agenda y boletín">
       {conCalendario && (
         <section className="lat-bloque">
           <h2 className="lat-titulo">Agenda</h2>
@@ -76,11 +95,6 @@ export default function Lateral({ conCalendario = true }) {
         </div>
       </section>
 
-      <section className="lat-bloque lat-socio">
-        <b>Únete a PATRIAM</b>
-        <p>Hazte socio o colabora con un donativo.</p>
-        <Link className="btn" to="/adhierete">Únete</Link>
-      </section>
     </aside>
   )
 }

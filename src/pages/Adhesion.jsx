@@ -29,7 +29,7 @@ export default function Adhesion() {
       <h1>{(intro?.titulo && intro.titulo !== 'Adhiérete' ? intro.titulo : 'Únete')}</h1>
       {intro?.contenido && <Texto>{intro.contenido}</Texto>}
       <div className="pestanas grandes">
-        <button className={pestana === 'socio' ? 'activa' : ''} onClick={() => setParams({})}>Hazte socio</button>
+        <button className={pestana === 'socio' ? 'activa' : ''} onClick={() => setParams({})}>Únete</button>
         <button className={pestana === 'donativo' ? 'activa' : ''} onClick={() => setParams({ tipo: 'donativo' })}>Haz un donativo</button>
       </div>
       {aj && pestana === 'socio' && socio && tipo !== 'equipo' ? (
