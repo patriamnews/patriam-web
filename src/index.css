@@ -1189,3 +1189,67 @@ body { background: var(--fondo); }
   .esquema-tarjeta, .tabla tr { break-inside: avoid; }
 }
 .manual .pestanas + div .titulo-seccion { margin-top: 1.6rem; }
+
+/* =====================================================================
+   MISMA IDENTIDAD QUE EL BOLETÍN (oct. 2026)
+   Un solo fondo crema, fichas en papel con borde fino, esquinas de 4 px y sombra suave,
+   y títulos de sección como en el boletín. Esta capa va la última y manda sobre las anteriores.
+   ===================================================================== */
+:root {
+  --crema: #faf5ec; --crema-2: #f4ecdf; --fondo: var(--crema); --papel: #fffdf9; --gris: var(--crema-2);
+  --tinta: #1d1719; --suave: #6b6163; --linea: #e4d9c7;
+  --acento: #7b1c2c; --acento-osc: #5a1320; --gualda: #a8873a; --gualda-claro: #d9bd7a; --gualda-suave: var(--crema-2);
+  --sombra: 0 1px 2px rgba(29,23,25,.04), 0 6px 18px rgba(29,23,25,.06);
+  --sombra-alta: 0 2px 4px rgba(29,23,25,.06), 0 16px 34px rgba(29,23,25,.12);
+}
+/* Un único fondo en toda la pantalla (sin márgenes de otro beige) */
+html, body, .sitio { background: var(--crema) !important; }
+@media (min-width: 1440px) { html, body { background: var(--crema) !important; } .sitio { box-shadow: none !important; } }
+.cabecera { background: var(--crema) !important; border-bottom: 0 !important; }
+
+/* Fichas: todas iguales que las del boletín */
+.tarjeta, .producto, .acceso, .destacado-principal, .destacado-lateral, .bloque-seccion, .lat-bloque, .acceso-caja,
+.lista-sedes li, .archivo-web, .manual-ficha, .esquema-tarjeta, .calendario, .campana, .tarjeta-accion, .accion-tarjeta {
+  background: var(--papel) !important; border: 1px solid var(--linea) !important; border-radius: 4px !important;
+  box-shadow: var(--sombra) !important; transform: none !important; transition: box-shadow .25s !important;
+}
+.tarjeta:hover, .producto:hover, .acceso:hover, .destacado-principal:hover, .destacado-lateral:hover { box-shadow: var(--sombra-alta) !important; }
+/* Raya de color arriba, como la ficha de la editorial y la firma invitada del boletín */
+.bloque-seccion, .lat-bloque, .acceso-caja, .manual-ficha { border-top: 4px solid var(--acento) !important; }
+.bloque-seccion:nth-child(even) { border-top-color: var(--gualda) !important; }
+.lat-socio { background: linear-gradient(160deg, var(--acento), #4a0f19) !important; border-color: var(--acento) !important; border-top-color: var(--gualda-claro) !important; }
+.lateral .calendario { box-shadow: none !important; border: 0 !important; background: none !important; }
+
+/* Bandas (boletín semanal, presentación, campaña): fichas, no franjas de otro color */
+.bloque-boletin, .presentacion, .banda-campana {
+  background: var(--papel) !important; border: 1px solid var(--linea) !important; border-top: 3px solid var(--gualda) !important;
+  border-radius: 4px; box-shadow: var(--sombra); margin: 1.6rem 0;
+}
+.bloque-boletin { padding: 2rem 1.8rem !important; }
+.presentacion h2 { color: var(--tinta) !important; }
+.presentacion-texto { color: var(--tinta) !important; }
+
+/* Fondos claros de imágenes, tablas, estados y menús: el mismo crema */
+.imagen-prueba, .tarjeta-img, .prod-sin-img.cat-actividades, .estado, .tabla th, code, .gestion, .icono-archivo { background: var(--crema-2) !important; }
+.menu-principal .mega-panel { background: var(--papel) !important; border-bottom-color: var(--linea) !important; }
+.menu-principal .mega-item:hover, .menu-principal .mega-item.active { background: var(--crema-2) !important; }
+.mega-intro { border-right-color: var(--linea) !important; }
+.mega-icono { background: var(--papel) !important; border-color: var(--linea) !important; }
+.gestion-menu { background: var(--crema-2) !important; border-right-color: var(--linea) !important; }
+.gestion-menu nav a:hover { background: var(--linea) !important; }
+.gestion-menu nav a.active { background: var(--papel) !important; }
+
+/* Títulos de sección como en el boletín: versalitas granates con una raya delante y línea fina debajo */
+.bloque-cab { border-bottom: 1px solid var(--linea); padding-bottom: .6rem; margin-bottom: .9rem; align-items: center; }
+.bloque-cab h2, .titulo-seccion {
+  display: flex; align-items: center; gap: .7rem; padding-left: 0 !important; border-top: 0 !important;
+  font-family: var(--serif) !important; font-size: .9rem !important; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--acento) !important;
+}
+.bloque-cab h2::before, .titulo-seccion::before { content: ""; position: static !important; flex: none; width: 26px; height: 1.5px; background: var(--acento) !important; }
+.bloque-cab a { font-size: .74rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
+.bloque-seccion .bloque-cab, .bloques-seccion .bloque-cab { border-top: 0 !important; }
+.bloque-seccion { padding: 1.1rem 1.3rem 1.2rem !important; }
+
+/* Columna izquierda: se desplaza con la página, sin barra de desplazamiento propia */
+.lateral { position: static !important; max-height: none !important; overflow: visible !important; }
+.bloque-cab { flex-wrap: wrap; row-gap: .3rem; }
