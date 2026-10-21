@@ -42,7 +42,7 @@ const MENU = [
       { texto: 'Nosotros', ruta: '/nosotros', desc: 'Junta directiva y transparencia', icono: 'personas' },
       { texto: 'Sedes y contacto', ruta: '/contacto', desc: 'Dónde estamos y cómo escribirnos', icono: 'sede' },
     ],
-    destacado: { etiqueta: 'Únete', titulo: 'Hazte socio de PATRIAM', texto: 'Forma parte del cambio.', ruta: '/adhierete', boton: 'Adhiérete' },
+    destacado: { etiqueta: 'Únete', titulo: 'Hazte socio de PATRIAM', texto: 'Forma parte del cambio.', ruta: '/adhierete', boton: 'Únete' },
   },
   {
     texto: 'Acción',
@@ -147,7 +147,7 @@ export default function Layout() {
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden><path d="M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0" /></svg>
               <span className="texto-cuenta">{session ? (tipo === 'equipo' ? 'Panel' : 'Mi área') : 'Acceder'}</span>
             </Link>
-            <Link to="/adhierete" className="btn btn-cabecera">Adhiérete</Link>
+            <Link to="/adhierete" className="btn btn-cabecera">Únete</Link>
           </div>
         </div>
         {/* Menú principal: siempre visible arriba, también en móvil */}

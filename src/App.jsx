@@ -35,6 +35,7 @@ export default function App() {
         <Route path="/contacto" element={<Colabora />} />
         <Route path="/colabora" element={<Navigate to="/contacto" replace />} />
         <Route path="/adhierete" element={<Adhesion />} />
+        <Route path="/unete" element={<Adhesion />} />
         <Route path="/campanas" element={<ListaCampanas />} />
         <Route path="/campanas/:slug" element={<Campana />} />
         <Route path="/tienda" element={<Tienda />} />

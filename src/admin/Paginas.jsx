@@ -21,7 +21,7 @@ const CLAVES = {
   recomendaciones: 'Recomendaciones (introducción)',
   medios: 'En los medios (introducción)',
   colabora: 'Contacto (introducción)',
-  adhesion: 'Adhiérete (introducción)',
+  adhesion: 'Únete (introducción)',
   campanas: 'Campañas (introducción)',
   tienda: 'Tienda (introducción)',
   'condiciones-de-venta': 'Condiciones de venta',

@@ -118,7 +118,7 @@ export default function Inicio() {
           </div>
           <div className="botones">
             <Link to="/sobre-patriam" className="btn btn-oro">Conócenos</Link>
-            <Link to="/adhierete" className="btn btn-claro-blanco">Adhiérete</Link>
+            <Link to="/adhierete" className="btn btn-claro-blanco">Únete</Link>
           </div>
         </div>
       </section>

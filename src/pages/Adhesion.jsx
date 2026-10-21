@@ -26,7 +26,7 @@ export default function Adhesion() {
 
   return (
     <div className="contenedor estrecho bloque">
-      <h1>{intro?.titulo || 'Adhiérete'}</h1>
+      <h1>{(intro?.titulo && intro.titulo !== 'Adhiérete' ? intro.titulo : 'Únete')}</h1>
       {intro?.contenido && <Texto>{intro.contenido}</Texto>}
       <div className="pestanas grandes">
         <button className={pestana === 'socio' ? 'activa' : ''} onClick={() => setParams({})}>Hazte socio</button>

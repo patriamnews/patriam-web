@@ -79,7 +79,7 @@ export default function Lateral({ conCalendario = true }) {
       <section className="lat-bloque lat-socio">
         <b>Únete a PATRIAM</b>
         <p>Hazte socio o colabora con un donativo.</p>
-        <Link className="btn" to="/adhierete">Adhiérete</Link>
+        <Link className="btn" to="/adhierete">Únete</Link>
       </section>
     </aside>
   )
