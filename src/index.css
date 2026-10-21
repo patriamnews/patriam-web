@@ -1302,3 +1302,8 @@ html, body, .sitio { background: var(--crema) !important; }
   .lat-tarjeta-dib { aspect-ratio: 4 / 2.1; }
   .lat-tarjeta img { aspect-ratio: 1200 / 480; }
 }
+/* Portada: ficha de la recogida de firmas a la derecha */
+.lat-firmas { border-top: 3px solid var(--acento) !important; }
+.firmas-num { display: flex; flex-direction: column; align-items: center; justify-content: center; align-self: stretch; background: var(--acento); color: #fff; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; }
+.firmas-num b { font: 800 1.9rem/1 var(--serif); letter-spacing: 0; margin-bottom: .2rem; }
+.firmas-btn { display: inline-block; margin-top: .3rem; font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--acento); }

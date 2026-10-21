@@ -43,8 +43,10 @@ export default function Inicio() {
   }, [])
 
   const de = (s, n = 3) => ultimos.filter((a) => a.seccion === s).slice(0, n)
-  const [principal, ...resto] = ultimos.filter((a) => ['revista', 'noticias', 'ciudadana', 'cultural', 'social'].includes(a.seccion))
-  const laterales = resto.slice(0, 3)
+  const [principal] = ultimos.filter((a) => ['revista', 'noticias', 'ciudadana', 'cultural', 'social'].includes(a.seccion))
+  // A la derecha, uno de cada: lo último de la Revista, la recogida de firmas activa y el último comunicado
+  const otro = (s) => ultimos.find((a) => a.seccion === s && a !== principal)
+  const latRevista = otro('revista'), latNoticia = otro('noticias')
 
   const itemArticulo = (a) => (
     <li key={a.id}>
@@ -71,16 +73,36 @@ export default function Inicio() {
             </div>
           </Link>
           <div className="destacados-laterales">
-            {laterales.map((a) => (
-              <Link key={a.id} to={`/articulo/${a.slug}`} className="destacado-lateral">
-                <Portadilla a={a} />
+            {latRevista && (
+              <Link to={`/articulo/${latRevista.slug}`} className="destacado-lateral">
+                <Portadilla a={latRevista} />
                 <div>
-                  <span className="etiqueta">{SECCIONES[a.seccion]?.nombre}</span>
-                  <h3>{a.titulo}</h3>
-                  <span className="mini-fecha">{fecha(a.publicado_at)}</span>
+                  <span className="etiqueta">Revista</span>
+                  <h3>{latRevista.titulo}</h3>
+                  <span className="mini-fecha">{fecha(latRevista.publicado_at)}{latRevista.firma ? ` · ${latRevista.firma}` : ''}</span>
                 </div>
               </Link>
-            ))}
+            )}
+            {campana && (
+              <Link to={`/campanas/${campana.slug}`} className="destacado-lateral lat-firmas">
+                <span className="firmas-num"><b>{campana.n.toLocaleString('es-ES')}</b>firmas</span>
+                <div>
+                  <span className="etiqueta">Recogida de firmas</span>
+                  <h3>{campana.titulo}</h3>
+                  <span className="firmas-btn">Firma ahora →</span>
+                </div>
+              </Link>
+            )}
+            {latNoticia && (
+              <Link to={`/articulo/${latNoticia.slug}`} className="destacado-lateral">
+                <Portadilla a={latNoticia} />
+                <div>
+                  <span className="etiqueta">Noticias y comunicados</span>
+                  <h3>{latNoticia.titulo}</h3>
+                  <span className="mini-fecha">{fecha(latNoticia.publicado_at)}</span>
+                </div>
+              </Link>
+            )}
           </div>
         </section>
       )}
@@ -125,21 +147,6 @@ export default function Inicio() {
         <Bloque titulo="Revista" ruta="/revista" items={de('revista')} render={itemArticulo} />
       </div>
 
-      {campana && (
-        <section className="banda-campana">
-          <div className="contenedor banda-in">
-            <div>
-              <span className="etiqueta">Campaña activa</span>
-              <h2>{campana.titulo}</h2>
-              <p>{campana.resumen}</p>
-            </div>
-            <div className="banda-accion">
-              <b>{campana.n.toLocaleString('es-ES')}</b> firmas
-              <Link to={`/campanas/${campana.slug}`} className="btn">Firma ahora</Link>
-            </div>
-          </div>
-        </section>
-      )}
 
       {productos.length > 0 && (
         <section className="contenedor bloque">
