@@ -1253,3 +1253,20 @@ html, body, .sitio { background: var(--crema) !important; }
 /* Columna izquierda: se desplaza con la página, sin barra de desplazamiento propia */
 .lateral { position: static !important; max-height: none !important; overflow: visible !important; }
 .bloque-cab { flex-wrap: wrap; row-gap: .3rem; }
+
+/* Fichas: el texto con aire, como en el boletín (no pegado al borde) */
+.tarjeta-cuerpo { padding: 1.1rem 1.3rem 1.3rem !important; }
+.tarjeta > .meta, .tarjeta > .progreso-barra, .tarjeta > p, .tarjeta > h3 { margin-left: 1.3rem !important; margin-right: 1.3rem !important; }
+.tarjeta > :last-child:not(.tarjeta-cuerpo):not(.tarjeta-img):not(img) { margin-bottom: 1.2rem; }
+.destacado-texto { padding: 1.4rem 1.6rem 1.6rem !important; }
+.producto-cuerpo, .rec-cuerpo, .campana-texto, .ficha-accion-cuerpo { padding: 1.1rem 1.3rem 1.3rem !important; }
+.accion { padding: 1.1rem 1.3rem !important; }
+/* Mismo papel en todas partes (nada en blanco puro ni en otro beige) */
+.cabecera-seccion { background: transparent !important; border-bottom: 1px solid var(--linea) !important; padding: 1.6rem 0 1.4rem !important; }
+.cabecera-seccion::after { display: none !important; }
+.metodo, .fecha-bloque, .fecha-mini, .importes button, .tallas button { background: var(--papel) !important; }
+.lat-tarjeta-dib { background-color: var(--crema-2) !important; }
+.accion.pasada { background: var(--papel) !important; opacity: .85; }
+.cal-dia.con { background: var(--crema-2) !important; }
+.destacado-lateral { padding: 0 !important; gap: 0 !important; overflow: hidden; }
+.destacado-lateral > :not(:first-child) { padding: .9rem 1.2rem 1rem; }
