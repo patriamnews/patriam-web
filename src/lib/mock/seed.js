@@ -5,6 +5,8 @@ import cartelValladolid from '../../assets/carteles/valladolid-8-octubre.jpg'
 import imgIdeario from '../../assets/ideario.png'
 import imgAlvaro from '../../assets/equipo/alvaro.svg'
 import imgBienComun from '../../assets/articulos/bien-comun.jpg'
+import manualDatos from '../manuales/proteccion-datos.md?raw'
+import esquemaDatos from '../manuales/proteccion-datos-esquema.md?raw'
 
 // Huellas SHA-256 de los textos de ejemplo (calculadas de antemano para la demostración)
 const HUELLAS = {"doc-normas":"ff43b41ca33c435a3c4ff10351da4ccd741ea0ecd64deaa4ab433c65e65a84fc","doc-descargo":"e27fabbf0a15a8f18b319fe261985622cdadc056827d86650a258858291e4d54","ideario":"6328a21caf47e70b84c20766333b18b6cf09332080e5faf9ca7b2f5c88bfdf11","doc-estatutos":"eb9b7da83e76f7f151d1f4291e8c033d73e7ec664e8d5ecb91eb8b95452d654a","doc-datos":"280c23fed11ec7a91aee0617ded96eefbbf5c11fa95ee75333710eb7401906fa","doc-imagen":"60b6496a0f04ea8932da75e5e252c0ddf7d4c4b25ca1588ae3a9841a0eb63363"}
@@ -214,6 +216,9 @@ export function semilla() {
       { id: 1, modelo: '111', periodo: '3T', fecha_presentacion: null, importe: null, estado: 'pendiente', nota: 'Retenciones (si hay profesionales con retención)', archivo_url: '', creado_at: hace(2) },
       { id: 2, modelo: '303', periodo: '3T', fecha_presentacion: null, importe: null, estado: 'pendiente', nota: 'IVA de la tienda, si la asociación está obligada', archivo_url: '', creado_at: hace(2) },
       { id: 3, modelo: '182', periodo: 'Anual', fecha_presentacion: null, importe: null, estado: 'pendiente', nota: 'Declaración informativa de donativos (enero)', archivo_url: '', creado_at: hace(2) },
+    ],
+    manuales: [
+      { id: 1, titulo: 'Manual de protección de datos', area: 'proteccion-datos', version: '1.0', fecha: '2026-10-21', orden: 1, esquema: esquemaDatos, contenido: manualDatos, actualizado_at: '2026-10-21T10:00:00.000Z' },
     ],
     archivos_web: [
       { id: 1, orden: 1, titulo: 'Documento de entrega técnica', tipo: 'documentacion', version: '1.0', fecha: '2026-10-02', nota: 'Arquitectura, puesta en marcha con Supabase y Netlify, cuentas, seguridad, RGPD y Reglamento de IA.', archivo_url: '', nombre_archivo: 'PATRIAM_entrega_tecnica_web.docx', creado_at: hace(0) },

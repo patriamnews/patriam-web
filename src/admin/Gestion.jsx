@@ -24,6 +24,7 @@ import Correos from './Correos'
 import RecomendacionesAdmin from './RecomendacionesAdmin'
 import Administracion from './Administracion'
 import CambiarClave from './CambiarClave'
+import Manuales from './Manuales'
 
 export default function Gestion() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
@@ -71,6 +72,7 @@ export default function Gestion() {
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/sedes">Sedes</NavLink>}
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/junta">Junta directiva</NavLink>}
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/documentos">Documentos</NavLink>}
+          <NavLink to="/gestion/manuales">Manuales de cumplimiento</NavLink>
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/usuarios">Usuarios y permisos</NavLink>}
           {puedeVerMensajes(p) && <NavLink to="/gestion/mensajes">Mensajes recibidos</NavLink>}
           {puedeVerCorreos(p) && <NavLink to="/gestion/correos">Correos enviados</NavLink>}
@@ -100,6 +102,7 @@ export default function Gestion() {
           <Route path="sedes" element={<SedesAdmin />} />
           <Route path="junta" element={<Junta />} />
           <Route path="documentos" element={<Documentos />} />
+          <Route path="manuales" element={<Manuales />} />
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="mensajes" element={<Mensajes />} />
           <Route path="cuenta" element={<Cuenta />} />
