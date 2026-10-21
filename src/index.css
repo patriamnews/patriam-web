@@ -1270,3 +1270,8 @@ html, body, .sitio { background: var(--crema) !important; }
 .cal-dia.con { background: var(--crema-2) !important; }
 .destacado-lateral { padding: 0 !important; gap: 0 !important; overflow: hidden; }
 .destacado-lateral > :not(:first-child) { padding: .9rem 1.2rem 1rem; }
+/* Bandas convertidas en ficha: su contenido con margen interior */
+.con-lateral > main .presentacion .contenedor, .con-lateral > main .banda-campana .contenedor, .con-lateral > main .bloque-boletin .contenedor,
+.presentacion .contenedor, .banda-campana .contenedor, .bloque-boletin .contenedor { padding: 1.8rem 2rem !important; }
+.bloque-boletin { padding: 0 !important; }
+.presentacion h2 { font-size: clamp(1.3rem, 2.4vw, 1.7rem); line-height: 1.25; }
