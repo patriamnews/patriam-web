@@ -8,7 +8,7 @@ import Lateral from './Lateral'
 import logo from '../assets/logo.png'
 import logoClaro from '../assets/logo-claro.png'
 import { useAuth, destino } from '../lib/auth'
-import { urlBoletin } from '../lib/boletin'
+import { urlBoletin, cargarBoletin } from '../lib/boletin'
 
 const sec = (k, desc, icono) => ({ texto: SECCIONES[k].nombre, ruta: SECCIONES[k].ruta, desc, icono })
 
@@ -71,7 +71,7 @@ const MENU = [
 ]
 
 // Menú «Boletín»: las mismas secciones que el boletín «Lo que hay que saber» (se abren en una pestaña nueva)
-const menuBoletin = (base) => ({
+const menuBoletin = (base, bol) => ({
   texto: 'Boletín',
   intro: '«Lo que hay que saber, con criterio»: la editorial y las noticias de la semana, con el comentario de PATRIAM.',
   hijos: [
@@ -85,7 +85,10 @@ const menuBoletin = (base) => ({
     { texto: 'Al momento', externo: base + '#/al', desc: 'Lo que compartimos entre boletín y boletín', icono: 'micro' },
     { texto: 'Boletines anteriores', externo: base + '#/boletines', desc: 'Todos los números', icono: 'periodico' },
   ],
-  destacado: { etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + '#/suscribirse', boton: 'Suscríbete ↗' },
+  destacado: {
+    etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + '#/suscribirse', boton: 'Suscríbete ↗',
+    tarjeta: { enlace: bol ? `${base}boletin/${bol.numero}` : base, img: bol?.tarjeta, banner: bol?.banner, cabecera: bol?.cabecera || 'Lo que hay que saber', claim: bol?.claim || 'con criterio', numero: bol?.numero },
+  },
 })
 
 function Desplegable({ item, cerrar, boletin }) {
@@ -120,6 +123,16 @@ function Desplegable({ item, cerrar, boletin }) {
           </div>
           {d && (
             <div className="mega-destacado">
+              {d.tarjeta && (
+                <a className="lat-tarjeta mega-tarjeta" href={d.tarjeta.enlace} target="_blank" rel="noopener noreferrer" onClick={cerrar} aria-label="Leer el boletín de esta semana">
+                  {d.tarjeta.img ? <img src={d.tarjeta.img} alt="Boletín de esta semana" /> : (
+                    <span className="lat-tarjeta-dib" style={d.tarjeta.banner ? { backgroundImage: `url(${d.tarjeta.banner})` } : null}>
+                      <span className="lat-velo"><small>Boletín de noticias</small><b>{d.tarjeta.cabecera}</b><i>— {d.tarjeta.claim} —</i></span>
+                      {d.tarjeta.numero && <span className="lat-num">Nº {String(d.tarjeta.numero).padStart(2, '0')}</span>}
+                    </span>
+                  )}
+                </a>
+              )}
               <span className="etiqueta">{d.etiqueta}</span>
               <b>{d.titulo}</b>
               <p>{d.texto}</p>
@@ -148,7 +161,9 @@ export default function Layout() {
     getAjustes().then(setAj)
   }, [])
   // El boletín semanal se abre en una pestaña nueva, sin cerrar la web
-  const menu = MENU.flatMap((m) => (m.texto === 'Actualidad' ? [m, menuBoletin(urlBoletin(aj))] : [m]))
+  const [bol, setBol] = useState(null)
+  useEffect(() => { cargarBoletin(urlBoletin(aj)).then(setBol) }, [aj])
+  const menu = MENU.flatMap((m) => (m.texto === 'Actualidad' ? [m, menuBoletin(urlBoletin(aj), bol)] : [m]))
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
