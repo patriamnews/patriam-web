@@ -11,13 +11,13 @@ export const LEGALES = {
 
 - **Denominación:** Asociación PATRIAM
 - **NIF:** G93940476
-- **Domicilio:** C/ Tórtola, 21, [CÓDIGO POSTAL] Valladolid
+- **Domicilio:** C/ Tórtola, 21, 47012 Valladolid
 - **Inscripción:** Registro de Asociaciones, número 47/1/0006465
 - **Email:** movimientopatriam@gmail.com
 
 ## Objeto
 
-Esta web informa sobre los fines y actividades de la asociación, publica artículos y noticias, permite adherirse como socio, hacer donativos, firmar campañas y comprar productos y actividades.
+Esta web informa sobre los fines y actividades de la asociación, publica artículos y noticias, permite unirse a la asociación, hacer donativos, firmar campañas y comprar productos y actividades.
 
 ## Responsabilidad sobre los contenidos
 
@@ -38,7 +38,7 @@ Este aviso legal se rige por la legislación española. Para cualquier controver
 
 - **Responsable:** Asociación PATRIAM
 - **NIF:** G93940476
-- **Domicilio:** C/ Tórtola, 21, [CÓDIGO POSTAL] Valladolid
+- **Domicilio:** C/ Tórtola, 21, 47012 Valladolid
 - **Email para protección de datos:** movimientopatriam@gmail.com
 - **Delegado de Protección de Datos:** Álvaro Mencos (movimientopatriam@gmail.com)
 
@@ -71,15 +71,17 @@ Los pagos con tarjeta los procesa [ENTIDAD / PASARELA DE PAGO] y los pagos por B
 No cedemos sus datos a terceros salvo obligación legal. Prestan servicios a la asociación, como encargados del tratamiento:
 
 - Alojamiento y base de datos: Supabase, con servidores en la Unión Europea
-- Publicación de la web: Netlify
-- Envío de emails: [PROVEEDOR]
+- Publicación de la web y del boletín: Netlify, Inc.
+- Envío de correos y del boletín por correo electrónico: Resend, Inc.
 - Envíos de la tienda: [EMPRESA DE MENSAJERÍA], solo nombre y dirección de entrega
 
-[INDICAR SI HAY TRANSFERENCIAS INTERNACIONALES DE DATOS Y SUS GARANTÍAS, o indicar que no se realizan]
+## Transferencias internacionales
+
+Netlify, Inc. y Resend, Inc. tienen su sede en Estados Unidos, por lo que puede haber transferencias internacionales de datos. Se realizan con las garantías del Marco de Privacidad de Datos UE-EE. UU. o, en su defecto, de las cláusulas contractuales tipo aprobadas por la Comisión Europea.
 
 ## Conservación
 
-- Contacto: hasta atender la consulta y, como máximo, [PLAZO, p. ej. un año].
+- Contacto: hasta atender la consulta y, como máximo, un año.
 - Socios: mientras sea socio y, tras la baja, el tiempo necesario por obligaciones legales.
 - Firmas: hasta el cierre de la campaña, salvo que pida recibir información.
 - Pedidos, donativos y cuotas: el plazo que exige la normativa contable y fiscal (6 años).
@@ -127,7 +129,7 @@ Puede eliminar el almacenamiento de esta web desde la configuración de su naveg
 
 ## Vendedor
 
-Asociación PATRIAM, NIF G93940476, domicilio en C/ Tórtola, 21, [CÓDIGO POSTAL] Valladolid. Email: movimientopatriam@gmail.com.
+Asociación PATRIAM, NIF G93940476, domicilio en C/ Tórtola, 21, 47012 Valladolid. Email: movimientopatriam@gmail.com.
 
 ## Precios
 
