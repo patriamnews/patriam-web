@@ -6,3 +6,4 @@ dist-demo
 *.local
 *.log
 .DS_Store
+patriam-*.zip
