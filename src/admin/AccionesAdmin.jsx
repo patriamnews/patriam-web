@@ -154,7 +154,7 @@ export default function AccionesAdmin() {
               </select>
             </label>
             <label>Imagen o cartel (opcional)<input type="file" accept="image/*" onChange={imagen} /></label>
-            <label>Vídeo de la convocatoria (enlace a X, YouTube, Instagram…)<input type="url" placeholder="https://x.com/movpatriam/status/…" value={f.video_url || ''} onChange={set('video_url')} /></label>
+            <label>Vídeo de la convocatoria (enlace a X, YouTube, Instagram…)<input type="url" placeholder="https://x.com/patriam_es/status/…" value={f.video_url || ''} onChange={set('video_url')} /></label>
           </div>
           {f.imagen_url && <img src={f.imagen_url} alt="" className="miniatura" />}
           {f.imagen_url && <label className="check"><input type="checkbox" checked={!!f.imagen_ia} onChange={set('imagen_ia')} /><span>La imagen está generada o manipulada con IA (se mostrará el aviso del art. 50 del Reglamento de IA)</span></label>}

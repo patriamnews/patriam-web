@@ -275,7 +275,7 @@ export function semilla() {
         envio_gratis_desde: '50',
         recogida: 'Recogida gratuita en la sede: [DIRECCIÓN Y HORARIO]',
         email_contacto: 'movimientopatriam@gmail.com',
-        x: 'https://x.com/movpatriam',
+        x: 'https://x.com/patriam_es',
         instagram: 'https://instagram.com/',
         facebook: '',
         youtube: '',
