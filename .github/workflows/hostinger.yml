@@ -1,0 +1,34 @@
+# Compila la web en cada cambio de "main" y deja el resultado en la rama "hostinger".
+# Hostinger publica esa rama en movimientopatriam.org automáticamente.
+# Base de datos: añadir VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en
+# GitHub › Settings › Secrets and variables › Actions (sin ellas, modo demostración).
+name: Publicar en Hostinger
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      - name: Subir la web compilada a la rama hostinger
+        run: |
+          cd dist
+          git init -q -b hostinger
+          git config user.name "patriamnews"
+          git config user.email "patriamnews@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Web compilada desde ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" hostinger

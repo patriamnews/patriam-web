@@ -1,7 +1,7 @@
-// Boletín «Lo que hay que saber» (web aparte: boletinpatriam.netlify.app).
+// Boletín «Lo que hay que saber» (web aparte: boletin.movimientopatriam.org).
 // Se lee su archivo boletines.js publicado, así la web muestra siempre el último boletín
 // sin tener que volver a publicar la web cada semana.
-export const BOLETIN_POR_DEFECTO = 'https://boletinpatriam.netlify.app/'
+export const BOLETIN_POR_DEFECTO = 'https://boletin.movimientopatriam.org/'
 
 export const urlBoletin = (aj) => {
   const u = (aj?.boletin_url || BOLETIN_POR_DEFECTO).trim()
