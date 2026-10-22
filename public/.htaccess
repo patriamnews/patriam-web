@@ -6,9 +6,10 @@ RewriteEngine On
 # Boletín: el principal es boletin.movimientopatriam.es; los demás dominios redirigen ahí
 RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.(org|com|net)$ [NC]
 RewriteRule ^(.*)$ https://boletin.movimientopatriam.es/$1 [R=301,L]
-# Provisional, hasta que el boletín se publique desde GitHub en Hostinger
+# boletin.movimientopatriam.es se sirve desde la carpeta boletin/ (repositorio boletin.patriam, publicado por Hostinger desde GitHub)
 RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.es$ [NC]
-RewriteRule ^(.*)$ https://boletinpatriam.netlify.app/$1 [R=302,L]
+RewriteCond %{REQUEST_URI} !^/boletin/
+RewriteRule ^(.*)$ boletin/web/$1 [L]
 
 # Espejos (.org, .com, .net y www) -> dominio principal .es
 RewriteCond %{HTTP_HOST} ^(www\.)?movimientopatriam\.(org|com|net)$ [NC,OR]
