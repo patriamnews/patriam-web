@@ -1,5 +1,5 @@
 # Compila la web en cada cambio de "main" y deja el resultado en la rama "hostinger".
-# Hostinger publica esa rama en movimientopatriam.org automáticamente.
+# Hostinger publica esa rama en movimientopatriam.es automáticamente.
 # Base de datos: añadir VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en
 # GitHub › Settings › Secrets and variables › Actions (sin ellas, modo demostración).
 name: Publicar en Hostinger
