@@ -1,0 +1,37 @@
+# Hostinger (Apache). Dominio principal: movimientopatriam.es
+AddType application/manifest+json .webmanifest
+
+RewriteEngine On
+
+# Boletín: el principal es boletin.movimientopatriam.es; los demás dominios redirigen ahí
+RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.(org|com|net)$ [NC]
+RewriteRule ^(.*)$ https://boletin.movimientopatriam.es/$1 [R=301,L]
+# boletin.movimientopatriam.es se sirve desde la carpeta boletin/ (repositorio boletin.patriam, publicado por Hostinger desde GitHub)
+RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.es$ [NC]
+RewriteCond %{REQUEST_URI} !^/boletin/
+RewriteRule ^(.*)$ boletin/web/$1 [L]
+
+# Espejos (.org, .com, .net y www) -> dominio principal .es
+RewriteCond %{HTTP_HOST} ^(www\.)?movimientopatriam\.(org|com|net)$ [NC,OR]
+RewriteCond %{HTTP_HOST} ^www\.movimientopatriam\.es$ [NC]
+RewriteRule ^(.*)$ https://movimientopatriam.es/$1 [R=301,L]
+
+# La web es una sola página: cualquier ruta la sirve index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]
+
+# El service worker y el manifiesto no se guardan en caché, para que la app se actualice sola
+<FilesMatch "^(sw\.js|gestion\.webmanifest)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-cache"
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
+</IfModule>
