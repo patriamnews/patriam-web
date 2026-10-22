@@ -10,6 +10,10 @@ import Paginas from './Paginas'
 import Junta from './Junta'
 import SedesAdmin from './SedesAdmin'
 import Documentos from './Documentos'
+import Drive from './Drive'
+import InstalarApp from './InstalarApp'
+import { activarApp } from '../lib/instalar'
+import { useEffect } from 'react'
 import Usuarios from './Usuarios'
 import Mensajes from './Mensajes'
 import Cuenta from './Cuenta'
@@ -28,6 +32,9 @@ import Manuales from './Manuales'
 
 export default function Gestion() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
+  useEffect(() => {
+    activarApp()
+  }, [])
 
   if (cargando) return <div className="gestion-centro">Cargando…</div>
   if (!session) return <Navigate to="/acceso" replace />
@@ -71,6 +78,7 @@ export default function Gestion() {
           {puedeEditarPaginas(p) && <NavLink to="/gestion/paginas">Páginas</NavLink>}
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/sedes">Sedes</NavLink>}
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/junta">Junta directiva</NavLink>}
+          {puedeGestionarUsuarios(p) && <NavLink to="/gestion/drive">Drive del equipo</NavLink>}
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/documentos">Documentos</NavLink>}
           <NavLink to="/gestion/manuales">Manuales de cumplimiento</NavLink>
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/usuarios">Usuarios y permisos</NavLink>}
@@ -79,6 +87,7 @@ export default function Gestion() {
           {puedeGestionarUsuarios(p) && <NavLink to="/gestion/ajustes">Ajustes (pagos y redes)</NavLink>}
           <NavLink to="/gestion/cuenta">Mi cuenta (equipo)</NavLink>
         </nav>
+        <InstalarApp />
         <button className="btn-texto" onClick={salir}>Cerrar sesión</button>
       </aside>
       <section className="gestion-contenido">
@@ -102,6 +111,7 @@ export default function Gestion() {
           <Route path="sedes" element={<SedesAdmin />} />
           <Route path="junta" element={<Junta />} />
           <Route path="documentos" element={<Documentos />} />
+          <Route path="drive" element={<Drive />} />
           <Route path="manuales" element={<Manuales />} />
           <Route path="usuarios" element={<Usuarios />} />
           <Route path="mensajes" element={<Mensajes />} />

@@ -89,6 +89,8 @@ const visible = {
   impuestos: () => equipo(),
   apuntes: () => equipo(),
   archivos_web: () => equipo(),
+  drive_carpetas: () => equipo(),
+  drive_archivos: () => equipo(),
   manuales: () => equipo(),
 }
 
@@ -109,6 +111,8 @@ const antes = {
   impuestos: soloEquipo,
   apuntes: soloEquipo,
   archivos_web: soloEquipo,
+  drive_carpetas: soloEquipo,
+  drive_archivos: soloEquipo,
   manuales: soloEquipo,
   articulos(nuevo, viejo) {
     if (!rol()) error('Debe iniciar sesión')
@@ -276,7 +280,7 @@ class Consulta {
         borrar.forEach((a) => equipo() || (a.autor_id === uid() && a.estado === 'borrador') || error('Sin permiso'))
       if (this.tabla === 'redes_posts' && !puedeRedes()) error('Sin permiso')
       if (['productos', 'pedidos'].includes(this.tabla) && !puedeTienda()) error('Sin permiso')
-      if (['facturas_recibidas', 'extractos', 'impuestos', 'apuntes', 'archivos_web', 'manuales'].includes(this.tabla) && borrar.length && !equipo()) error('Sin permiso')
+      if (['facturas_recibidas', 'extractos', 'impuestos', 'apuntes', 'archivos_web', 'manuales', 'drive_carpetas', 'drive_archivos'].includes(this.tabla) && borrar.length && !equipo()) error('Sin permiso')
       if (this.tabla === 'firmas_adhesion' && borrar.length) error('El registro de firmas no se puede borrar')
       if (this.tabla === 'acciones') borrar.forEach((a) => puedeArea(a.seccion) || error('Sin permiso'))
       db[this.tabla] = tabla.filter((r) => !borrar.includes(r))
@@ -393,6 +397,14 @@ const storage = {
       return { error: null }
     },
     getPublicUrl: (ruta) => ({ data: { publicUrl: archivos.get(ruta) || '#' } }),
+    async createSignedUrl(ruta) {
+      const url = archivos.get(ruta)
+      return url ? { data: { signedUrl: url }, error: null } : { data: null, error: { message: 'El archivo de demostración ya no está disponible (se guarda solo en esta sesión).' } }
+    },
+    async remove(rutas) {
+      rutas.forEach((r) => archivos.delete(r))
+      return { error: null }
+    },
   }),
 }
 

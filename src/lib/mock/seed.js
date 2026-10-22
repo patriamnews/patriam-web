@@ -220,6 +220,13 @@ export function semilla() {
     manuales: [
       { id: 1, titulo: 'Manual de protección de datos', area: 'proteccion-datos', version: '1.0', fecha: '2026-10-21', orden: 1, esquema: esquemaDatos, contenido: manualDatos, actualizado_at: '2026-10-21T10:00:00.000Z' },
     ],
+    drive_carpetas: [
+      { id: 1, nombre: 'Actas y asambleas', padre_id: null, creado_at: hace(3) },
+      { id: 2, nombre: 'Logotipos e imagen', padre_id: null, creado_at: hace(3) },
+      { id: 3, nombre: 'Sedes', padre_id: null, creado_at: hace(2) },
+      { id: 4, nombre: '2026', padre_id: 1, creado_at: hace(2) },
+    ],
+    drive_archivos: [],
     archivos_web: [
       { id: 1, orden: 1, titulo: 'Documento de entrega técnica', tipo: 'documentacion', version: '1.0', fecha: '2026-10-02', nota: 'Arquitectura, puesta en marcha con Supabase y Netlify, cuentas, seguridad, RGPD y Reglamento de IA.', archivo_url: '', nombre_archivo: 'PATRIAM_entrega_tecnica_web.docx', creado_at: hace(0) },
       { id: 2, orden: 2, titulo: 'Código fuente de la web', tipo: 'codigo', version: '1.0', fecha: '2026-10-02', nota: 'Proyecto React completo (patriam-web.zip). Es la copia de trabajo para programadores y la copia de seguridad.', archivo_url: '', nombre_archivo: 'patriam-web.zip', creado_at: hace(0) },

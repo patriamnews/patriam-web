@@ -1,4 +1,6 @@
 # Hostinger (Apache). Dominio principal: movimientopatriam.es
+AddType application/manifest+json .webmanifest
+
 RewriteEngine On
 
 # Boletín: el principal es boletin.movimientopatriam.es; los demás dominios redirigen ahí
@@ -17,6 +19,13 @@ RewriteRule ^(.*)$ https://movimientopatriam.es/$1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
+
+# El service worker y el manifiesto no se guardan en caché, para que la app se actualice sola
+<FilesMatch "^(sw\.js|gestion\.webmanifest)$">
+  <IfModule mod_headers.c>
+    Header set Cache-Control "no-cache"
+  </IfModule>
+</FilesMatch>
 
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"

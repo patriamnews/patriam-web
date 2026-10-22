@@ -1315,3 +1315,45 @@ html, body, .sitio { background: var(--crema) !important; }
 .lat-dia { background: var(--gualda); color: #2c0910; font-weight: 700; }
 .lat-dia b { color: #2c0910; }
 .destacados-laterales { gap: 14px; }
+
+/* ---- Drive del equipo ---- */
+.drive-barra { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+.drive-ruta { display: flex; flex-wrap: wrap; align-items: center; gap: .1rem; font-size: .95rem; }
+.drive-ruta button { background: none; border: 0; padding: .2rem .3rem; color: var(--acento); cursor: pointer; font: inherit; border-radius: 3px; }
+.drive-ruta button.activa { color: var(--tinta); font-weight: 600; cursor: default; }
+.drive-busca { min-width: 220px; max-width: 100%; padding: .45rem .7rem; border: 1px solid var(--linea); border-radius: 4px; font: inherit; background: var(--papel); }
+.drive-nueva { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+.drive-nueva input { flex: 1; min-width: 200px; padding: .5rem .7rem; border: 1px solid var(--linea); border-radius: 4px; font: inherit; }
+.drive-zona { border: 2px dashed transparent; border-radius: 6px; padding: .3rem; transition: border-color .15s, background .15s; min-height: 140px; }
+.drive-zona.arrastra { border-color: var(--gualda); background: var(--gualda-suave); }
+.drive-carpetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .7rem; margin-bottom: 1.2rem; }
+.drive-carpeta { background: var(--papel); border: 1px solid var(--linea); border-radius: 6px; padding: .6rem .7rem; display: flex; flex-direction: column; gap: .3rem; }
+.drive-carpeta input { width: 100%; padding: .35rem .5rem; border: 1px solid var(--linea); border-radius: 4px; font: inherit; }
+.drive-carpeta-abrir { background: none; border: 0; padding: 0; text-align: left; cursor: pointer; font: inherit; color: var(--tinta); display: grid; grid-template-columns: auto 1fr; column-gap: .5rem; align-items: center; }
+.drive-carpeta-abrir .letra-pequena { grid-column: 2; }
+.drive-icono-carpeta { font-size: 1.5rem; grid-row: span 2; }
+.drive-carpeta-nombre { font-weight: 600; overflow-wrap: anywhere; }
+.drive-carpeta-acciones { display: flex; gap: .6rem; font-size: .85rem; }
+.drive-archivo { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; color: var(--tinta); text-align: left; display: inline-flex; gap: .55rem; align-items: center; overflow-wrap: anywhere; }
+.drive-archivo:hover { color: var(--acento); text-decoration: underline; }
+.drive-icono { display: inline-grid; place-items: center; min-width: 2.4rem; height: 1.6rem; padding: 0 .25rem; border-radius: 3px; background: var(--gualda-suave); color: var(--acento-osc); font-size: .7rem; font-weight: 700; flex-shrink: 0; }
+.drive-mover { font: inherit; font-size: .85rem; padding: .2rem .3rem; border: 1px solid var(--linea); border-radius: 4px; background: var(--papel); max-width: 9rem; }
+.drive-renombra { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; }
+.drive-renombra input { padding: .3rem .5rem; border: 1px solid var(--linea); border-radius: 4px; font: inherit; min-width: 180px; }
+.drive-vacio { text-align: center; padding: 2.5rem 1rem; color: var(--suave); }
+.drive-tabla td { vertical-align: middle; }
+
+/* ---- Instalar la Gestión como app ---- */
+.btn-instalar { width: 100%; margin: .8rem 0 .4rem; }
+.instalar-ayuda { margin: .8rem 0 .4rem; }
+.instalar-pasos { font-size: .82rem; line-height: 1.4; background: rgba(255,255,255,.08); border-radius: 4px; padding: .5rem .6rem; margin-top: .3rem; }
+.instalar-pasos p { margin: 0; }
+@media (max-width: 700px) {
+  .drive-busca { min-width: 0; width: 100%; }
+  .drive-tabla, .drive-tabla tbody, .drive-tabla tr, .drive-tabla td { display: block; width: 100%; }
+  .drive-tabla thead { display: none; }
+  .drive-tabla tr { background: var(--papel); border: 1px solid var(--linea); border-radius: 6px; padding: .6rem .7rem; margin-bottom: .6rem; }
+  .drive-tabla td { border: 0; padding: .15rem 0; }
+  .drive-tabla .acciones-fila { display: flex; flex-wrap: wrap; gap: .4rem .9rem; align-items: center; padding-top: .4rem; }
+  .drive-archivo { font-weight: 600; }
+}

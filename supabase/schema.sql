@@ -775,6 +775,42 @@ create policy "equipo sube administración" on storage.objects for insert to aut
 create policy "equipo borra administración" on storage.objects for delete to authenticated
   using (bucket_id = 'administracion' and es_equipo());
 
+-- ---------- Drive del equipo: carpetas y archivos internos (bucket PRIVADO) ----------
+create table drive_carpetas (
+  id bigint generated always as identity primary key,
+  nombre text not null check (length(nombre) between 1 and 120),
+  padre_id bigint references drive_carpetas(id) on delete restrict,
+  creado_por uuid default auth.uid(),
+  creado_at timestamptz not null default now(),
+  actualizado_at timestamptz
+);
+create table drive_archivos (
+  id bigint generated always as identity primary key,
+  carpeta_id bigint references drive_carpetas(id) on delete restrict,
+  nombre text not null,
+  ruta text not null unique,          -- ruta dentro del bucket «drive»
+  tamano bigint,
+  tipo text,
+  subido_por uuid default auth.uid(),
+  subido_por_nombre text,
+  creado_at timestamptz not null default now(),
+  actualizado_at timestamptz
+);
+create index on drive_archivos (carpeta_id);
+create index on drive_carpetas (padre_id);
+alter table drive_carpetas enable row level security;
+alter table drive_archivos enable row level security;
+create policy "solo equipo" on drive_carpetas for all using (es_equipo()) with check (es_equipo());
+create policy "solo equipo" on drive_archivos for all using (es_equipo()) with check (es_equipo());
+
+insert into storage.buckets (id, name, public, file_size_limit) values ('drive', 'drive', false, 52428800);
+create policy "equipo lee drive" on storage.objects for select to authenticated
+  using (bucket_id = 'drive' and es_equipo());
+create policy "equipo sube drive" on storage.objects for insert to authenticated
+  with check (bucket_id = 'drive' and es_equipo());
+create policy "equipo borra drive" on storage.objects for delete to authenticated
+  using (bucket_id = 'drive' and es_equipo());
+
 -- ---------- Contenido inicial de las páginas ----------
 insert into paginas (clave, titulo, contenido) values
   ('inicio', 'PATRIAM', 'Asociación de acción ciudadana, cultural y social.'),
