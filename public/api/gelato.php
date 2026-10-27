@@ -11,6 +11,18 @@ $K = claves();
 if (empty($K['gelato'])) salir(['error' => 'Falta la clave de la API de Gelato. Póngala en Publicar › Cuentas y claves › Gelato.'], 400);
 $cab = ['X-API-KEY: ' . $K['gelato'], 'Content-Type: application/json', 'Accept: application/json'];
 $API = 'https://ecommerce.gelatoapis.com/v1';
+// Si no se ha puesto el Store ID, se busca solo con la clave (la primera tienda de la cuenta) y se guarda
+if (empty($K['gelatoTienda'])) {
+  [$c, $d] = pedirHttp("$API/stores", $cab);
+  $tiendas = $d['stores'] ?? $d['data'] ?? (array_is_list($d) ? $d : []);
+  $st = $tiendas[0]['id'] ?? null;
+  if ($c === 200 && $st && preg_match('/^[A-Za-z0-9\-]{6,80}$/', $st)) {
+    $fK = privado() . '/claves.json';
+    $todo = is_file($fK) ? (json_decode(file_get_contents($fK), true) ?: []) : [];
+    $todo['gelatoTienda'] = $K['gelatoTienda'] = $st;
+    file_put_contents($fK, json_encode($todo), LOCK_EX); @chmod($fK, 0600);
+  }
+}
 $fP = privado() . '/gelato-plantillas.json';
 $plantillas = is_file($fP) ? (json_decode(file_get_contents($fP), true) ?: []) : [];
 $id = fn($v) => preg_match('/^[A-Za-z0-9\-]{6,80}$/', (string)$v) ? (string)$v : salir(['error' => 'Identificador no válido.'], 400);

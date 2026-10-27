@@ -23,7 +23,7 @@ const APPS = [
     nota: 'Webhook: https://movimientopatriam.es/api/stripe-webhook.php con el evento checkout.session.completed.' },
   { id: 'gelato', nombre: 'Gelato', para: 'Fabrica y envía camisetas, sudaderas y tazas de la tienda', url: 'https://dashboard.gelato.com',
     claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]],
-    nota: 'El Store ID está en la dirección de la página de la tienda en Gelato (…/stores/ESTE-CÓDIGO/…). Aviso de envíos: en Gelato › Developer › Webhooks, pegue la dirección de abajo y marque «Order status updated», «Order item tracking code updated» y «Store product created».' },
+    nota: 'Basta con la clave de la API: el Store ID se busca solo. Si tiene varias tiendas en Gelato, el Store ID está en la dirección de la tienda (…/stores/ESTE-CÓDIGO/…). Aviso de envíos: en Gelato › Developer › Webhooks, pegue la dirección de abajo y marque «Order status updated», «Order item tracking code updated» y «Store product created».' },
   { id: 'awin', nombre: 'Awin · Casa del Libro', para: 'Enlaces de afiliado de los libros recomendados', url: 'https://ui.awin.com',
     claves: [['awin', 'Identificador de publisher', '', true]] },
   { id: 'citizengo', nombre: 'CitizenGO', para: 'Campañas de recogida de firmas', url: 'https://www.citizengo.org' },
