@@ -1151,3 +1151,12 @@ alter table productos drop constraint if exists productos_categoria_check;
 alter table productos add constraint productos_categoria_check check (categoria in ('libros', 'ropa', 'regalos', 'actividades'));
 alter table productos add column if not exists gelato_uids text, add column if not exists gelato_archivo text;  -- productos que fabrica y envía Gelato
 alter table articulos add column if not exists fecha date;  -- fecha del comunicado o de la aparición en medios (ordena y separa nuevos y anteriores)
+
+-- ---------- Además del director, publica y aprueba quien tenga «aprueba» en su perfil ----------
+alter table perfiles add column if not exists aprueba boolean not null default false;
+create or replace function public.puede_aprobar() returns boolean language sql stable security definer set search_path = 'public' as $$
+  select coalesce((select p.activo and (p.rol = 'director' or p.aprueba) from perfiles p where p.id = auth.uid()), false)
+$$;
+create or replace function public.puede_publicar(s seccion_web) returns boolean language sql stable security definer set search_path = 'public' as $$
+  select puede_aprobar()
+$$;

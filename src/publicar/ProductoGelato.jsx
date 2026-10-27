@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { slugify } from '../lib/data'
 import { tokenEquipo } from '../lib/equipo'
 import { useAuth } from '../lib/auth'
+import { puedeAprobar } from '../lib/permissions'
 import { subirArchivo } from '../admin/subir'
 
 // Crear un producto de Gelato sin entrar en Gelato: se elige la plantilla (camiseta, sudadera, taza…),
@@ -104,7 +105,7 @@ export default function ProductoGelato() {
         <p className="aviso-ok">✓ «{hecho.nombre}» guardado en la tienda de la web.</p>
         {hecho.imagen_url && <img src={hecho.imagen_url} alt="" style={{ maxWidth: 260, borderRadius: 8 }} />}
         <p className="mini">
-          {perfil?.rol === 'director' ? 'Ya está a la venta.' : 'Saldrá a la venta en cuanto lo apruebe Carlos (Pendiente de aprobar).'} Cuando alguien lo compre, se cobra con
+          {puedeAprobar(perfil) ? 'Ya está a la venta.' : 'Saldrá a la venta en cuanto lo apruebe Carlos (Pendiente de aprobar).'} Cuando alguien lo compre, se cobra con
           tarjeta y Gelato lo fabrica y lo envía solo, con vuestra etiqueta y embalaje.
         </p>
         <div className="acciones">

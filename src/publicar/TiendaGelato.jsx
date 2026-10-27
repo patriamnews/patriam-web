@@ -111,7 +111,7 @@ export default function TiendaGelato() {
         <>
           <h3>Ya en la web ({ya.length})</h3>
           {ya.map((p) => (
-            <p key={p.id} className="mini">✓ {p.titulo} · {Number(enWeb[p.id].precio).toFixed(2)} € {enWeb[p.id].aprobada ? '' : '· pendiente de aprobar por Carlos'}</p>
+            <p key={p.id} className="mini">✓ {p.titulo} · {Number(enWeb[p.id].precio).toFixed(2)} € {enWeb[p.id].aprobada ? '' : '· pendiente de aprobar'}</p>
           ))}
           <p className="letra-pequena">Para cambiar el precio o quitarlo de la venta: Publicar › Producto de la tienda.</p>
         </>
