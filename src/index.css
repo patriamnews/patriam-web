@@ -1474,3 +1474,8 @@ html, body, .sitio { background: var(--crema) !important; }
 .galeria-mini button { width: 72px; height: 72px; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; background: #f3f1ed; cursor: pointer; }
 .galeria-mini button.activo { border-color: currentColor; }
 .galeria-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Tienda: casillas más grandes y la foto acercada para que se vea bien el dibujo */
+.rejilla-tienda { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.rejilla-tienda .producto { overflow: hidden; }
+.rejilla-tienda .producto.cat-ropa .prod-img { transform: scale(1.4); transform-origin: 50% 40%; }

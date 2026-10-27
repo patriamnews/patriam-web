@@ -36,7 +36,7 @@ function Rejilla({ items, vacio }) {
   return (
     <div className="rejilla-tienda">
       {items.map((p) => (
-        <Link key={p.id} to={`/tienda/${p.slug}`} className="producto">
+        <Link key={p.id} to={`/tienda/${p.slug}`} className={`producto cat-${p.categoria}`}>
           <ImagenProducto p={p} />
           <div className="producto-cuerpo">
             <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
