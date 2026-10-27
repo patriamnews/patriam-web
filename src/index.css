@@ -1422,3 +1422,5 @@ html, body, .sitio { background: var(--crema) !important; }
 .lista-anteriores li span { color: #8a7d6b; font-size: 0.9rem; min-width: 8.5rem; display: inline-block; }
 .tienda-apartado { margin-bottom: 2.5rem; }
 .tienda-apartado > p { margin-top: -0.3rem; }
+.pub-instalar { margin-top: 1rem; text-align: center; }
+.pub-quien .btn-instalar { padding: 0.35rem 0.8rem; font-size: 0.85rem; }

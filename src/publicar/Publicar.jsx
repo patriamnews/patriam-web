@@ -22,6 +22,7 @@ import Paginas from '../admin/Paginas'
 import Redes from '../admin/Redes'
 import Aprobaciones from '../admin/Aprobaciones'
 import Claves from './Claves'
+import InstalarApp from '../admin/InstalarApp'
 
 // Iconos de trazo (los mismos del menú de la web)
 const ICONOS = {
@@ -59,6 +60,10 @@ const COSAS = [
   { ruta: 'claves', titulo: 'Claves secretas (APIs)', texto: 'Stripe, Gelato, Awin, Brevo y WhatsApp. Se ponen una vez y quedan en el servidor.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
+// En publicar.movimientopatriam.es los enlaces a la web van a la web principal
+const EN_SUBDOMINIO = typeof location !== 'undefined' && /^publicar\./i.test(location.hostname)
+const WEB = EN_SUBDOMINIO ? 'https://' + location.hostname.replace(/^publicar\./i, '') : ''
+
 export default function Publicar() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
 
@@ -79,6 +84,7 @@ export default function Publicar() {
       <header className="pub-cab">
         <Link to="/publicar" className="pub-logo"><img src={logo} alt="PATRIAM" /><span>Publicar</span></Link>
         <div className="pub-quien">
+          <InstalarApp />
           <span>{perfil.nombre || perfil.email}</span>
           <button className="btn-texto" onClick={salir}>Salir</button>
         </div>
@@ -165,8 +171,8 @@ function Inicio() {
         <Link to="/publicar/mis-publicaciones"><Icono n="lista" /> Artículos, comunicados y medios</Link>
         <Link to="/publicar/acciones"><Icono n="calendario" /> Toda la agenda</Link>
         <Link to="/publicar/campanas"><Icono n="firma" /> Todas las campañas</Link>
-        <a href="/#/" target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
-        <a href="/#/gestion">Ir a la Gestión completa →</a>
+        <a href={`${WEB}/#/`} target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
+        <a href={`${WEB}/#/gestion`} target={EN_SUBDOMINIO ? '_blank' : undefined} rel="noopener noreferrer">Ir a la Gestión completa{EN_SUBDOMINIO ? ' ↗' : ' →'}</a>
       </div>
     </>
   )
@@ -223,6 +229,7 @@ function Entrar() {
         <label>Contraseña<input type="password" required autoComplete="current-password" value={f.clave} onChange={(e) => setF({ ...f, clave: e.target.value })} /></label>
         {error && <p className="error">{error}</p>}
         <button className="btn btn-bloque" disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar'}</button>
+        <div className="pub-instalar"><InstalarApp /></div>
       </form>
     </div>
   )
