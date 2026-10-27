@@ -1479,3 +1479,16 @@ html, body, .sitio { background: var(--crema) !important; }
 .rejilla-tienda { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .rejilla-tienda .producto { overflow: hidden; }
 .rejilla-tienda .producto.cat-ropa .prod-img { transform: scale(1.4); transform-origin: 50% 40%; }
+
+/* Ficha de ropa: detrás y delante juntas, y los colores debajo con su foto */
+.fotos-par { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.fotos-par figure { margin: 0; background: #efefef; border-radius: 10px; overflow: hidden; }
+.fotos-par img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.fotos-par figcaption { font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; text-align: center; padding: .35rem 0 .45rem; color: #555; }
+.muestras-color { margin-top: .9rem; }
+.muestras-color > span { display: block; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .4rem; }
+.muestras-color > div { display: flex; flex-wrap: wrap; gap: .5rem; }
+.muestras-color button { width: 84px; padding: 0 0 .3rem; border: 2px solid transparent; border-radius: 10px; background: #f3f1ed; cursor: pointer; overflow: hidden; text-align: center; }
+.muestras-color button img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.muestras-color button small { display: block; font-size: .68rem; line-height: 1.2; padding: .25rem .2rem 0; }
+.muestras-color button.activo { border-color: var(--granate, #7a1c28); }

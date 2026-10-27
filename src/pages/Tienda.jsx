@@ -139,14 +139,40 @@ export function Producto() {
       <Link to="/tienda" className="etiqueta">← Tienda</Link>
       <div className="ficha">
         <div>
-          <ImagenProducto p={foto} grande />
-          {galeria && (
-            <div className="galeria-mini">
-              {galeria.map((g) => (
-                <button key={g} type="button" className={fotoActiva === g ? 'activo' : ''} onClick={() => setFotoSel(g)} aria-label="Ver foto">
-                  <img src={g} alt="" loading="lazy" />
-                </button>
+          {dobles && Array.isArray(fotosColor) && fotosColor.length >= 2 ? (
+            <div className="fotos-par">
+              {fotosColor.slice(0, 2).map((g, i) => (
+                <figure key={g}>
+                  <img src={g} alt={`${p.nombre}, ${i ? 'delante' : 'detrás'}`} />
+                  <figcaption>{i ? 'Delante' : 'Detrás'}</figcaption>
+                </figure>
               ))}
+            </div>
+          ) : (
+            <>
+              <ImagenProducto p={foto} grande />
+              {galeria && (
+                <div className="galeria-mini">
+                  {galeria.map((g) => (
+                    <button key={g} type="button" className={fotoActiva === g ? 'activo' : ''} onClick={() => setFotoSel(g)} aria-label="Ver foto">
+                      <img src={g} alt="" loading="lazy" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+          {dobles && colores.length > 1 && colores.some((c) => Array.isArray(p.fotos?.[c])) && (
+            <div className="muestras-color">
+              <span>Colores</span>
+              <div>
+                {colores.map((c) => (
+                  <button key={c} type="button" className={(colorSel || colores[0]) === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>
+                    {Array.isArray(p.fotos?.[c]) && <img src={p.fotos[c][0]} alt="" loading="lazy" />}
+                    <small>{c}</small>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
