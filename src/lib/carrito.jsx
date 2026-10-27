@@ -19,6 +19,17 @@ export const suplemento = (p, opcion) => {
   const corte = partes[0]?.includes(' · ') ? partes[0].split(' · ')[0] : ''
   return (Number(p?.suplementos?.[talla]) || 0) + (corte ? Number(p?.suplementos?.[corte]) || 0 : 0)
 }
+// Envío de Gelato: la tarifa de «primera prenda» más alta del pedido y, por cada prenda más, su tarifa de «prenda adicional».
+// Cada producto puede tener su propia tarifa (las sudaderas vienen de Italia); si no, se usa la de Ajustes.
+export function calcularEnvio(items, aj) {
+  const unidades = []
+  for (const i of items) if (i.gelato) for (let n = 0; n < i.cantidad; n++)
+    unidades.push([Number(i.envio1 ?? aj?.envio_coste) || 0, Number(i.envio2 ?? aj?.envio_adicional) || 0])
+  if (!unidades.length) return 0
+  unidades.sort((a, b) => b[0] - a[0])
+  const total = unidades[0][0] + unidades.slice(1).reduce((t, u) => t + u[1], 0)
+  return Math.round(total * 100) / 100
+}
 export const precioCon = (p, opcion) => Math.round((Number(p.precio) + suplemento(p, opcion)) * 100) / 100
 
 export function CarritoProvider({ children }) {
@@ -53,7 +64,7 @@ export function CarritoProvider({ children }) {
       const k = clave(p, opcion)
       const ya = l.find((i) => i.k === k)
       if (ya) return l.map((i) => (i.k === k ? { ...i, cantidad: i.cantidad + cantidad } : i))
-      return [...l, { k, id: p.id, nombre: p.nombre, categoria: p.categoria, precio: precioCon(p, opcion), opcion: opcion || null, cantidad, fecha: p.fecha || null, gelato: datosGelato(p, opcion) }]
+      return [...l, { k, id: p.id, nombre: p.nombre, categoria: p.categoria, precio: precioCon(p, opcion), opcion: opcion || null, cantidad, fecha: p.fecha || null, gelato: datosGelato(p, opcion), envio1: p.envio_primera ?? null, envio2: p.envio_extra ?? null }]
     })
 
   const cambiar = (k, cantidad) =>

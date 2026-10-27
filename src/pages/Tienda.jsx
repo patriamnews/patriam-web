@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { getAjustes, getPagina, euros, fecha, referencia } from '../lib/data'
 import { CATEGORIAS_TIENDA } from '../lib/config'
-import { useCarrito, precioCon } from '../lib/carrito'
+import { useCarrito, precioCon, calcularEnvio } from '../lib/carrito'
 import { useAuth } from '../lib/auth'
 import { Metodos, Instrucciones } from '../components/Pago'
 import Texto from '../components/Texto'
@@ -30,7 +30,7 @@ export function ImagenProducto({ p, grande }) {
 
 // Color de cada variante para las muestras redondas de la tienda
 const COLOR_HEX = {
-  Blanco: '#f7f6f2', Marfil: '#efe9d9', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
+  Blanco: '#f7f6f2', Marfil: '#efe9d9', 'Azul marino': '#1f2a44', 'Verde militar': '#6f8a62', 'Gris antracita': '#4a4b4f', Arena: '#d8cbb0', 'Gris claro': '#9a9a9a', 'Verde bosque': '#1f3a2b', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
   'Azul vaquero': '#637792', 'Azul hortensia': '#50638c', 'Verde oliva': '#3f4927', Teja: '#96483e', Gris: '#504c4b',
   'Marrón café': '#4a3c34', 'Azul noche': '#1b375e', Granate: '#6e1c28', Crema: '#ece4d3', Beige: '#d9c9a8', Moca: '#7a6254', 'Gris sombra': '#48484b', Avena: '#d6cbba',
 }
@@ -348,7 +348,7 @@ export function Carrito() {
   const gratisDesde = Number(aj.envio_gratis_desde) || Infinity
   // Envío de Gelato: la primera prenda y un poco más por cada prenda adicional del mismo pedido
   const prendas = items.filter((i) => i.gelato).reduce((t, i) => t + i.cantidad, 0) || items.reduce((t, i) => t + i.cantidad, 0)
-  const envio = entrega === 'envio' && subtotal < gratisDesde ? Math.round(((Number(aj.envio_coste) || 0) + (Number(aj.envio_adicional) || 0) * Math.max(0, prendas - 1)) * 100) / 100 : 0
+  const envio = entrega === 'envio' && subtotal < gratisDesde ? calcularEnvio(items, aj) : 0
   const total = subtotal + envio
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
 

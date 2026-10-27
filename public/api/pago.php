@@ -57,7 +57,7 @@ if ($tipo === 'cuota') {
   if (!$items) salir(['error' => 'El carrito está vacío.'], 400);
   $ids = array_values(array_unique(array_filter(array_map(fn($it) => (int)($it['id'] ?? 0), $items))));
   if (!$ids) salir(['error' => 'Vuelva a añadir los productos al carrito, por favor.'], 400);
-  $filas = supabaseLeer('productos?select=id,nombre,precio,opciones,gelato_uids,gelato_archivo,suplementos,enlace_externo&activo=eq.true&id=in.(' . implode(',', $ids) . ')');
+  $filas = supabaseLeer('productos?select=id,nombre,precio,opciones,gelato_uids,gelato_archivo,suplementos,enlace_externo,envio_primera,envio_extra&activo=eq.true&id=in.(' . implode(',', $ids) . ')');
   if ($filas === null) salir(['error' => 'No se ha podido comprobar el pedido. Inténtelo de nuevo en un momento.'], 502);
   $prod = [];
   foreach ($filas as $r) $prod[(int)$r['id']] = $r;
@@ -91,14 +91,17 @@ if ($tipo === 'cuota') {
       [$conVar, $archivo] = array_pad(explode('@', $uid, 2), 2, '');
       [$codigo, $variante] = array_pad(explode('#', $conVar, 2), 2, '');
       $archivo = trim($archivo) ?: (string)($r['gelato_archivo'] ?? '');
-      $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => trim($codigo), 'archivo' => $archivo, 'variante' => trim($variante), 'cantidad' => $cant, 'nombre' => $r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : '')];
+      $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => trim($codigo), 'archivo' => $archivo, 'variante' => trim($variante), 'cantidad' => $cant, 'e1' => $r['envio_primera'], 'e2' => $r['envio_extra'], 'nombre' => $r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : '')];
     }
   }
   if (!$i) salir(['error' => 'No hay nada que pagar.'], 400);
   // Envío: lo que esté puesto en Ajustes (una vez por pedido; gratis a partir de cierto importe)
   $aj = supabaseLeer('ajustes?select=envio_coste,envio_adicional,envio_gratis_desde&id=eq.1')[0] ?? [];
-  $prendas = array_sum(array_map(fn($g) => $g['cantidad'], $gelato));
-  $envio = $gelato ? $euros((float)($aj['envio_coste'] ?? 0) + (float)($aj['envio_adicional'] ?? 0) * max(0, $prendas - 1)) : 0;
+  // Envío: la tarifa de primera prenda más alta del pedido + la de prenda adicional de cada una de las demás
+  $uds = [];
+  foreach ($gelato as $g) for ($k = 0; $k < $g['cantidad']; $k++) $uds[] = [(float)($g['e1'] ?? $aj['envio_coste'] ?? 0), (float)($g['e2'] ?? $aj['envio_adicional'] ?? 0)];
+  usort($uds, fn($a, $b) => $b[0] <=> $a[0]);
+  $envio = $uds ? $euros($uds[0][0] + array_sum(array_map(fn($u) => $u[1], array_slice($uds, 1)))) : 0;
   $gratis = $euros($aj['envio_gratis_desde'] ?? 0);
   if ($gratis > 0 && $subtotal >= $gratis) $envio = 0;
   if ($envio > 0) {
