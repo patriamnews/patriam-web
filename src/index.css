@@ -1424,3 +1424,13 @@ html, body, .sitio { background: var(--crema) !important; }
 .tienda-apartado > p { margin-top: -0.3rem; }
 .pub-instalar { margin-top: 1rem; text-align: center; }
 .pub-quien .btn-instalar { padding: 0.35rem 0.8rem; font-size: 0.85rem; }
+.cuentas { display: flex; flex-direction: column; gap: 0.6rem; }
+.cuenta { border: 1px solid #e3d6c1; background: #fffdf8; }
+.cuenta.abierta { border-left: 4px solid #7b1c2c; }
+.cuenta-cab { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 1rem; background: none; border: 0; padding: 0.8rem 1rem; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.cuenta-cab span:first-child { display: flex; flex-direction: column; }
+.cuenta-cab small { color: #5d524a; }
+.cuenta-cuerpo { padding: 0 1rem 1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.cuenta-campo { display: flex; flex-direction: column; gap: 0.25rem; }
+.cuenta-input { display: flex; gap: 0.4rem; align-items: center; }
+.cuenta-input input { flex: 1; min-width: 0; font-family: ui-monospace, monospace; }

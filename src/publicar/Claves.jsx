@@ -2,30 +2,37 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../lib/auth'
 import { tokenEquipo } from '../lib/equipo'
 
-// Claves de los pagos y de la tienda. Se guardan en el servidor; aquí nunca se vuelven a ver enteras.
-// Todas las claves de las aplicaciones que usan la web y el boletín, agrupadas
-const GRUPOS = [
-  ['Cobros con tarjeta · Stripe', [
-    ['stripe', 'Clave secreta (secret key)', 'Stripe › Desarrolladores › Claves de API › Clave secreta. Empieza por sk_live_ (o sk_test_ para pruebas).', 'sk_live_…'],
-    ['stripeWebhook', 'Secreto del webhook', 'Stripe › Desarrolladores › Webhooks › añadir destino https://movimientopatriam.es/api/stripe-webhook.php con el evento «checkout.session.completed». Empieza por whsec_.', 'whsec_…'],
-  ]],
-  ['Tienda · Gelato (camisetas y tazas)', [
-    ['gelato', 'Clave de la API (secret key)', 'Gelato › Developer › API keys.', ''],
-    ['gelatoTienda', 'Identificador de la tienda (Store ID)', 'El código que sale en la dirección del navegador al entrar en la tienda en Gelato.', ''],
-  ]],
-  ['Tienda · Awin (libros de Casa del Libro)', [
-    ['awin', 'Identificador de publisher de Awin', 'Awin › tu cuenta (número de publisher). No es secreto; sirve para los enlaces de afiliado.', ''],
-  ]],
-  ['Correo · Brevo (boletín y comunicaciones)', [
-    ['brevo', 'Clave de la API', 'Brevo › SMTP y API › Claves de API. Empieza por xkeysib-.', 'xkeysib-…'],
-  ]],
-  ['WhatsApp · Meta (comunicaciones)', [
-    ['waToken', 'Token de acceso', 'Meta › tu app › WhatsApp (mejor el token permanente de «Usuarios del sistema»).', 'EAA…'],
-    ['waPhone', 'Identificador del número (Phone number ID)', 'Meta › WhatsApp › Configuración de la API (es un número largo, no el teléfono).', ''],
-    ['waPlantilla', 'Nombre de la plantilla', 'La plantilla aprobada para las comunicaciones, por ejemplo comunicacion_patriam.', 'comunicacion_patriam'],
-  ]],
+// Cuentas y claves de todas las aplicaciones que usan la web y el boletín.
+// Cada una: para qué sirve, dónde se entra, usuario, contraseña, claves de API y notas.
+// Se guardan solo en el servidor (fuera de la web y de GitHub) y las ve el equipo al entrar en Publicar.
+// Las «claves de API» marcadas son las que usan de verdad la web y el boletín para funcionar.
+const APPS = [
+  { id: 'hostinger', nombre: 'Hostinger', para: 'Alojamiento de la web y del boletín, dominios movimientopatriam (.es, .org, .com, .net) y subdominios', url: 'https://hpanel.hostinger.com' },
+  { id: 'hostinger-correo', nombre: 'Hostinger · correo', para: 'Buzón hola@movimientopatriam.com: recibe todo el correo de PATRIAM y los avisos de pedidos', url: 'https://mail.hostinger.com' },
+  { id: 'github', nombre: 'GitHub', para: 'Código de la web (patriam-web) y del boletín (boletin.patriam). Cada cambio se publica solo', url: 'https://github.com/patriamnews' },
+  { id: 'netlify', nombre: 'Netlify', para: 'Servidor del boletín: sesiones del editor, suscriptores y datos', url: 'https://app.netlify.com' },
+  { id: 'supabase', nombre: 'Supabase', para: 'Base de datos de la web (pendiente de conectar)', url: 'https://supabase.com/dashboard',
+    claves: [['supabaseUrl', 'Dirección del proyecto (Project URL)', 'https://xxxx.supabase.co'], ['supabaseAnon', 'Clave pública (anon key)', 'eyJ…']],
+    nota: 'Para conectarla de verdad, estas dos también se ponen en GitHub › patriam-web › Settings › Secrets and variables › Actions.' },
+  { id: 'brevo', nombre: 'Brevo', para: 'Envía por correo el boletín y las comunicaciones', url: 'https://app.brevo.com',
+    claves: [['brevo', 'Clave de la API (xkeysib-…)', 'xkeysib-…', true]] },
+  { id: 'meta', nombre: 'Meta · WhatsApp Business', para: 'Envío de las comunicaciones por WhatsApp', url: 'https://business.facebook.com',
+    claves: [['waToken', 'Token de acceso', 'EAA…', true], ['waPhone', 'Identificador del número (Phone number ID)', '', true], ['waPlantilla', 'Nombre de la plantilla', 'comunicacion_patriam', true]] },
+  { id: 'stripe', nombre: 'Stripe', para: 'Cobros con tarjeta: cuotas, donativos y tienda', url: 'https://dashboard.stripe.com',
+    claves: [['stripe', 'Clave secreta (sk_live_…)', 'sk_live_…', true], ['stripePublica', 'Clave publicable (pk_live_…)', 'pk_live_…'], ['stripeWebhook', 'Secreto del webhook (whsec_…)', 'whsec_…', true]],
+    nota: 'Webhook: https://movimientopatriam.es/api/stripe-webhook.php con el evento checkout.session.completed.' },
+  { id: 'gelato', nombre: 'Gelato', para: 'Fabrica y envía camisetas, sudaderas y tazas de la tienda', url: 'https://dashboard.gelato.com',
+    claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]] },
+  { id: 'awin', nombre: 'Awin · Casa del Libro', para: 'Enlaces de afiliado de los libros recomendados', url: 'https://ui.awin.com',
+    claves: [['awin', 'Identificador de publisher', '', true]] },
+  { id: 'citizengo', nombre: 'CitizenGO', para: 'Campañas de recogida de firmas', url: 'https://www.citizengo.org' },
+  { id: 'gmail-contacto', nombre: 'Gmail · contacto', para: 'movimientopatriam@gmail.com: contacto público y delegado de protección de datos', url: 'https://mail.google.com' },
+  { id: 'gmail-tecnico', nombre: 'Gmail · técnico', para: 'boletin.patriam@gmail.com: cuenta de GitHub y Netlify', url: 'https://mail.google.com' },
+  { id: 'vercel', nombre: 'Vercel', para: 'Cuenta creada para PATRIAM (ahora no se usa)', url: 'https://vercel.com' },
+  { id: 'x', nombre: 'X (Twitter)', para: 'Cuenta oficial @patriam_es', url: 'https://x.com' },
+  { id: 'instagram', nombre: 'Instagram', para: 'Cuenta oficial', url: 'https://instagram.com' },
+  { id: 'telegram', nombre: 'Telegram', para: 'Canal oficial', url: 'https://web.telegram.org' },
 ]
-const SIN_OCULTAR = ['gelatoTienda', 'awin', 'waPhone', 'waPlantilla']
 
 async function llamar(cuerpo) {
   const r = await fetch('/api/claves.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenEquipo(), ...cuerpo }) })
@@ -34,22 +41,39 @@ async function llamar(cuerpo) {
   return d
 }
 
+function Campo({ etiqueta, valor, onChange, secreto, placeholder }) {
+  const [ver, setVer] = useState(false)
+  const copiar = () => navigator.clipboard?.writeText(valor || '')
+  return (
+    <label className="cuenta-campo">
+      <span>{etiqueta}</span>
+      <span className="cuenta-input">
+        <input type={secreto && !ver ? 'password' : 'text'} value={valor || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} autoComplete="off" spellCheck={false} />
+        {secreto && <button type="button" className="btn-texto" onClick={() => setVer(!ver)}>{ver ? 'Ocultar' : 'Ver'}</button>}
+        {valor && <button type="button" className="btn-texto" onClick={copiar}>Copiar</button>}
+      </span>
+    </label>
+  )
+}
+
 export default function Claves() {
   const { salir } = useAuth()
-  const [estado, setEstado] = useState(null)
-  const [v, setV] = useState({})
+  const [claves, setClaves] = useState(null)
+  const [cuentas, setCuentas] = useState({})
+  const [abierta, setAbierta] = useState(null)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
-    llamar({}).then((d) => setEstado(d.estado)).catch((err) => setError(err.message))
+    llamar({}).then((d) => { setClaves(d.claves || {}); setCuentas(d.cuentas || {}) }).catch((err) => setError(err.message))
   }, [])
 
-  const guardar = async (e) => {
-    e.preventDefault(); setError(''); setMsg('')
+  const guardar = async (app) => {
+    setError(''); setMsg('')
+    const valores = Object.fromEntries((app.claves || []).map(([k]) => [k, claves[k] || '']))
     try {
-      const d = await llamar({ valores: v })
-      setEstado(d.estado); setV({}); setMsg('Claves guardadas en el servidor.')
+      const d = await llamar({ valores, cuentas: { [app.id]: cuentas[app.id] || {} } })
+      setClaves(d.claves || {}); setCuentas(d.cuentas || {}); setMsg(`${app.nombre}: guardado.`)
     } catch (err) { setError(err.message) }
   }
 
@@ -60,30 +84,43 @@ export default function Claves() {
         <button className="btn" onClick={salir}>Volver a entrar</button>
       </div>
     )
-  if (!estado && !error) return <p className="vacio">Cargando…</p>
+  if (!claves) return error ? <p className="error">{error}</p> : <p className="vacio">Cargando…</p>
+
+  const setCuenta = (id, k, v) => setCuentas({ ...cuentas, [id]: { ...(cuentas[id] || {}), [k]: v } })
+  const completa = (a) => (cuentas[a.id]?.usuario ? 1 : 0) + (a.claves || []).filter(([k, , , usada]) => usada && claves[k]).length
 
   return (
-    <form className="formulario" onSubmit={guardar}>
-      <p className="letra-pequena">Se guardan solo en el servidor de Hostinger, fuera de la web y de GitHub. Una vez guardadas no se vuelven a enseñar: solo sus últimas letras. Para cambiar una, escriba la nueva y guarde; para borrarla, escriba un guion (-).</p>
-      {GRUPOS.map(([grupo, campos]) => (
-        <fieldset key={grupo} className="grupo">
-          <legend>{grupo}</legend>
-          {campos.map(([k, t, ayuda, ph]) => (
-            <label key={k}>
-              {t} {estado?.[k] ? <span className="estado estado-publicado">Puesta {estado[k]}</span> : <span className="estado estado-rechazado">Sin poner</span>}
-              <input type={SIN_OCULTAR.includes(k) ? 'text' : 'password'} value={v[k] || ''} onChange={(e) => setV({ ...v, [k]: e.target.value })} placeholder={ph} autoComplete="off" />
-              <small>{ayuda}</small>
-            </label>
-          ))}
-        </fieldset>
-      ))}
-      <div className="caja-info">
-        <b>Supabase (base de datos)</b> no va aquí: su dirección y su clave pública se ponen en GitHub › patriam-web › Settings › Secrets and variables › Actions
-        (VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY), porque la web las necesita al construirse. Las contraseñas de las cuentas (Hostinger, GitHub, Netlify…) van en el documento de accesos, no en la web.
-      </div>
+    <div className="cuentas">
+      <p className="caja-aviso">
+        Aquí están el usuario, la contraseña y las claves de cada aplicación, para poder pasárselas a los responsables. Las ve todo el equipo al entrar en
+        Publicar: cuando cada responsable tenga su acceso, conviene que cambie la contraseña. Se guardan solo en el servidor, no en la web ni en GitHub.
+      </p>
       {msg && <p className="aviso-ok">{msg}</p>}
       {error && <p className="error">{error}</p>}
-      <button className="btn">Guardar claves</button>
-    </form>
+      {APPS.map((a) => (
+        <div key={a.id} className={`cuenta ${abierta === a.id ? 'abierta' : ''}`}>
+          <button type="button" className="cuenta-cab" onClick={() => setAbierta(abierta === a.id ? null : a.id)}>
+            <span><b>{a.nombre}</b><small>{a.para}</small></span>
+            <span className="mini">{completa(a) ? '✓ ' : ''}{abierta === a.id ? 'Cerrar' : 'Abrir'}</span>
+          </button>
+          {abierta === a.id && (
+            <div className="cuenta-cuerpo">
+              <p className="mini"><a href={a.url} target="_blank" rel="noopener noreferrer">{a.url.replace('https://', '')} ↗</a></p>
+              <Campo etiqueta="Usuario o email de acceso" valor={cuentas[a.id]?.usuario} onChange={(v) => setCuenta(a.id, 'usuario', v)} />
+              <Campo etiqueta="Contraseña" valor={cuentas[a.id]?.clave} onChange={(v) => setCuenta(a.id, 'clave', v)} secreto />
+              {(a.claves || []).map(([k, t, ph, usada]) => (
+                <Campo key={k} etiqueta={t + (usada ? ' · la usa la web' : '')} valor={claves[k]} onChange={(v) => setClaves({ ...claves, [k]: v })} secreto={!['gelatoTienda', 'waPhone', 'waPlantilla', 'awin', 'supabaseUrl'].includes(k)} placeholder={ph} />
+              ))}
+              {a.nota && <p className="letra-pequena">{a.nota}</p>}
+              <label className="cuenta-campo">
+                <span>Notas (verificación en dos pasos, móvil de recuperación…)</span>
+                <textarea rows={2} value={cuentas[a.id]?.notas || ''} onChange={(e) => setCuenta(a.id, 'notas', e.target.value)} />
+              </label>
+              <button type="button" className="btn" onClick={() => guardar(a)}>Guardar {a.nombre}</button>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   )
 }
