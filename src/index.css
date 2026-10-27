@@ -1469,3 +1469,8 @@ html, body, .sitio { background: var(--crema) !important; }
 @media (max-width: 600px) {
   .destacado-principal > .portadilla, .destacado-principal > .imagen-prueba, .destacado-principal > img { aspect-ratio: 16 / 9 !important; }
 }
+/* Fotos del producto (delante, detrás…) */
+.galeria-mini { display: flex; gap: .5rem; margin-top: .6rem; flex-wrap: wrap; }
+.galeria-mini button { width: 72px; height: 72px; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; background: #f3f1ed; cursor: pointer; }
+.galeria-mini button.activo { border-color: currentColor; }
+.galeria-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
