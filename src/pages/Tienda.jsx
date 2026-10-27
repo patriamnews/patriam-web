@@ -190,8 +190,10 @@ export function Producto() {
           {ops.length > 0 && !ops.includes(opcion) && <p className="letra-pequena">{dobles ? 'Elija color y talla.' : 'Elija una talla.'}</p>}
           {p.gelato_uids && (
             <p className="letra-pequena">
-              Este producto lo fabrica y envía Gelato, nuestro taller de impresión bajo demanda.{' '}
-              {aj && !(Number(aj.envio_coste) > 0) ? 'Envío gratuito.' : 'Los gastos de envío no son de PATRIAM: son los que cobra Gelato por el envío.'}
+              Precio sin gastos de envío. Lo fabrica y envía Gelato, nuestro taller de impresión bajo demanda.{' '}
+              {aj && !(Number(aj.envio_coste) > 0)
+                ? 'El envío es gratuito.'
+                : `El envío se cobra una sola vez al final del pedido (${euros(aj?.envio_coste)}), sea cual sea el número de productos${Number(aj?.envio_gratis_desde) > 0 ? `, y es gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}. Son los gastos de envío de Gelato, no de PATRIAM.`}
             </p>
           )}
           </>)}
@@ -313,7 +315,7 @@ export function Carrito() {
                 <legend>Entrega</legend>
                 <p>Envío a domicilio</p>
                 {items.some((i) => i.gelato) && (
-                  <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). {envio ? 'Los gastos de envío son los que cobra Gelato por el envío, no son de PATRIAM.' : 'Envío gratuito.'}</p>
+                  <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). {envio ? 'Los gastos de envío se cobran una sola vez por pedido y son los de Gelato, no de PATRIAM.' : 'Envío gratuito.'}</p>
                 )}
                 <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
               </fieldset>
