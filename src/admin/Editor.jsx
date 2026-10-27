@@ -8,7 +8,6 @@ import { puedePublicar, seccionesDisponibles } from '../lib/permissions'
 import { slugify } from '../lib/data'
 import { subirArchivo } from './subir'
 import Texto from '../components/Texto'
-import AvisoIA from '../components/AvisoIA'
 import { pedirAprobacion, avisarAutor } from '../lib/correo'
 import { APROBADOR } from '../lib/config'
 
@@ -64,8 +63,6 @@ export default function Editor() {
     setError('')
     setMsg('')
     if (!a.titulo.trim()) return setError('Falta el título.')
-    if (estado === 'publicado' && a.uso_ia === 'generado' && !confirmar('El contenido está marcado como generado por IA. Se publicará con esa etiqueta visible. ¿Continuar?'))
-      return
     setGuardando(true)
     const datos = {
       titulo: a.titulo.trim(),
@@ -134,7 +131,6 @@ export default function Editor() {
         <div className="vista-previa">
           <h1 className="titulo-articulo">{a.titulo}</h1>
           <p className="entradilla">{a.resumen}</p>
-          <AvisoIA uso={a.uso_ia} imagenIA={a.imagen_ia} />
           {a.imagen_url && <img src={a.imagen_url} alt="" className="imagen-articulo" />}
           <Texto>{a.contenido}</Texto>
         </div>
@@ -208,18 +204,14 @@ export default function Editor() {
           </label>
 
           <div className="caja-ia">
-            <h3>Uso de inteligencia artificial (obligatorio)</h3>
-            <p className="letra-pequena">Reglamento (UE) 2024/1689, art. 50. Indique con honestidad si se ha usado IA.</p>
+            <h3>Uso de inteligencia artificial (registro interno)</h3>
+            <p className="letra-pequena">No se muestra en la web: el uso de IA se explica en la página general «Transparencia IA» del pie. Se anota aquí solo como registro interno.</p>
             {Object.entries(USO_IA).map(([k, v]) => (
               <label key={k} className="check">
                 <input type="radio" name="uso_ia" value={k} checked={a.uso_ia === k} onChange={set('uso_ia')} />
                 <span>{v}</span>
               </label>
             ))}
-            <label className="check">
-              <input type="checkbox" checked={a.imagen_ia} onChange={set('imagen_ia')} />
-              <span>La imagen ha sido generada o modificada con IA</span>
-            </label>
           </div>
         </fieldset>
       )}

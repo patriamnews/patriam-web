@@ -70,20 +70,20 @@ Los pagos con tarjeta los procesa Stripe Payments Europe, Ltd., como pasarela de
 
 No cedemos sus datos a terceros salvo obligación legal. Prestan servicios a la asociación, como encargados del tratamiento:
 
-- Alojamiento y base de datos: Supabase, con servidores en la Unión Europea
-- Publicación de la web y del boletín: Netlify, Inc.
-- Envío de correos y del boletín por correo electrónico: Resend, Inc.
-- Envíos de la tienda: [EMPRESA DE MENSAJERÍA], solo nombre y dirección de entrega
+- Alojamiento de la web y del boletín: Hostinger International Ltd., con servidores en la Unión Europea
+- Base de datos: Supabase, con servidores en la Unión Europea
+- Envío de correos y del boletín por correo electrónico: Brevo (Sendinblue SAS), con sede en Francia
+- Pagos con tarjeta: Stripe Payments Europe, Ltd., con sede en Irlanda
+- Envíos de la tienda: la empresa de mensajería que realice cada envío, solo con el nombre y la dirección de entrega
 
 ## Transferencias internacionales
 
-Netlify, Inc. y Resend, Inc. tienen su sede en Estados Unidos, por lo que puede haber transferencias internacionales de datos. Se realizan con las garantías del Marco de Privacidad de Datos UE-EE. UU. o, en su defecto, de las cláusulas contractuales tipo aprobadas por la Comisión Europea.
+Los proveedores principales tratan los datos en la Unión Europea. Si alguno de ellos, o sus subencargados, tuviera que acceder desde fuera del Espacio Económico Europeo, lo hará con las garantías del Marco de Privacidad de Datos UE-EE. UU. o de las cláusulas contractuales tipo aprobadas por la Comisión Europea.
 
 ## Conservación
 
 - Contacto: hasta atender la consulta y, como máximo, un año.
 - Socios: mientras sea socio y, tras la baja, el tiempo necesario por obligaciones legales.
-- Firmas: hasta el cierre de la campaña, salvo que pida recibir información.
 - Pedidos, donativos y cuotas: el plazo que exige la normativa contable y fiscal (6 años).
 
 ## Decisiones automatizadas
@@ -94,7 +94,7 @@ No se realizan perfiles ni decisiones automatizadas, ni se usan sistemas de inte
 
 Puede ejercer los derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad, y retirar su consentimiento en cualquier momento, escribiendo a movimientopatriam@gmail.com e indicando qué derecho ejerce. Si considera que no hemos atendido bien su solicitud, puede reclamar ante la Agencia Española de Protección de Datos (www.aepd.es).
 
-*Última actualización: 20 de octubre de 2026*`,
+*Última actualización: 27 de octubre de 2026*`,
   },
 
   cookies: {
@@ -110,7 +110,7 @@ Solo usa almacenamiento técnico estrictamente necesario, exento de consentimien
 
 ## Pasarela de pago
 
-Al pagar con tarjeta, la pasarela de [ENTIDAD / PASARELA DE PAGO] puede usar sus propias cookies técnicas y de prevención del fraude. Se rigen por su política de cookies: [ENLACE A LA POLÍTICA DE COOKIES DE LA PASARELA].
+Al pagar con tarjeta, la pasarela de Stripe puede usar sus propias cookies técnicas y de prevención del fraude. Se rigen por su política de cookies: https://stripe.com/es/legal/cookies-policy.
 
 ## Cambios
 
@@ -120,7 +120,7 @@ Si en el futuro se incorporan herramientas de análisis, vídeos incrustados o b
 
 Puede eliminar el almacenamiento de esta web desde la configuración de su navegador.
 
-*Última actualización: 20 de octubre de 2026*`,
+*Última actualización: 27 de octubre de 2026*`,
   },
 
   'condiciones-de-venta': {
@@ -133,7 +133,7 @@ Asociación PATRIAM, NIF G93940476, domicilio en C/ Tórtola, 21, 47012 Valladol
 
 ## Precios
 
-Los precios incluyen el IVA cuando corresponda. [CONFIRMAR CON EL ASESOR FISCAL SI LAS VENTAS ESTÁN SUJETAS A IVA Y EL TIPO APLICABLE]. Los gastos de envío se indican antes de confirmar el pedido.
+Los precios incluyen el IVA cuando corresponda. Los gastos de envío se indican antes de confirmar el pedido.
 
 ## Proceso de compra
 
@@ -148,15 +148,15 @@ Tarjeta (Visa, Mastercard, Apple Pay o Google Pay), a través de la pasarela seg
 
 ## Envíos
 
-- **Plazo:** [Nº] días laborables desde la confirmación del pago.
-- **Zona:** [ESPAÑA PENINSULAR / ESPAÑA / OTROS].
-- **Recogida:** también puede recoger su pedido en [DIRECCIÓN Y HORARIO].
+- **Plazo:** entre 3 y 7 días laborables desde la confirmación del pago.
+- **Zona:** España.
+- **Recogida:** también puede recoger su pedido en la sede (C/ Tórtola, 21, Valladolid), previa cita por email.
 
 ## Derecho de desistimiento
 
-Puede desistir de la compra de productos en un plazo de **14 días naturales** desde que los reciba, sin necesidad de justificación (arts. 102 y ss. del Real Decreto Legislativo 1/2007). Escriba a movimientopatriam@gmail.com indicando la referencia del pedido. Le devolveremos el importe en un máximo de 14 días por el mismo medio de pago. Los gastos de devolución corren a cargo de [COMPRADOR / ASOCIACIÓN].
+Puede desistir de la compra de productos en un plazo de **14 días naturales** desde que los reciba, sin necesidad de justificación (arts. 102 y ss. del Real Decreto Legislativo 1/2007). Escriba a movimientopatriam@gmail.com indicando la referencia del pedido. Le devolveremos el importe en un máximo de 14 días por el mismo medio de pago. Los gastos de devolución corren a cargo del comprador.
 
-No hay derecho de desistimiento en las **actividades con fecha determinada** (cursos, charlas…), según el art. 103.l) del mismo texto legal. Para cancelar una inscripción: [POLÍTICA DE CANCELACIÓN DE LA ASOCIACIÓN, p. ej. devolución íntegra hasta 7 días antes].
+No hay derecho de desistimiento en las **actividades con fecha determinada** (cursos, charlas…), según el art. 103.l) del mismo texto legal. Si cancela su inscripción hasta 7 días antes de la actividad, le devolvemos el importe íntegro; después, no hay devolución.
 
 ## Garantía
 
@@ -170,7 +170,7 @@ Puede escribirnos a movimientopatriam@gmail.com. También puede acudir a la plat
 
 Legislación española. En caso de conflicto, serán competentes los juzgados del domicilio del consumidor.
 
-*Última actualización: 20 de octubre de 2026*`,
+*Última actualización: 27 de octubre de 2026*`,
   },
 
   'transparencia-ia': {
@@ -179,13 +179,9 @@ Legislación española. En caso de conflicto, serán competentes los juzgados de
 
 ## Contenidos
 
-Cada artículo y publicación indica si se ha usado inteligencia artificial en su elaboración:
+En la elaboración de algunos textos e imágenes de esta web (artículos, carteles, ilustraciones) se usan herramientas de inteligencia artificial como apoyo: redacción, corrección, traducción, diseño y creación de imágenes.
 
-- **Sin inteligencia artificial:** texto escrito íntegramente por personas.
-- **Redactado con apoyo de IA:** se ha usado IA como ayuda (redacción, corrección, traducción) y el texto lo ha revisado la redacción, que asume la responsabilidad editorial.
-- **Contenido generado mediante IA:** el contenido lo ha generado principalmente un sistema de IA.
-
-Las imágenes generadas o manipuladas con IA se identifican expresamente.
+Esta declaración general se aplica a todos los contenidos de la web. Las ilustraciones y carteles creados con IA son recreaciones artísticas y no muestran personas reales. Todo el contenido lo revisa la asociación, que asume la responsabilidad editorial.
 
 ## Revisión humana
 
@@ -195,7 +191,7 @@ Ningún contenido se publica automáticamente. Todo pasa por la revisión y apro
 
 - No usamos chatbots ni asistentes automáticos que se hagan pasar por personas.
 - No usamos IA para analizar, clasificar o perfilar a los visitantes, socios o firmantes.
-- No publicamos imágenes, vídeos ni audios manipulados de personas reales sin identificarlos claramente como tales.
+- No publicamos imágenes, vídeos ni audios manipulados que hagan pasar por real lo que no lo es.
 
 ## Contacto
 

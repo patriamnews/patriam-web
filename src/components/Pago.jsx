@@ -58,7 +58,7 @@ export function Instrucciones({ metodo, importe, refe, aj, periodo }) {
       )}
       {metodo === 'tarjeta' && (
         <p>
-          Importe: {cuanto}. El pago se completa en la pasarela segura del banco. La asociación no recibe ni guarda los datos de su tarjeta.
+          Importe: {cuanto}. El pago se completa en la pasarela segura de Stripe. La asociación no recibe ni guarda los datos de su tarjeta.
         </p>
       )}
       <AvisoPrototipo />

@@ -1,7 +1,7 @@
 // Documentos de adhesión que el socio firma electrónicamente antes de pertenecer a la asociación.
 // Los textos son editables desde el panel (Páginas) por el responsable de aprobación. Cada firma guarda
 // una copia exacta del texto firmado y su huella SHA-256, de modo que se puede demostrar qué se firmó.
-// [CORCHETES] = datos pendientes de completar. Revisar por la Junta Directiva antes de usar.
+// Revisar por la Junta Directiva antes de cambiarlos: cada cambio queda registrado en las nuevas firmas.
 
 export const DOCUMENTOS_ADHESION = [
   { clave: 'doc-normas', titulo: 'Normas de la asociación y código de conducta', obligatorio: true },
@@ -15,7 +15,7 @@ export const DOCUMENTOS_ADHESION = [
 export const TEXTOS_ADHESION = {
   'doc-normas': {
     titulo: 'Normas de la asociación y código de conducta del asociado',
-    contenido: `Versión [1.0] aprobada por la Junta Directiva el [FECHA]. Estas normas desarrollan los Estatutos de [DENOMINACIÓN DE LA ASOCIACIÓN] y obligan a todos sus asociados.
+    contenido: `Versión 1.0. Estas normas desarrollan los Estatutos de la Asociación PATRIAM y obligan a todos sus asociados.
 
 ## 1. Principios de actuación
 
@@ -44,12 +44,12 @@ export const TEXTOS_ADHESION = {
 
 ## 5. Cuotas
 
-El asociado abonará la cuota fijada por la Asamblea General en los plazos establecidos. El impago de [Nº] cuotas consecutivas podrá dar lugar a la baja, previo aviso.
+El asociado abonará la cuota fijada por la Asamblea General en los plazos establecidos. El impago de tres cuotas consecutivas podrá dar lugar a la baja, previo aviso.
 
 ## 6. Régimen disciplinario
 
 1. El incumplimiento de estas normas o de los Estatutos podrá dar lugar a apercibimiento, suspensión temporal de derechos o expulsión, según su gravedad.
-2. Ninguna sanción se impondrá sin comunicar al asociado los hechos y darle un plazo de [Nº] días para presentar alegaciones, conforme a los Estatutos.
+2. Ninguna sanción se impondrá sin comunicar al asociado los hechos y darle un plazo de diez días para presentar alegaciones, conforme a los Estatutos.
 3. La asociación podrá desvincularse públicamente de cualquier conducta de un asociado contraria a estas normas.
 
 ## 7. Aceptación
@@ -59,7 +59,7 @@ Al firmar, el asociado declara haber leído estas normas, entenderlas y comprome
 
   'doc-descargo': {
     titulo: 'Declaración de responsabilidad y descargo',
-    contenido: `Versión [1.0]. Declaración del asociado ante [DENOMINACIÓN DE LA ASOCIACIÓN], con NIF [NIF].
+    contenido: `Versión 1.0. Declaración del asociado ante la Asociación PATRIAM, con NIF G93940476.
 
 ## El asociado declara y acepta:
 
@@ -84,30 +84,38 @@ Al firmar, el asociado declara haber leído y comprendido esta declaración y ac
 
   ideario: {
     titulo: 'Ideario',
-    contenido: `[PEGAR AQUÍ EL TEXTO DEL IDEARIO APROBADO POR LA JUNTA DIRECTIVA]
+    contenido: `PATRIAM aboga por la supresión de los partidos políticos y propone en su lugar la representación de los cuerpos y comunidades naturales: familias, municipios, trabajo…
+
+- PATRIAM propugna una legislación basada en la Ley natural y en la moral objetiva
+- PATRIAM defiende al Derecho Natural como fuente inspiradora de la legislación de nuestra patria
+- PATRIAM aboga por la implantación del mandato imperativo para los representantes políticos
+- PATRIAM defiende la recuperación de la figura del "juicio de residencia" para los representantes políticos
+- PATRIAM es firme partidario de la utilización de referéndums como herramienta de participación directa del Pueblo en la toma de decisiones importantes
+
+La Economía debe estar subordinada al Bien Común, poniendo a las personas en el centro de las decisiones y asentarse sobre los valores de esfuerzo, ahorro, iniciativa privada y honradez.
 
 Al firmar, el asociado declara conocer el ideario de la asociación y compartir sus fines.`,
   },
 
   'doc-estatutos': {
     titulo: 'Aceptación de los Estatutos',
-    contenido: `El asociado declara conocer y aceptar los Estatutos de [DENOMINACIÓN DE LA ASOCIACIÓN], inscrita en el Registro Nacional de Asociaciones con el número [Nº], que puede consultar en la sección Nosotros › Transparencia de esta web.
+    contenido: `El asociado declara conocer y aceptar los Estatutos de la Asociación PATRIAM, inscrita en el Registro de Asociaciones con el número 47/1/0006465, que puede consultar en la sección Nosotros › Transparencia de esta web.
 
 En particular, conoce sus derechos y deberes como asociado, el régimen de cuotas y el procedimiento disciplinario, y se compromete a cumplirlos.`,
   },
 
   'doc-datos': {
     titulo: 'Consentimiento para el tratamiento de datos',
-    contenido: `Consiento expresamente que [DENOMINACIÓN DE LA ASOCIACIÓN] trate mis datos personales (nombre, email, municipio, cuota y forma de pago), que revelan mi pertenencia a la asociación y pueden revelar mis opiniones o convicciones, con la finalidad de gestionar mi condición de asociado, conforme a los artículos 6.1.a y 9.2.a del Reglamento General de Protección de Datos.
+    contenido: `Consiento expresamente que la Asociación PATRIAM trate mis datos personales (nombre y apellidos, DNI o NIE, fecha de nacimiento, sexo, email, teléfono, domicilio, cuota y forma de pago), que revelan mi pertenencia a la asociación y pueden revelar mis opiniones o convicciones, con la finalidad de gestionar mi condición de asociado, emitir los recibos de la cuota y organizar las actividades, conforme a los artículos 6.1.a y 9.2.a del Reglamento General de Protección de Datos.
 
-Mis datos no se cederán a terceros salvo obligación legal. Puedo ejercer en cualquier momento mis derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad, y retirar este consentimiento, escribiendo a [EMAIL]. Más información en la Política de privacidad.`,
+Mis datos no se cederán a terceros salvo obligación legal. Puedo ejercer en cualquier momento mis derechos de acceso, rectificación, supresión, oposición, limitación y portabilidad, y retirar este consentimiento, escribiendo a movimientopatriam@gmail.com. Más información en la Política de privacidad.`,
   },
 
   'doc-imagen': {
     titulo: 'Autorización de uso de imagen (voluntaria)',
-    contenido: `Autorizo a [DENOMINACIÓN DE LA ASOCIACIÓN] a captar y publicar mi imagen en fotografías y vídeos de las actividades en las que participe, en su web, su revista y sus redes sociales, sin contraprestación económica.
+    contenido: `Autorizo a la Asociación PATRIAM a captar y publicar mi imagen en fotografías y vídeos de las actividades en las que participe, en su web, su revista y sus redes sociales, sin contraprestación económica.
 
-Esta autorización es voluntaria: no aceptarla no impide ser asociado. Puedo revocarla en cualquier momento escribiendo a [EMAIL]. La revocación no afecta a lo ya publicado, aunque podré pedir su retirada.`,
+Esta autorización es voluntaria: no aceptarla no impide ser asociado. Puedo revocarla en cualquier momento escribiendo a movimientopatriam@gmail.com. La revocación no afecta a lo ya publicado, aunque podré pedir su retirada.`,
   },
 }
 

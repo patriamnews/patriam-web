@@ -3,7 +3,6 @@ import { Link, useParams } from 'react-router-dom'
 import { getArticulo, fecha } from '../lib/data'
 import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
-import AvisoIA from '../components/AvisoIA'
 import { Foto } from '../components/ImagenPrueba'
 import NoEncontrado from './NoEncontrado'
 
@@ -33,7 +32,6 @@ export default function Articulo() {
       {a.imagen_url && (
         <figure className="imagen-articulo">
           <img src={a.imagen_url} alt="" />
-          {a.imagen_ia && <figcaption>Imagen generada o manipulada con inteligencia artificial.</figcaption>}
         </figure>
       )}
       <Texto>{a.contenido}</Texto>
@@ -44,9 +42,6 @@ export default function Articulo() {
           </a>
         </p>
       )}
-      <div className="pie-articulo">
-        <AvisoIA uso={a.uso_ia} imagenIA={a.imagen_ia} />
-      </div>
       {a.seccion === 'revista' && (
         <p className="nota-opinion">
           Los artículos de opinión expresan el criterio de sus autores. La publicación ha sido revisada y aprobada por la dirección de la revista.

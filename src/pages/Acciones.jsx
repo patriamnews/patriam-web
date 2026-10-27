@@ -49,7 +49,6 @@ function FilaAccion({ a, enlaces }) {
       {a.imagen_url && (
         <Link to={`/accion/${a.slug}`} className="accion-cartel" tabIndex={-1}>
           <img src={a.imagen_url} alt={`Cartel: ${a.titulo}`} loading="lazy" />
-          {a.imagen_ia && <span className="chip-ia">Imagen IA</span>}
         </Link>
       )}
     </article>
@@ -227,7 +226,6 @@ export function FichaAccion() {
           {a.imagen_url ? (
             <figure className="cartel-accion">
               <img src={a.imagen_url} alt={`Cartel: ${a.titulo}`} />
-              {a.imagen_ia && <figcaption>Imagen generada o manipulada con inteligencia artificial (art. 50 del Reglamento europeo de IA).</figcaption>}
             </figure>
           ) : (
             <Foto src={a.imagen_url} className="imagen-articulo" />

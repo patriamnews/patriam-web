@@ -8,7 +8,6 @@ export default function Tarjeta({ a }) {
     <article className="tarjeta">
       <Link to={`/articulo/${a.slug}`} className="tarjeta-img" tabIndex={-1}>
         <Foto src={a.imagen_url} />
-        {a.imagen_ia && <span className="chip-ia">Imagen IA</span>}
       </Link>
       <div className="tarjeta-cuerpo">
         <span className="etiqueta">{SECCIONES[a.seccion]?.nombre}</span>
@@ -20,7 +19,6 @@ export default function Tarjeta({ a }) {
           {a.medio && <span className="medio">{a.medio}</span>}
           {a.firma && !a.medio && <span>{a.firma}</span>}
           <span>{fecha(a.publicado_at)}</span>
-          {a.uso_ia && a.uso_ia !== 'ninguno' && <span className="chip-ia">IA</span>}
         </div>
       </div>
     </article>

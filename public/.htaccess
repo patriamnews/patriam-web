@@ -21,10 +21,10 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
 
-# El service worker y el manifiesto no se guardan en caché, para que la app se actualice sola
-<FilesMatch "^(sw\.js|gestion\.webmanifest)$">
+# La página, el service worker y el manifiesto no se guardan en caché: cada cambio publicado se ve al momento
+<FilesMatch "^(index\.html|sw\.js|gestion\.webmanifest)$">
   <IfModule mod_headers.c>
-    Header set Cache-Control "no-cache"
+    Header set Cache-Control "no-cache, must-revalidate"
   </IfModule>
 </FilesMatch>
 
