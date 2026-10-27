@@ -198,7 +198,7 @@ function Socio({ aj }) {
             <p className="caja-aviso">Le hemos enviado otro correo para que nos remita la documentación que justifica la cuota reducida ({DESCUENTOS[ok.descuento].texto.toLowerCase()}).</p>
           )}
           <p>Para completar su adhesión, realice el primer pago:</p>
-          <Instrucciones metodo={ok.metodo} importe={ok.cuota} refe={ok.referencia} aj={aj} periodo="mensual" />
+          <Instrucciones metodo={ok.metodo} importe={ok.cuota} refe={ok.referencia} aj={aj} periodo="mensual" email={ok.email} enlace={ok.descuento ? aj.stripe_cuota_reducida : aj.stripe_cuota} />
           <p className="letra-pequena">Cuando la asociación reciba el pago, quedará dado de alta, recibirá su número de asociado y, cada mes, el recibo de su cuota. Cree su cuenta en <Link to="/acceso?modo=registro">Acceder</Link> con este mismo correo para ver su carnet, sus recibos y sus documentos firmados.</p>
         </div>
       </>
@@ -323,7 +323,7 @@ function Donativo({ aj }) {
     return (
       <div className="aviso-ok grande">
         <h2>¡Gracias por su apoyo!</h2>
-        <Instrucciones metodo={ok.metodo} importe={ok.importe} refe={ok.ref} aj={aj} />
+        <Instrucciones metodo={ok.metodo} importe={ok.importe} refe={ok.ref} aj={aj} enlace={aj.stripe_donativo} />
       </div>
     )
 

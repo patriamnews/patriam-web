@@ -31,7 +31,17 @@ export function AvisoPrototipo() {
   return <p className="caja-aviso">Prototipo: el pago todavía no está conectado. No se realizará ningún cargo.</p>
 }
 
-export function Instrucciones({ metodo, importe, refe, aj, periodo }) {
+// Pago con tarjeta mediante «enlaces de pago» de Stripe (Payment Links): se crean en el panel de Stripe
+// y se pegan en Gestión › Ajustes. La web no guarda ninguna clave de Stripe.
+const enlaceStripe = (url, refe, email) => {
+  if (!url) return ''
+  const u = new URL(url)
+  if (refe) u.searchParams.set('client_reference_id', refe)
+  if (email) u.searchParams.set('prefilled_email', email)
+  return u.toString()
+}
+
+export function Instrucciones({ metodo, importe, refe, aj, periodo, enlace, email }) {
   const cuanto = (
     <>
       <b>{euros(importe)}</b>
@@ -57,11 +67,16 @@ export function Instrucciones({ metodo, importe, refe, aj, periodo }) {
         </ul>
       )}
       {metodo === 'tarjeta' && (
-        <p>
-          Importe: {cuanto}. El pago se completa en la pasarela segura de Stripe. La asociación no recibe ni guarda los datos de su tarjeta.
-        </p>
+        <>
+          <p>
+            Importe: {cuanto}. El pago se completa en la pasarela segura de Stripe. La asociación no recibe ni guarda los datos de su tarjeta.
+          </p>
+          {enlace && (
+            <p><a className="btn" href={enlaceStripe(enlace, refe, email)} target="_blank" rel="noopener noreferrer">Pagar con tarjeta ↗</a></p>
+          )}
+        </>
       )}
-      <AvisoPrototipo />
+      {!(metodo === 'tarjeta' && enlace) && <AvisoPrototipo />}
     </>
   )
 }
