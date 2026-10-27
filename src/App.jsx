@@ -16,6 +16,7 @@ import Gestion from './admin/Gestion'
 import Acceso from './pages/Acceso'
 import MiCuenta from './pages/MiCuenta'
 import Publicar from './publicar/Publicar'
+import { PagoCorrecto, PagoCancelado } from './pages/ResultadoPago'
 
 export default function App() {
   return (
@@ -49,6 +50,8 @@ export default function App() {
         <Route path="/privacidad" element={<Pagina clave="privacidad" />} />
         <Route path="/cookies" element={<Pagina clave="cookies" />} />
         <Route path="/transparencia-ia" element={<Pagina clave="transparencia-ia" />} />
+        <Route path="/pago-correcto" element={<PagoCorrecto />} />
+        <Route path="/pago-cancelado" element={<PagoCancelado />} />
         <Route path="/acceso" element={<Acceso />} />
         <Route path="/mi-cuenta/*" element={<MiCuenta />} />
         <Route path="*" element={<NoEncontrado />} />

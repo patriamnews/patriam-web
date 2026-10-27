@@ -1,3 +1,4 @@
+import { useState } from 'react'
 // Medios de pago comunes (adhesión, donativos y tienda).
 // PROTOTIPO: los pagos no están conectados. En producción:
 //  - Tarjeta: pasarela (Stripe o TPV virtual del banco/Redsys). La asociación no ve los datos de la tarjeta.
@@ -31,17 +32,31 @@ export function AvisoPrototipo() {
   return <p className="caja-aviso">Prototipo: el pago todavía no está conectado. No se realizará ningún cargo.</p>
 }
 
-// Pago con tarjeta mediante «enlaces de pago» de Stripe (Payment Links): se crean en el panel de Stripe
-// y se pegan en Gestión › Ajustes. La web no guarda ninguna clave de Stripe.
-const enlaceStripe = (url, refe, email) => {
-  if (!url) return ''
-  const u = new URL(url)
-  if (refe) u.searchParams.set('client_reference_id', refe)
-  if (email) u.searchParams.set('prefilled_email', email)
-  return u.toString()
+// Pago con tarjeta con Stripe Checkout: la web pide al servidor (api/pago.php) una página de pago segura de Stripe
+// con el importe total (todos los artículos juntos). La clave de Stripe solo está en el servidor.
+async function irAPagar(pago, setError, setYendo) {
+  setError(''); setYendo(true)
+  try {
+    const r = await fetch('/api/pago.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pago) })
+    const d = await r.json().catch(() => ({}))
+    if (d.url) { window.location.href = d.url; return }
+    setError(d.error || 'No se ha podido abrir el pago.')
+  } catch { setError('No se ha podido conectar con el pago. Inténtelo de nuevo.') }
+  setYendo(false)
 }
 
-export function Instrucciones({ metodo, importe, refe, aj, periodo, enlace, email }) {
+function BotonPagar({ pago }) {
+  const [error, setError] = useState('')
+  const [yendo, setYendo] = useState(false)
+  return (
+    <>
+      <p><button type="button" className="btn" disabled={yendo} onClick={() => irAPagar(pago, setError, setYendo)}>{yendo ? 'Abriendo el pago…' : 'Pagar con tarjeta'}</button></p>
+      {error && <p className="error">{error}</p>}
+    </>
+  )
+}
+
+export function Instrucciones({ metodo, importe, refe, aj, periodo, pago }) {
   const cuanto = (
     <>
       <b>{euros(importe)}</b>
@@ -71,12 +86,10 @@ export function Instrucciones({ metodo, importe, refe, aj, periodo, enlace, emai
           <p>
             Importe: {cuanto}. El pago se completa en la pasarela segura de Stripe. La asociación no recibe ni guarda los datos de su tarjeta.
           </p>
-          {enlace && (
-            <p><a className="btn" href={enlaceStripe(enlace, refe, email)} target="_blank" rel="noopener noreferrer">Pagar con tarjeta ↗</a></p>
-          )}
+          {pago && <BotonPagar pago={{ referencia: refe, ...pago }} />}
         </>
       )}
-      {!(metodo === 'tarjeta' && enlace) && <AvisoPrototipo />}
+      {!(metodo === 'tarjeta' && pago) && <AvisoPrototipo />}
     </>
   )
 }

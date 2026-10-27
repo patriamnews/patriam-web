@@ -4,9 +4,6 @@ import { getAjustes } from '../lib/data'
 
 const CAMPOS = [
   ['Datos de pago', [
-    ['stripe_cuota', 'Stripe · enlace de pago de la cuota normal (suscripción mensual), p. ej. https://buy.stripe.com/…'],
-    ['stripe_cuota_reducida', 'Stripe · enlace de pago de la cuota reducida (suscripción mensual)'],
-    ['stripe_donativo', 'Stripe · enlace de pago de donativos (con importe libre)'],
     ['titular_cuenta', 'Titular de la cuenta'],
     ['iban', 'IBAN de la asociación (para transferencias)'],
     ['bizum', 'Código Bizum (lo facilita el banco al dar de alta el servicio)'],
