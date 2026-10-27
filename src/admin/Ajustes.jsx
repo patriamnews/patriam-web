@@ -12,7 +12,7 @@ const CAMPOS = [
     ['donativos', 'Donativos sugeridos (€, separados por comas)'],
   ]],
   ['Tienda', [
-    ['envio_coste', 'Envío de la primera prenda (€, IVA incluido): lo que cobra Gelato'],
+    ['envio_coste', 'Envío de la primera prenda (€): la tarifa de Gelato'],
     ['envio_adicional', 'Envío de cada prenda más en el mismo pedido (€)'],
     ['envio_gratis_desde', 'Envío gratis a partir de (€; vacío = nunca)'],
   ]],
