@@ -74,8 +74,10 @@ function Rejilla({ items, vacio }) {
 // Apartados de la tienda, en este orden (columna «seccion» de cada producto)
 const SECCIONES = [
   ['basicos', 'Básicos PATRIAM', 'La camiseta básica, el polo con el logo bordado, la taza y la botella. Se pagan aquí con tarjeta y te los enviamos a casa.'],
-  ['camisetas', 'Camisetas Colección', 'Logo pequeño delante y el dibujo detrás. En corte normal u oversize.'],
-  ['sudaderas', 'Sudaderas Colección', 'Los mismos diseños, en sudadera con capucha.'],
+  ['camisetas', 'Camisetas tradicionales', 'Corte de siempre. Logo pequeño delante y el dibujo detrás.'],
+  ['camisetas-oversize', 'Camisetas oversize', 'Corte amplio, hombro caído. Logo pequeño delante y el dibujo detrás.'],
+  ['sudaderas', 'Sudaderas tradicionales', 'Sudadera con capucha de corte clásico.'],
+  ['sudaderas-oversize', 'Sudaderas oversize', 'Sudadera con capucha de corte amplio.'],
   ['otros', 'Más de PATRIAM', ''],
 ]
 
