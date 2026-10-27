@@ -81,7 +81,7 @@ if ($tipo === 'cuota') {
   foreach ($items as $n => $it) {
     $g = $it['gelato'] ?? null;
     if (!$g || empty($g['uid']) || (empty($g['archivo']) && empty($g['variante']))) continue;
-    if (!preg_match('/^[a-z0-9_\-.]+$/i', $g['uid']) || (!empty($g['archivo']) && !preg_match('#^https://#', $g['archivo']))
+    if (!preg_match('/^[a-z0-9_\-.]+$/i', $g['uid']) || (!empty($g['archivo']) && !preg_match('#^https://[^|\s]+(\|https://[^|\s]+)?$#', $g['archivo']))
       || (!empty($g['variante']) && !preg_match('/^[A-Za-z0-9\-]{6,80}$/', $g['variante']))) salir(['error' => 'Producto de Gelato mal configurado.'], 400);
     $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => $g['uid'], 'archivo' => $g['archivo'] ?? '', 'variante' => $g['variante'] ?? '', 'cantidad' => max(1, min(50, (int)($it['cantidad'] ?? 1))), 'nombre' => $it['nombre'] ?? ''];
   }

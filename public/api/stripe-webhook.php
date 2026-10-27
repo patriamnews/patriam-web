@@ -44,10 +44,18 @@ $destino = [
   'city' => $dir['city'] ?? '', 'postCode' => $dir['postal_code'] ?? '', 'state' => $dir['state'] ?? '',
   'country' => $dir['country'] ?? 'ES', 'email' => $cli['email'] ?? ($ped['email'] ?? ''), 'phone' => $cli['phone'] ?? '',
 ];
+// Archivos del diseño: «delante» o «delante|detrás» (camisetas con el logo delante y el dibujo en la espalda)
+function archivosGelato($a) {
+  if (!$a) return null;
+  $p = explode('|', $a, 2);
+  $f = [['type' => 'default', 'url' => $p[0]]];
+  if (!empty($p[1])) $f[] = ['type' => 'back', 'url' => $p[1]];
+  return $f;
+}
 // Productos hechos en la tienda de Gelato: se piden por su variante (el diseño ya está en Gelato); los demás, con el archivo
 $productos = array_map(fn($g) => array_filter(['itemReferenceId' => $g['ref'], 'productUid' => $g['uid'],
   'storeProductVariantId' => ($g['variante'] ?? '') ?: null,
-  'files' => !empty($g['archivo']) ? [['type' => 'default', 'url' => $g['archivo']]] : null, 'quantity' => $g['cantidad']]), $ped['gelato']);
+  'files' => archivosGelato($g['archivo'] ?? ''), 'quantity' => $g['cantidad']]), $ped['gelato']);
 $ped['pagado'] = ($s['amount_total'] ?? 0) / 100;
 $ped['envio'] = $destino;
 
