@@ -20,6 +20,7 @@ import RecomendacionesAdmin from '../admin/RecomendacionesAdmin'
 import Paginas from '../admin/Paginas'
 import Redes from '../admin/Redes'
 import Aprobaciones from '../admin/Aprobaciones'
+import Claves from './Claves'
 
 // Iconos de trazo (los mismos del menú de la web)
 const ICONOS = {
@@ -35,6 +36,7 @@ const ICONOS = {
   red: 'M18 8a3 3 0 100-6 3 3 0 000 6zM6 15a3 3 0 100-6 3 3 0 000 6zM18 22a3 3 0 100-6 3 3 0 000 6zM8.6 13.5l6.8 4M15.4 6.5l-6.8 4',
   check: 'M4 12l5 5L20 6',
   lista: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+  llave: 'M15 7a4 4 0 11-3.9 4.9L4 19v-3h3v-3h3l1.1-1.1A4 4 0 0115 7z',
 }
 const Icono = ({ n }) => (
   <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -95,6 +97,7 @@ export default function Publicar() {
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
           <Route path="redes" element={<Paso titulo="Redes sociales"><Redes /></Paso>} />
+          <Route path="claves" element={<Paso titulo="Claves de los pagos y la tienda" ayuda="Stripe (cobros con tarjeta) y Gelato (camisetas y tazas). Se ponen una vez y quedan guardadas en el servidor."><Claves /></Paso>} />
           <Route path="mis-publicaciones" element={<Paso titulo="Lo publicado y en revisión"><Articulos base="/publicar" /></Paso>} />
           <Route path="aprobar" element={puedeAprobar(perfil) ? <Paso titulo="Pendiente de aprobar"><Aprobaciones base="/publicar" /></Paso> : <Navigate to="/publicar" replace />} />
           <Route path="*" element={<Navigate to="/publicar" replace />} />
@@ -161,6 +164,7 @@ function Inicio() {
         <Link to="/publicar/acciones"><Icono n="calendario" /> Toda la agenda</Link>
         <Link to="/publicar/campanas"><Icono n="firma" /> Todas las campañas</Link>
         <a href="/#/" target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
+        <Link to="/publicar/claves"><Icono n="llave" /> Claves de pagos y tienda</Link>
         <a href="/#/gestion">Ir a la Gestión completa →</a>
       </div>
     </>
