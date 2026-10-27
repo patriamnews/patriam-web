@@ -51,21 +51,54 @@ if ($tipo === 'cuota') {
   $f['line_items[0][price_data][product_data][name]'] = 'Donativo a PATRIAM';
   $f['payment_intent_data[metadata][referencia]'] = $ref;
 } elseif ($tipo === 'pedido') {
-  // Pedido de la tienda: todos los artículos juntos en un solo pago (más los gastos de envío)
+  // Pedido de la tienda. El precio, el artículo de Gelato y el archivo de impresión se sacan de la base de datos
+  // (nunca de lo que manda el navegador), para que nadie pueda cambiar el importe ni mandar imprimir otra cosa.
   $items = array_slice(is_array($p['items'] ?? null) ? $p['items'] : [], 0, 50);
   if (!$items) salir(['error' => 'El carrito está vacío.'], 400);
-  $i = 0;
-  foreach ($items as $it) {
-    $c = $euros($it['precio'] ?? 0); $n = max(1, min(50, (int)($it['cantidad'] ?? 1)));
+  $ids = array_values(array_unique(array_filter(array_map(fn($it) => (int)($it['id'] ?? 0), $items))));
+  if (!$ids) salir(['error' => 'Vuelva a añadir los productos al carrito, por favor.'], 400);
+  $filas = supabaseLeer('productos?select=id,nombre,precio,opciones,gelato_uids,gelato_archivo,suplementos,enlace_externo&activo=eq.true&id=in.(' . implode(',', $ids) . ')');
+  if ($filas === null) salir(['error' => 'No se ha podido comprobar el pedido. Inténtelo de nuevo en un momento.'], 502);
+  $prod = [];
+  foreach ($filas as $r) $prod[(int)$r['id']] = $r;
+  $i = 0; $subtotal = 0; $gelato = [];
+  foreach ($items as $n => $it) {
+    $r = $prod[(int)($it['id'] ?? 0)] ?? null;
+    if (!$r || !empty($r['enlace_externo'])) salir(['error' => 'Algún producto del carrito ya no está a la venta. Vacíe el carrito y vuelva a añadirlo.'], 400);
+    $opcion = trim((string)($it['opcion'] ?? ''));
+    $ops = array_values(array_filter(array_map('trim', explode(',', (string)($r['opciones'] ?? '')))));
+    if ($ops && !in_array($opcion, $ops, true)) salir(['error' => 'La talla o el color de «' . $r['nombre'] . '» no es válido. Vuelva a añadirlo al carrito.'], 400);
+    if (!$ops) $opcion = '';
+    $partes = explode(' / ', $opcion);
+    $talla = $opcion !== '' ? trim((string)end($partes)) : '';
+    $sup = is_array($r['suplementos'] ?? null) ? (float)($r['suplementos'][$talla] ?? 0) : 0;
+    $c = $euros((float)$r['precio'] + $sup);
+    $cant = max(1, min(50, (int)($it['cantidad'] ?? 1)));
     if ($c <= 0) continue;
-    $nombre = mb_substr(trim(($it['nombre'] ?? 'Artículo') . (!empty($it['opcion']) ? ' (talla ' . $it['opcion'] . ')' : '')), 0, 120);
-    $f["line_items[$i][quantity]"] = $n;
+    $subtotal += $c * $cant;
+    $f["line_items[$i][quantity]"] = $cant;
     $f["line_items[$i][price_data][currency]"] = 'eur';
     $f["line_items[$i][price_data][unit_amount]"] = $c;
-    $f["line_items[$i][price_data][product_data][name]"] = $nombre;
+    $f["line_items[$i][price_data][product_data][name]"] = mb_substr($r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : ''), 0, 120);
     $i++;
+    // Artículo de Gelato de esa talla/color: «Opción=código», «código@delante|detrás» o «código#variante»
+    $lineas = array_values(array_filter(array_map('trim', explode("\n", (string)($r['gelato_uids'] ?? '')))));
+    $uid = '';
+    foreach ($lineas as $l) { $q = explode('=', $l, 2); if (count($q) === 2 && $opcion !== '' && mb_strtolower(trim($q[0])) === mb_strtolower($opcion)) { $uid = trim($q[1]); break; } }
+    if (!$uid && count($lineas) === 1 && strpos($lineas[0], '=') === false) $uid = $lineas[0];
+    if ($uid) {
+      [$conVar, $archivo] = array_pad(explode('@', $uid, 2), 2, '');
+      [$codigo, $variante] = array_pad(explode('#', $conVar, 2), 2, '');
+      $archivo = trim($archivo) ?: (string)($r['gelato_archivo'] ?? '');
+      $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => trim($codigo), 'archivo' => $archivo, 'variante' => trim($variante), 'cantidad' => $cant, 'nombre' => $r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : '')];
+    }
   }
-  $envio = $euros($p['envio'] ?? 0);
+  if (!$i) salir(['error' => 'No hay nada que pagar.'], 400);
+  // Envío: lo que esté puesto en Ajustes (una vez por pedido; gratis a partir de cierto importe)
+  $aj = supabaseLeer('ajustes?select=envio_coste,envio_gratis_desde&id=eq.1')[0] ?? [];
+  $envio = $gelato ? $euros($aj['envio_coste'] ?? 0) : 0;
+  $gratis = $euros($aj['envio_gratis_desde'] ?? 0);
+  if ($gratis > 0 && $subtotal >= $gratis) $envio = 0;
   if ($envio > 0) {
     $f["line_items[$i][quantity]"] = 1;
     $f["line_items[$i][price_data][currency]"] = 'eur';
@@ -73,18 +106,8 @@ if ($tipo === 'cuota') {
     $f["line_items[$i][price_data][product_data][name]"] = 'Gastos de envío';
     $i++;
   }
-  if (!$i) salir(['error' => 'No hay nada que pagar.'], 400);
   $f['mode'] = 'payment';
   $f['payment_intent_data[metadata][referencia]'] = $ref;
-  // Artículos que fabrica y envía Gelato: Stripe pide la dirección de envío y el pedido se guarda para mandarlo a Gelato al cobrar
-  $gelato = [];
-  foreach ($items as $n => $it) {
-    $g = $it['gelato'] ?? null;
-    if (!$g || empty($g['uid']) || (empty($g['archivo']) && empty($g['variante']))) continue;
-    if (!preg_match('/^[a-z0-9_\-.]+$/i', $g['uid']) || (!empty($g['archivo']) && !preg_match('#^https://[^|\s]+(\|https://[^|\s]+)?$#', $g['archivo']))
-      || (!empty($g['variante']) && !preg_match('/^[A-Za-z0-9\-]{6,80}$/', $g['variante']))) salir(['error' => 'Producto de Gelato mal configurado.'], 400);
-    $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => $g['uid'], 'archivo' => $g['archivo'] ?? '', 'variante' => $g['variante'] ?? '', 'cantidad' => max(1, min(50, (int)($it['cantidad'] ?? 1))), 'nombre' => $it['nombre'] ?? ''];
-  }
   if ($gelato) {
     $f['metadata[gelato]'] = '1';
     $f['shipping_address_collection[allowed_countries][0]'] = 'ES';

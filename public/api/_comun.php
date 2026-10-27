@@ -83,3 +83,12 @@ function exigirEquipo($p) {
 // Dirección secreta del aviso (webhook) de Gelato: se pega una vez en el panel de Gelato
 function claveWebhookGelato() { return substr(hash_hmac('sha256', 'gelato-webhook', secretoWeb()), 0, 32); }
 function urlWebhookGelato() { return 'https://movimientopatriam.es/api/gelato-webhook.php?k=' . claveWebhookGelato(); }
+
+/* Lectura pública de Supabase (la misma clave anon que usa cualquier navegador; la seguridad está en RLS).
+   Sirve para que el servidor compruebe precios y productos en vez de fiarse de lo que manda el navegador. */
+function supabaseLeer($ruta) {
+  $url = 'https://igrjdsfcecbwnawwgdop.supabase.co/rest/v1/' . $ruta;
+  $anon = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlncmpkc2ZjZWNid25hd3dnZG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI1MzAwMzcsImV4cCI6MjEwODEwNjAzN30.HCT6LM_Xly-s-Z2KLlBDgxVzDWAwKKkMXzSjFub5qBc';
+  [$c, $d] = pedirHttp($url, ['apikey: ' . $anon, 'Authorization: Bearer ' . $anon]);
+  return $c === 200 && is_array($d) ? $d : null;
+}

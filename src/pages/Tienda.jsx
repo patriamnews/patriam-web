@@ -325,7 +325,7 @@ export function Carrito() {
           <h2>Pedido recibido</h2>
           <p>Referencia <b>{ok.referencia}</b>. Le enviaremos la confirmación a {ok.email}.</p>
           {ok.total > 0 ? (
-            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, items: ok.items.map((x) => ({ nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
+            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, items: ok.items.map((x) => ({ id: x.id, nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
           ) : (
             <p>Su inscripción es gratuita. No tiene que pagar nada.</p>
           )}
