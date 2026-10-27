@@ -107,6 +107,7 @@ export const USO_IA = {
 export const CATEGORIAS_TIENDA = {
   libros: 'Libros',
   ropa: 'Ropa',
+  regalos: 'Tazas y regalos',
   actividades: 'Cursos y actividades',
 }
 

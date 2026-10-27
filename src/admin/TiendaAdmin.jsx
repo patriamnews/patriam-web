@@ -147,6 +147,13 @@ export default function TiendaAdmin({ nuevo }) {
                   <label>Lugar<input value={f.lugar || ''} onChange={set('lugar')} /></label>
                 </div>
               )}
+              {f.categoria !== 'actividades' && (
+                <label>
+                  Enlace de La Tostadora (opcional)
+                  <input type="url" value={f.enlace_externo || ''} onChange={set('enlace_externo')} placeholder="https://www.latostadora.com/…" />
+                  <small>Si el producto se vende en La Tostadora, pegue aquí el enlace a su página. El botón de compra llevará allí: La Tostadora cobra, fabrica y envía. Si lo deja vacío, se compra en esta web.</small>
+                </label>
+              )}
               <label>Imagen<input type="file" accept="image/*" onChange={imagen} />{f.imagen_url && <img src={f.imagen_url} alt="" className="miniatura" />}</label>
               <label className="check"><input type="checkbox" checked={f.activo} onChange={set('activo')} /><span>A la venta (visible en la tienda)</span></label>
               {error && <p className="error">{error}</p>}

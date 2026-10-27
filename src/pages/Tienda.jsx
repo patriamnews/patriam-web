@@ -129,6 +129,17 @@ export function Producto() {
             </ul>
           )}
           <Texto>{p.descripcion}</Texto>
+          {p.enlace_externo ? (
+            <>
+              <div className="acciones">
+                <a className="btn" href={p.enlace_externo} target="_blank" rel="noopener noreferrer">Comprar en La Tostadora ↗</a>
+              </div>
+              <p className="letra-pequena">
+                Este artículo lo fabrica y envía La Tostadora. Se abre su tienda en una pestaña nueva: allí elige la talla o el color y paga (puede comprar
+                como invitado, sin crear cuenta). Parte del precio es para PATRIAM.
+              </p>
+            </>
+          ) : (<>
           {ops.length > 0 && (
             <div className="tallas">
               <span>Talla</span>
@@ -144,6 +155,7 @@ export function Producto() {
             </button>
           </div>
           {ops.length > 0 && !opcion && <p className="letra-pequena">Elija una talla.</p>}
+          </>)}
           {ok && (
             <p className="aviso-ok">
               Añadido. <Link to="/tienda/carrito">Ver el carrito</Link> · <Link to="/tienda">Seguir comprando</Link>

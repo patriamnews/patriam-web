@@ -486,7 +486,8 @@ create table productos (
   id bigint generated always as identity primary key,
   nombre text not null,
   slug text not null unique,
-  categoria text not null check (categoria in ('libros', 'ropa', 'actividades')),
+  categoria text not null check (categoria in ('libros', 'ropa', 'regalos', 'actividades')),
+  enlace_externo text,                       -- página del producto en La Tostadora (cobra, fabrica y envía ella)
   descripcion text,
   precio numeric(8,2) not null default 0 check (precio >= 0),
   opciones text,              -- tallas separadas por comas
@@ -1144,3 +1145,7 @@ alter table socios add column if not exists nombre_pila text, add column if not 
 alter table firmas_adhesion add column if not exists declaracion text, add column if not exists abierto_at timestamptz,
   add column if not exists leido_al_final_at timestamptz, add column if not exists aceptado_at timestamptz;
 alter table acciones add column if not exists dirigida text not null default 'todos' check (dirigida in ('todos', 'mujeres', 'hombres'));
+
+alter table productos add column if not exists enlace_externo text;
+alter table productos drop constraint if exists productos_categoria_check;
+alter table productos add constraint productos_categoria_check check (categoria in ('libros', 'ropa', 'regalos', 'actividades'));
