@@ -184,7 +184,7 @@ export function Producto() {
               <div className="tallas">
                 <span>Talla</span>
                 {tallas.map((t) => (
-                  <button key={t} type="button" className={tallaSel === t ? 'activo' : ''} disabled={colorSel && !ops.includes(`${colorSel} / ${t}`)} onClick={() => elegir(colorSel, t)}>{t}{p.suplementos?.[t] ? ` (+${euros(p.suplementos[t])})` : ''}</button>
+                  <button key={t} type="button" className={tallaSel === t ? 'activo' : ''} disabled={colorSel && !ops.includes(`${colorSel} / ${t}`)} onClick={() => elegir(colorSel, t)}>{t}{p.suplementos?.[t] ? ` (+${Number(p.suplementos[t]).toFixed(2).replace(".", ",")} €)` : ''}</button>
                 ))}
               </div>
             </>
