@@ -122,8 +122,11 @@ export function Producto() {
   const tallas = dobles ? [...new Set(ops.map((o) => o.split(' / ')[1]))] : []
   const [colorSel, tallaSel] = dobles ? (opcion || ' / ').split(' / ') : []
   const elegir = (c, t) => setOpcion(c && t && ops.includes(`${c} / ${t}`) ? `${c} / ${t}` : `${c || ''} / ${t || ''}`)
-  const galeria = Array.isArray(p.galeria) && p.galeria.length ? p.galeria : null
-  const foto = galeria && fotoSel ? { ...p, imagen_url: fotoSel } : dobles && colorSel && p.fotos?.[colorSel] ? { ...p, imagen_url: p.fotos[colorSel] } : p
+  // Fotos del color elegido (si el producto tiene varias por color: [detrás, delante…]); si no, la galería general
+  const fotosColor = dobles ? p.fotos?.[colorSel || colores[0]] : null
+  const galeria = Array.isArray(fotosColor) && fotosColor.length ? fotosColor : Array.isArray(p.galeria) && p.galeria.length ? p.galeria : null
+  const fotoActiva = galeria ? (galeria.includes(fotoSel) ? fotoSel : galeria[0]) : null
+  const foto = fotoActiva ? { ...p, imagen_url: fotoActiva } : dobles && colorSel && typeof p.fotos?.[colorSel] === 'string' ? { ...p, imagen_url: p.fotos[colorSel] } : p
   const esActividad = p.categoria === 'actividades'
   const agregar = () => {
     if (ops.length && !ops.includes(opcion)) return
@@ -140,7 +143,7 @@ export function Producto() {
           {galeria && (
             <div className="galeria-mini">
               {galeria.map((g) => (
-                <button key={g} type="button" className={(fotoSel || galeria[0]) === g ? 'activo' : ''} onClick={() => setFotoSel(g)} aria-label="Ver foto">
+                <button key={g} type="button" className={fotoActiva === g ? 'activo' : ''} onClick={() => setFotoSel(g)} aria-label="Ver foto">
                   <img src={g} alt="" loading="lazy" />
                 </button>
               ))}
