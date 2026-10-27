@@ -32,7 +32,7 @@ export function ImagenProducto({ p, grande }) {
 const COLOR_HEX = {
   Blanco: '#f7f6f2', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
   'Azul vaquero': '#637792', 'Azul hortensia': '#50638c', 'Verde oliva': '#3f4927', Teja: '#96483e', Gris: '#504c4b',
-  'Marrón café': '#4a3c34', 'Azul noche': '#1b375e', Granate: '#6e1c28', Crema: '#efe6d2', Beige: '#d9c9a8',
+  'Marrón café': '#4a3c34', 'Azul noche': '#1b375e', Granate: '#6e1c28', Crema: '#ece4d3', Beige: '#d9c9a8', Moca: '#7a6254', 'Gris sombra': '#48484b', Avena: '#d6cbba',
 }
 const coloresDe = (p) => {
   const ops = (p.opciones || '').split(',').map((x) => x.trim()).filter((x) => x.includes(' / '))
