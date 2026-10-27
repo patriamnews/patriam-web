@@ -29,8 +29,10 @@ export default function App() {
         <Route path="/accion/:slug" element={<FichaAccion />} />
         <Route path="/revista" element={<Seccion seccion="revista" />} />
         <Route path="/revista/recomendaciones" element={<Seccion seccion="recomendaciones" />} />
-        <Route path="/noticias" element={<Seccion seccion="noticias" />} />
-        <Route path="/en-los-medios" element={<Seccion seccion="medios" />} />
+        <Route path="/comunicados" element={<Seccion seccion="noticias" />} />
+        <Route path="/noticias" element={<Navigate to="/comunicados" replace />} />
+        <Route path="/medios" element={<Seccion seccion="medios" />} />
+        <Route path="/en-los-medios" element={<Navigate to="/medios" replace />} />
         <Route path="/articulo/:slug" element={<Articulo />} />
         <Route path="/contacto" element={<Colabora />} />
         <Route path="/colabora" element={<Navigate to="/contacto" replace />} />

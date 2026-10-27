@@ -7,7 +7,8 @@ const CAMPOS = [
     ['titular_cuenta', 'Titular de la cuenta'],
     ['iban', 'IBAN de la asociación (para transferencias)'],
     ['bizum', 'Código Bizum (lo facilita el banco al dar de alta el servicio)'],
-    ['cuotas', 'Cuotas de socio sugeridas (€, separadas por comas)'],
+    ['cuota', 'Cuota mensual normal de asociado (€)'],
+    ['cuota_reducida', 'Cuota mensual reducida (€): familia numerosa, estudiantes, jubilados, desempleados y familiares de un afiliado'],
     ['donativos', 'Donativos sugeridos (€, separados por comas)'],
   ]],
   ['Tienda', [

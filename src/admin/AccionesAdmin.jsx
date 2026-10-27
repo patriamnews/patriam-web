@@ -118,6 +118,14 @@ export default function AccionesAdmin() {
             <label>Fin (opcional)<input type="datetime-local" value={local(f.fecha_fin) || f.fecha_fin || ''} onChange={set('fecha_fin')} /></label>
             <label>Lugar<input value={f.lugar || ''} onChange={set('lugar')} /></label>
           </div>
+          <label>
+            Dirigida a
+            <select value={f.dirigida || 'todos'} onChange={set('dirigida')}>
+              <option value="todos">Todos</option>
+              <option value="mujeres">Solo mujeres (p. ej., talleres de costura)</option>
+              <option value="hombres">Solo hombres</option>
+            </select>
+          </label>
           <label>Resumen (aparece en la agenda)<textarea rows={2} maxLength={300} value={f.resumen || ''} onChange={set('resumen')} /></label>
           <label>Descripción completa<textarea rows={6} value={f.descripcion || ''} onChange={set('descripcion')} /></label>
           <fieldset className="grupo">

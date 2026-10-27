@@ -19,7 +19,7 @@ const CLAVES = {
   revista: 'Revista (introducción)',
   noticias: 'Noticias (introducción)',
   recomendaciones: 'Recomendaciones (introducción)',
-  medios: 'En los medios (introducción)',
+  medios: 'Medios (introducción)',
   colabora: 'Contacto (introducción)',
   adhesion: 'Únete (introducción)',
   campanas: 'Campañas (introducción)',

@@ -80,6 +80,7 @@ export default function CampanasAdmin() {
     e.preventDefault()
     setError('')
     const { id, creado_at, ...datos } = f
+    datos.modo = 'externo' // todas las campañas van por CitizenGO
     datos.objetivo = Number(datos.objetivo) || null
     datos.firmas_externas = Number(datos.firmas_externas) || 0
     const res = id
@@ -116,10 +117,10 @@ export default function CampanasAdmin() {
       </div>
       {msg && <p className="aviso-ok">{msg}</p>}
       <div className="caja-info">
-        <b>Dos formas de recoger firmas:</b>
+        <b>Las campañas se crean directamente en CitizenGO.</b>
         <ul>
-          <li><b>Plataforma externa (CitizenGO u otra)</b>, recomendada: la asociación no guarda ningún dato de los firmantes. El contador se actualiza a mano.</li>
-          <li><b>Formulario propio</b>: la asociación guarda nombre, email y municipio (opcional). Hay que borrar los datos al cerrar la campaña.</li>
+          <li>La asociación publica la petición en CitizenGO (el botón «Preparar en CitizenGO» deja el texto listo para copiar).</li>
+          <li>Aquí se pone el enlace de la petición y el número de firmas, que se actualiza a mano. La web no guarda ningún dato de los firmantes.</li>
         </ul>
       </div>
 
@@ -134,10 +135,9 @@ export default function CampanasAdmin() {
             <label>Objetivo de firmas<input type="number" min="0" value={f.objetivo || ''} onChange={set('objetivo')} /></label>
           </div>
           <fieldset className="grupo">
-            <legend>¿Dónde se firma?</legend>
-            <label className="check"><input type="radio" checked={f.modo === 'externo'} onChange={() => setF({ ...f, modo: 'externo' })} /><span>En una plataforma externa (CitizenGO…)</span></label>
-            <label className="check"><input type="radio" checked={f.modo === 'propio'} onChange={() => setF({ ...f, modo: 'propio' })} /><span>En esta web (formulario propio)</span></label>
-            {f.modo === 'externo' && (
+            <legend>Petición en CitizenGO</legend>
+            {f.modo === 'propio' && <p className="letra-pequena">Esta campaña se creó con el formulario propio de la web. Al guardarla pasará a CitizenGO.</p>}
+            {(
               <div className="dos-col">
                 <label>Enlace a la petición (déjelo vacío hasta publicarla)<input type="url" value={f.enlace_externo || ''} onChange={set('enlace_externo')} placeholder="https://citizengo.org/…" /></label>
                 <label>Firmas actuales (actualizar a mano)<input type="number" min="0" value={f.firmas_externas || 0} onChange={set('firmas_externas')} /></label>

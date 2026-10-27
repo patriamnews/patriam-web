@@ -4,7 +4,7 @@
 
 import { semilla } from './seed'
 
-const CLAVE = 'patriam-demo-v19'
+const CLAVE = 'patriam-demo-v20'
 const SESION = 'patriam-demo-sesion'
 
 const leer = (k) => {

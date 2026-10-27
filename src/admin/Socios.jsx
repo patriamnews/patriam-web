@@ -11,6 +11,8 @@ const fechaHora = (d) => new Date(d).toLocaleString('es-ES', { day: 'numeric', m
 const ESTADOS = { pendiente: 'Pendiente de primer pago', alta: 'Alta', baja: 'Baja' }
 const hoy = () => new Date().toISOString().slice(0, 10)
 
+const DESC = { familia_numerosa: 'familia numerosa', estudiante: 'estudiante', jubilado: 'jubilado/pensionista', desempleado: 'desempleado', familiar: 'familiar afiliado' }
+
 export default function Socios() {
   const [vista, setVista] = useState('socios')
   const [socios, setSocios] = useState([])
@@ -34,6 +36,9 @@ export default function Socios() {
     await supabase.from(tabla).update(v).eq('id', id)
     cargar()
   }
+
+  // Cuota reducida: se marca cuando llega la documentación que la justifica
+  const justificar = (s, v) => cambiar('socios', s.id, { descuento_justificado: v })
 
   // Documentos firmados por cada socio (por referencia de su solicitud o por su correo)
   const firmasDe = (s) => firmas.filter((f) => f.referencia === s.referencia || (f.email || '').toLowerCase() === (s.email || '').toLowerCase())
@@ -129,7 +134,15 @@ export default function Socios() {
                       <td>{s.numero_socio || '—'}</td>
                       <td>{s.nombre}{s.baja_solicitada && s.estado !== 'baja' && <span className="estado estado-rechazado"> Pide la baja</span>}{s.usuario_id && <span className="mini"> · con cuenta</span>}</td>
                       <td><a href={`mailto:${s.email}`}>{s.email}</a></td>
-                      <td>{euros(s.cuota)} / {s.periodicidad}</td>
+                      <td>
+                        {euros(s.cuota)} / {s.periodicidad}
+                        {s.descuento && (
+                          <div className="mini">
+                            Reducida: {DESC[s.descuento] || s.descuento}{s.familiar_afiliado ? ` (${s.familiar_afiliado})` : ''} ·{' '}
+                            <label className="check-mini"><input type="checkbox" checked={!!s.descuento_justificado} onChange={(e) => justificar(s, e.target.checked)} /> justificado</label>
+                          </div>
+                        )}
+                      </td>
                       <td>{faltanDocs(s).length ? <span className="estado estado-rechazado">Faltan {faltanDocs(s).length}</span> : <span className="estado estado-publicado">Firmados ✓</span>}</td>
                       <td><code>{s.referencia}</code></td>
                       <td>
@@ -147,6 +160,10 @@ export default function Socios() {
                     {abierto === s.id && (
                       <tr className="detalle">
                         <td colSpan={9}>
+                          <p className="letra-pequena">
+                            {[s.dni, s.sexo && (s.sexo === 'mujer' ? 'Mujer' : 'Hombre'), s.fecha_nacimiento && `nacido/a el ${fecha(s.fecha_nacimiento)}`, s.telefono].filter(Boolean).join(' · ')}
+                            {s.direccion && <><br />{s.direccion}, {s.codigo_postal} {s.municipio} ({s.provincia})</>}
+                          </p>
                           {susPagos.length ? (
                             <ul>{susPagos.map((p) => <li key={p.id}>{fecha(p.fecha)} · {p.concepto} · {euros(p.importe)} · {p.metodo}</li>)}</ul>
                           ) : (
@@ -224,6 +241,7 @@ function RegistroFirmas({ firmas, ver, setVer }) {
                 <tr className="detalle">
                   <td colSpan={6}>
                     <p className="letra-pequena">
+                      {f.declaracion && <>{f.declaracion}: abierto {f.abierto_at ? new Date(f.abierto_at).toLocaleString('es-ES') : '—'} · leído hasta el final {f.leido_al_final_at ? new Date(f.leido_al_final_at).toLocaleString('es-ES') : '—'} · aceptado {f.aceptado_at ? new Date(f.aceptado_at).toLocaleString('es-ES') : '—'}<br /></>}
                       Firma tecleada: <b>{f.firma}</b> · Método: {f.metodo} · IP: {f.ip || '—'} · Navegador: {f.navegador}<br />
                       Huella del documento: <code className="hash">{f.hash_documento}</code><br />
                       Huella encadenada del registro: <code className="hash">{f.hash_cadena}</code>

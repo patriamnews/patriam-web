@@ -5,11 +5,12 @@
 //  - Transferencia: se muestra el IBAN de la asociación y una referencia para conciliar.
 import { euros } from '../lib/data'
 
+// Por ahora solo se paga con tarjeta. Bizum y transferencia están desactivados:
+// para volver a ofrecerlos, añadirlos de nuevo a esta lista.
 export const METODOS = {
   tarjeta: 'Tarjeta (Visa, Mastercard, Apple Pay, Google Pay)',
-  bizum: 'Bizum',
-  transferencia: 'Transferencia bancaria',
 }
+export const METODOS_DESACTIVADOS = { bizum: 'Bizum', transferencia: 'Transferencia bancaria' }
 
 const PERIODOS = { mensual: 'al mes', trimestral: 'al trimestre', anual: 'al año' }
 

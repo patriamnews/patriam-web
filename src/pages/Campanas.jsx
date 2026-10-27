@@ -80,7 +80,7 @@ export function Campana() {
       <aside className="campana-firma">
         <Progreso n={n} objetivo={c.objetivo} />
         {c.modo === 'externo' && !c.enlace_externo ? (
-          <p className="caja-aviso">La recogida de firmas se abrirá en breve.</p>
+          <p className="caja-aviso">Muy pronto podrás firmar esta petición en CitizenGO.</p>
         ) : c.modo === 'externo' ? (
           <>
             <a className="btn btn-bloque" href={c.enlace_externo} target="_blank" rel="noopener noreferrer">

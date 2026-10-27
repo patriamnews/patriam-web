@@ -25,10 +25,10 @@ export const SECCIONES = {
     ruta: '/revista',
   },
   noticias: {
-    corto: 'Noticias',
-    nombre: 'Noticias',
-    lema: 'Actualidad y comunicados',
-    ruta: '/noticias',
+    corto: 'Comunicados',
+    nombre: 'Comunicados',
+    lema: 'Comunicados oficiales de la asociación',
+    ruta: '/comunicados',
   },
   recomendaciones: {
     corto: 'Recomendaciones',
@@ -37,10 +37,10 @@ export const SECCIONES = {
     ruta: '/revista/recomendaciones',
   },
   medios: {
-    corto: 'En los medios',
-    nombre: 'En los medios',
-    lema: 'Presencia en medios de comunicación',
-    ruta: '/en-los-medios',
+    corto: 'Medios',
+    nombre: 'Medios',
+    lema: 'PATRIAM en prensa, radio, televisión y redes',
+    ruta: '/medios',
   },
 }
 

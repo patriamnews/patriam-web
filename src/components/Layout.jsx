@@ -55,17 +55,8 @@ const MENU = [
     ],
     destacado: { etiqueta: 'Agenda', titulo: 'Próximas acciones', texto: 'Consulta el calendario y apúntate.', ruta: '/accion-ciudadana', boton: 'Ver la agenda' },
   },
-  {
-    texto: 'Actualidad',
-    intro: 'Opinión, noticias y lecturas, con criterio.',
-    hijos: [
-      sec('noticias', 'Comunicados y convocatorias', 'periodico'),
-      sec('revista', 'Artículos de opinión y formación', 'pluma'),
-      sec('recomendaciones', 'Lo que recomendamos leer y escuchar', 'estrella'),
-      sec('medios', 'PATRIAM en prensa, radio y televisión', 'micro'),
-    ],
-    destacado: { etiqueta: 'Boletín semanal', titulo: 'Lo que hay que saber', texto: 'La editorial y las noticias de la semana.', boletin: true, boton: 'Leer el boletín ↗' },
-  },
+  { texto: 'Comunicados', ruta: '/comunicados' },
+  { texto: 'Medios', ruta: '/medios' },
   { texto: 'Tienda', ruta: '/tienda' },
   { texto: 'Contacto', ruta: '/contacto' },
 ]
@@ -74,16 +65,16 @@ const MENU = [
 const menuBoletin = (base, bol) => ({
   texto: 'Boletín',
   intro: '«Lo que hay que saber, con criterio»: la editorial y las noticias de la semana, con el comentario de PATRIAM.',
+  // Mismo orden y mismos nombres que el menú del propio boletín
   hijos: [
-    { texto: 'Boletín de la semana', externo: base, desc: 'El número de esta semana', icono: 'sobre' },
+    { texto: 'Boletín semanal', externo: base, desc: 'El número de esta semana', icono: 'sobre' },
     { texto: 'Editorial', externo: base + '#/editoriales', desc: 'Todas las editoriales', icono: 'pluma' },
     { texto: 'Noticias', externo: base + '#/noticias', desc: 'Con resumen y comentario', icono: 'periodico' },
     { texto: 'Historia', externo: base + '#/historia', desc: 'Podcasts, series y libros', icono: 'libro' },
     { texto: 'Análisis', externo: base + '#/analisis', desc: 'Reflexión para el debate', icono: 'estrella' },
     { texto: 'Colaboraciones', externo: base + '#/colaboraciones', desc: 'Firmas invitadas', icono: 'firma' },
     { texto: 'Iniciativas', externo: base + '#/iniciativas', desc: 'Agenda y convocatorias', icono: 'bandera' },
-    { texto: 'Al momento', externo: base + '#/al', desc: 'Lo que compartimos entre boletín y boletín', icono: 'micro' },
-    { texto: 'Boletines anteriores', externo: base + '#/boletines', desc: 'Todos los números', icono: 'periodico' },
+    { texto: 'Boletines', externo: base + '#/boletines', desc: 'Todos los números', icono: 'periodico' },
   ],
   destacado: {
     etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + '#/suscribirse', boton: 'Suscríbete ↗',
@@ -163,7 +154,7 @@ export default function Layout() {
   // El boletín semanal se abre en una pestaña nueva, sin cerrar la web
   const [bol, setBol] = useState(null)
   useEffect(() => { cargarBoletin(urlBoletin(aj)).then(setBol) }, [aj])
-  const menu = MENU.flatMap((m) => (m.texto === 'Actualidad' ? [m, menuBoletin(urlBoletin(aj), bol)] : [m]))
+  const menu = MENU.flatMap((m) => (m.texto === 'Medios' ? [m, menuBoletin(urlBoletin(aj), bol)] : [m]))
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
@@ -225,6 +216,10 @@ export default function Layout() {
           <nav>
             <Link to="/unete">Únete</Link>
             <Link to="/adhierete?tipo=donativo">Donativos</Link>
+            <Link to="/comunicados">Comunicados</Link>
+            <Link to="/medios">Medios</Link>
+            <Link to="/revista">Revista</Link>
+            <Link to="/revista/recomendaciones">Recomendaciones</Link>
             <Link to="/tienda">Tienda</Link>
             <Link to="/contacto">Contacto</Link>
             <a href={urlBoletin(aj)} target="_blank" rel="noopener noreferrer">Boletín semanal ↗</a>

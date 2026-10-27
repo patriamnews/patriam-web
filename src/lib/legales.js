@@ -47,7 +47,7 @@ Este aviso legal se rige por la legislación española. Para cualquier controver
 Aplicamos el principio de minimización: solo pedimos los datos imprescindibles.
 
 - **Contacto:** nombre, email y mensaje, para responder a su consulta.
-- **Socios:** nombre, email, municipio (opcional), cuota y forma de pago, para gestionar su condición de socio y la relación de asociados que exige la Ley Orgánica 1/2002, reguladora del Derecho de Asociación. No pedimos DNI.
+- **Asociados:** nombre y apellidos, DNI o NIE, fecha de nacimiento, sexo, email, teléfono, domicilio, cuota y forma de pago, para gestionar su condición de asociado y la relación de asociados que exige la Ley Orgánica 1/2002, reguladora del Derecho de Asociación, emitir los recibos de la cuota (que deben llevar nombre, NIF y domicilio), comprobar la mayoría de edad y organizar actividades dirigidas solo a mujeres o solo a hombres. Si solicita una cuota reducida, también la documentación que la justifica, que se conserva solo mientras se aplique la reducción. Los documentos de adhesión firmados se guardan con la fecha y hora de lectura y de firma.
 - **Donativos:** importe, forma de pago y, si lo facilita, su email. Puede donar de forma anónima.
 - **Tienda y actividades:** nombre, email, y dirección solo si elige envío a domicilio, para gestionar su pedido o inscripción, el envío y la facturación.
 - **Firmas en campañas propias:** nombre, email y municipio (opcional). No se publican.
@@ -64,7 +64,7 @@ Al tratarse de una asociación con finalidad política, cultural y religiosa, su
 
 ## Pagos
 
-Los pagos con tarjeta los procesa [ENTIDAD / PASARELA DE PAGO] y los pagos por Bizum, [BANCO]. La asociación no recibe ni guarda los datos de su tarjeta.
+Los pagos con tarjeta los procesa Stripe Payments Europe, Ltd., como pasarela de pago. La asociación no recibe ni guarda los datos de su tarjeta.
 
 ## Destinatarios y encargados del tratamiento
 
@@ -144,7 +144,7 @@ Los precios incluyen el IVA cuando corresponda. [CONFIRMAR CON EL ASESOR FISCAL 
 
 ## Formas de pago
 
-Tarjeta, Bizum o transferencia bancaria. Los pedidos por transferencia se reservan durante [Nº] días; si no se recibe el pago en ese plazo, se cancelan.
+Tarjeta (Visa, Mastercard, Apple Pay o Google Pay), a través de la pasarela segura de Stripe.
 
 ## Envíos
 

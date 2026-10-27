@@ -135,7 +135,7 @@ export default function Inicio() {
 
       {/* Bloques por sección */}
       <div className="contenedor bloques-seccion">
-        <Bloque titulo="Noticias y comunicados" ruta="/noticias" items={de('noticias')} render={itemArticulo} />
+        <Bloque titulo="Comunicados" ruta="/comunicados" items={de('noticias')} render={itemArticulo} />
         <Bloque
           titulo="Próximas acciones"
           ruta="/accion-ciudadana"
@@ -188,7 +188,7 @@ export default function Inicio() {
           </div>
           <div>
             <h2>Haz un donativo</h2>
-            <p>Tarjeta, Bizum o transferencia. Puede ser anónimo.</p>
+            <p>Con tarjeta, de forma segura. Puede ser anónimo.</p>
             <Link to="/adhierete?tipo=donativo" className="btn btn-claro">Donar</Link>
           </div>
         </div>

@@ -33,6 +33,8 @@ function FilaAccion({ a, enlaces }) {
         <div className="meta">
           <span className="cap">{diaSemana(a.fecha_inicio)} · {hora(a.fecha_inicio)}</span>
           {a.lugar && <span>{a.lugar}</span>}
+          {a.dirigida === 'mujeres' && <span className="estado estado-mujeres">Solo mujeres</span>}
+          {a.dirigida === 'hombres' && <span className="estado estado-mujeres">Solo hombres</span>}
           {a.estado === 'cancelada' && <span className="estado estado-rechazado">Cancelada</span>}
         </div>
         <h3><Link to={`/accion/${a.slug}`}>{a.titulo}</Link></h3>
@@ -213,6 +215,8 @@ export function FichaAccion() {
             <span className="cap">{fechaLarga(a.fecha_inicio)}</span> · {hora(a.fecha_inicio)}
             {a.lugar ? ` · ${a.lugar}` : ''}
           </p>
+          {a.dirigida === 'mujeres' && <p className="caja-aviso">Acción dirigida solo a mujeres.</p>}
+          {a.dirigida === 'hombres' && <p className="caja-aviso">Acción dirigida solo a hombres.</p>}
           {a.estado === 'cancelada' && <p className="caja-aviso">Esta acción se ha cancelado.</p>}
           {pasada && a.estado !== 'cancelada' && <span className="estado estado-publicado">Acción realizada</span>}
         </div>

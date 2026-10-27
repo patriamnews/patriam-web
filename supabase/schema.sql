@@ -394,9 +394,18 @@ grant execute on function contar_firmas(bigint) to anon, authenticated;
 -- ---------- Socios (datos mínimos) ----------
 create table socios (
   id bigint generated always as identity primary key,
-  nombre text not null check (length(nombre) <= 150),
+  nombre text not null check (length(nombre) <= 150),        -- nombre y apellidos completos
+  nombre_pila text, apellido1 text, apellido2 text,
+  dni text,                                                    -- DNI/NIE: necesario para el recibo de la cuota
+  fecha_nacimiento date,
+  sexo text check (sexo in ('mujer', 'hombre')),               -- hay acciones solo para mujeres o solo para hombres
   email text not null check (length(email) <= 200),
-  municipio text,
+  telefono text,
+  direccion text, codigo_postal text, provincia text,
+  municipio text not null,
+  descuento text check (descuento in ('familia_numerosa', 'estudiante', 'jubilado', 'desempleado', 'familiar')),
+  familiar_afiliado text,
+  descuento_justificado boolean,                               -- se marca al recibir la documentación
   cuota numeric(8,2) not null check (cuota > 0),
   periodicidad text not null check (periodicidad in ('mensual', 'trimestral', 'anual')),
   metodo text not null check (metodo in ('tarjeta', 'bizum', 'transferencia')),
@@ -566,6 +575,7 @@ create table acciones (
   estado text not null default 'programada' check (estado in ('programada', 'realizada', 'cancelada')),
   imagen_url text,
   imagen_ia boolean not null default false,  -- cartel o foto generada/manipulada con IA (art. 50 RIA)
+  dirigida text not null default 'todos' check (dirigida in ('todos', 'mujeres', 'hombres')),  -- p. ej. talleres solo para mujeres
   video_url text,                            -- vídeo de la convocatoria (X, YouTube…)
   publicada boolean not null default true,
   aprobada boolean not null default false,   -- solo el director la aprueba
@@ -610,6 +620,10 @@ create table firmas_adhesion (
   texto text not null,                     -- copia exacta del texto firmado
   hash_documento text not null,            -- SHA-256 del texto (calculado en el navegador y comprobado aquí)
   firma text not null,                     -- nombre tecleado como firma
+  declaracion text,                        -- «He leído y acepto «Título del documento»»
+  abierto_at timestamptz,                  -- registro de lectura: cuándo se abrió el documento,
+  leido_al_final_at timestamptz,           -- cuándo se llegó al final del texto
+  aceptado_at timestamptz,                 -- y cuándo se marcó «He leído»
   aceptado boolean not null check (aceptado),
   metodo text,
   navegador text,
@@ -1118,3 +1132,15 @@ La AEPD sanciona también a asociaciones. Casi todas las reclamaciones nacen de 
 - Tener este manual implantado y documentado es el principal elemento atenuante ante una reclamación.
 $manual$
 where not exists (select 1 from manuales where titulo = 'Manual de protección de datos');
+
+
+-- ===== Cambios de octubre de 2026 (para una base ya creada) =====
+alter table socios add column if not exists nombre_pila text, add column if not exists apellido1 text, add column if not exists apellido2 text,
+  add column if not exists dni text, add column if not exists fecha_nacimiento date,
+  add column if not exists sexo text check (sexo in ('mujer', 'hombre')), add column if not exists telefono text,
+  add column if not exists direccion text, add column if not exists codigo_postal text, add column if not exists provincia text,
+  add column if not exists descuento text check (descuento in ('familia_numerosa', 'estudiante', 'jubilado', 'desempleado', 'familiar')),
+  add column if not exists familiar_afiliado text, add column if not exists descuento_justificado boolean;
+alter table firmas_adhesion add column if not exists declaracion text, add column if not exists abierto_at timestamptz,
+  add column if not exists leido_al_final_at timestamptz, add column if not exists aceptado_at timestamptz;
+alter table acciones add column if not exists dirigida text not null default 'todos' check (dirigida in ('todos', 'mujeres', 'hombres'));
