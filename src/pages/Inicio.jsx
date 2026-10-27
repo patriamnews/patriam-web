@@ -9,7 +9,7 @@ import { Foto } from '../components/ImagenPrueba'
 
 // Imagen del artículo o, si no tiene, un fondo granate con el nombre de la sección
 function Portadilla({ a, grande }) {
-  return <Foto src={a.imagen_url} ratio={grande ? '16 / 9' : '4 / 3'} className="portadilla" />
+  return <Foto src={a.imagen_url} ratio={grande ? '21 / 9' : '4 / 3'} className="portadilla" />
 }
 
 function Bloque({ titulo, ruta, items, render }) {
