@@ -14,8 +14,10 @@ const leer = () => {
 
 // Suplemento por talla (p. ej. {"XXL": 2.5}): el precio sube solo en esa talla
 export const suplemento = (p, opcion) => {
-  const talla = String(opcion || '').split(' / ').pop()
-  return Number(p?.suplementos?.[talla]) || 0
+  const partes = String(opcion || '').split(' / ')
+  const talla = partes.pop()
+  const corte = partes[0]?.includes(' · ') ? partes[0].split(' · ')[0] : ''
+  return (Number(p?.suplementos?.[talla]) || 0) + (corte ? Number(p?.suplementos?.[corte]) || 0 : 0)
 }
 export const precioCon = (p, opcion) => Math.round((Number(p.precio) + suplemento(p, opcion)) * 100) / 100
 

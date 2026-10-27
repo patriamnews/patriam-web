@@ -71,7 +71,8 @@ if ($tipo === 'cuota') {
     if (!$ops) $opcion = '';
     $partes = explode(' / ', $opcion);
     $talla = $opcion !== '' ? trim((string)end($partes)) : '';
-    $sup = is_array($r['suplementos'] ?? null) ? (float)($r['suplementos'][$talla] ?? 0) : 0;
+    $corte = (count($partes) > 1 && strpos($partes[0], ' · ') !== false) ? trim(explode(' · ', $partes[0])[0]) : '';
+    $sup = is_array($r['suplementos'] ?? null) ? (float)($r['suplementos'][$talla] ?? 0) + ($corte !== '' ? (float)($r['suplementos'][$corte] ?? 0) : 0) : 0;
     $c = $euros((float)$r['precio'] + $sup);
     $cant = max(1, min(50, (int)($it['cantidad'] ?? 1)));
     if ($c <= 0) continue;

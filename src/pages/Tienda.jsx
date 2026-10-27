@@ -36,7 +36,7 @@ const COLOR_HEX = {
 }
 const coloresDe = (p) => {
   const ops = (p.opciones || '').split(',').map((x) => x.trim()).filter((x) => x.includes(' / '))
-  return [...new Set(ops.map((o) => o.split(' / ')[0]))]
+  return [...new Set(ops.map((o) => o.split(' / ')[0].split(' · ').pop()))]
 }
 
 const precio = (n) => (Number(n) === 0 ? 'Gratuito' : euros(n))
@@ -71,6 +71,14 @@ function Rejilla({ items, vacio }) {
   )
 }
 
+// Apartados de la tienda, en este orden (columna «seccion» de cada producto)
+const SECCIONES = [
+  ['basicos', 'Básicos PATRIAM', 'La camiseta básica, el polo con el logo bordado, la taza y la botella. Se pagan aquí con tarjeta y te los enviamos a casa.'],
+  ['camisetas', 'Camisetas Colección', 'Logo pequeño delante y el dibujo detrás. En corte normal u oversize.'],
+  ['sudaderas', 'Sudaderas Colección', 'Los mismos diseños, en sudadera con capucha.'],
+  ['otros', 'Más de PATRIAM', ''],
+]
+
 export function Tienda() {
   const [intro, setIntro] = useState(null)
   const [lista, setLista] = useState(null)
@@ -91,11 +99,17 @@ export function Tienda() {
         <p className="vacio">Cargando…</p>
       ) : (
         <>
-          <section className="tienda-apartado">
-            <h2 className="titulo-seccion">Colección PATRIAM</h2>
-            <p className="letra-pequena">Camisetas, sudaderas, tazas y regalos. Se pagan aquí con tarjeta y te los enviamos a casa.</p>
-            <Rejilla items={lista.filter((p) => p.categoria !== 'libros')} vacio="Muy pronto, nuestras camisetas y tazas." />
-          </section>
+          {SECCIONES.map(([clave, titulo, texto]) => {
+            const items = lista.filter((p) => p.categoria !== 'libros' && (p.seccion || 'otros') === clave)
+            return items.length ? (
+              <section key={clave} className="tienda-apartado">
+                <h2 className="titulo-seccion">{titulo}</h2>
+                {texto && <p className="letra-pequena">{texto}</p>}
+                <Rejilla items={items} />
+              </section>
+            ) : null
+          })}
+          {!lista.some((p) => p.categoria !== 'libros') && <p className="vacio">Muy pronto, nuestras camisetas y tazas.</p>}
           <section className="tienda-apartado">
             <h2 className="titulo-seccion">Libros recomendados</h2>
             <p className="letra-pequena">Lecturas que recomendamos. Se compran en la librería online: si lo haces desde aquí, PATRIAM recibe una pequeña comisión sin que te cueste más.</p>
@@ -143,6 +157,12 @@ export function Producto() {
   const colores = dobles ? [...new Set(ops.map((o) => o.split(' / ')[0]))] : []
   const tallas = dobles ? [...new Set(ops.map((o) => o.split(' / ')[1]))] : []
   const [colorSel, tallaSel] = dobles ? (opcion || ' / ').split(' / ') : []
+  // Corte (Normal / Oversize): va delante del color, «Oversize · Crema»
+  const corteDe = (c) => (c.includes(' · ') ? c.split(' · ')[0] : '')
+  const sinCorte = (c) => (c.includes(' · ') ? c.split(' · ').slice(1).join(' · ') : c)
+  const cortes = [...new Set(colores.map(corteDe).filter(Boolean))]
+  const corteSel = corteDe(colorSel || colores[0] || '')
+  const coloresCorte = cortes.length ? colores.filter((c) => corteDe(c) === corteSel) : colores
   const elegir = (c, t) => setOpcion(c && t && ops.includes(`${c} / ${t}`) ? `${c} / ${t}` : `${c || ''} / ${t || ''}`)
   // Fotos del color elegido (si el producto tiene varias por color: [detrás, delante…]); si no, la galería general
   const fotosColor = dobles ? p.fotos?.[colorSel || colores[0]] : null
@@ -184,14 +204,14 @@ export function Producto() {
               )}
             </>
           )}
-          {dobles && colores.length > 1 && colores.some((c) => Array.isArray(p.fotos?.[c])) && (
+          {dobles && coloresCorte.length > 1 && coloresCorte.some((c) => Array.isArray(p.fotos?.[c])) && (
             <div className="muestras-color">
               <span>Colores</span>
               <div>
-                {colores.map((c) => (
+                {coloresCorte.map((c) => (
                   <button key={c} type="button" className={(colorSel || colores[0]) === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>
                     {Array.isArray(p.fotos?.[c]) && <img src={p.fotos[c][0]} alt="" loading="lazy" />}
-                    <small>{c}</small>
+                    <small>{sinCorte(c)}</small>
                   </button>
                 ))}
               </div>
@@ -223,10 +243,20 @@ export function Producto() {
           ) : (<>
           {dobles && (
             <>
+              {cortes.length > 1 && (
+                <div className="tallas">
+                  <span>Corte</span>
+                  {cortes.map((k) => (
+                    <button key={k} type="button" className={corteSel === k ? 'activo' : ''} onClick={() => elegir(colores.find((c) => corteDe(c) === k), tallaSel)}>
+                      {k}{p.suplementos?.[k] ? ` (+${Number(p.suplementos[k]).toFixed(2).replace('.', ',')} €)` : ''}
+                    </button>
+                  ))}
+                </div>
+              )}
               <div className="tallas">
                 <span>Color</span>
-                {colores.map((c) => (
-                  <button key={c} type="button" className={colorSel === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>{c}</button>
+                {coloresCorte.map((c) => (
+                  <button key={c} type="button" className={colorSel === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>{sinCorte(c)}</button>
                 ))}
               </div>
               <div className="tallas">
