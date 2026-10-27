@@ -55,6 +55,7 @@ const COSAS = [
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
   { ruta: 'redes', titulo: 'Redes sociales', texto: 'Preparar y apuntar publicaciones en X, Instagram…', sale: 'Redes', icono: 'red', grupo: 'otros' },
+  { ruta: 'claves', titulo: 'Claves secretas (Stripe y Gelato)', texto: 'Secret keys de los cobros con tarjeta y de la tienda de Gelato. Con contraseña propia.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
 export default function Publicar() {
@@ -164,7 +165,6 @@ function Inicio() {
         <Link to="/publicar/acciones"><Icono n="calendario" /> Toda la agenda</Link>
         <Link to="/publicar/campanas"><Icono n="firma" /> Todas las campañas</Link>
         <a href="/#/" target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
-        <Link to="/publicar/claves"><Icono n="llave" /> Claves de pagos y tienda</Link>
         <a href="/#/gestion">Ir a la Gestión completa →</a>
       </div>
     </>
