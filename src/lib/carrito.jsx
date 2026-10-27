@@ -12,6 +12,13 @@ const leer = () => {
   }
 }
 
+// Suplemento por talla (p. ej. {"XXL": 2.5}): el precio sube solo en esa talla
+export const suplemento = (p, opcion) => {
+  const talla = String(opcion || '').split(' / ').pop()
+  return Number(p?.suplementos?.[talla]) || 0
+}
+export const precioCon = (p, opcion) => Math.round((Number(p.precio) + suplemento(p, opcion)) * 100) / 100
+
 export function CarritoProvider({ children }) {
   const [items, setItems] = useState(leer)
 
@@ -44,7 +51,7 @@ export function CarritoProvider({ children }) {
       const k = clave(p, opcion)
       const ya = l.find((i) => i.k === k)
       if (ya) return l.map((i) => (i.k === k ? { ...i, cantidad: i.cantidad + cantidad } : i))
-      return [...l, { k, id: p.id, nombre: p.nombre, categoria: p.categoria, precio: Number(p.precio), opcion: opcion || null, cantidad, fecha: p.fecha || null, gelato: datosGelato(p, opcion) }]
+      return [...l, { k, id: p.id, nombre: p.nombre, categoria: p.categoria, precio: precioCon(p, opcion), opcion: opcion || null, cantidad, fecha: p.fecha || null, gelato: datosGelato(p, opcion) }]
     })
 
   const cambiar = (k, cantidad) =>

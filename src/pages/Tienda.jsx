@@ -3,7 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { getAjustes, getPagina, euros, fecha, referencia } from '../lib/data'
 import { CATEGORIAS_TIENDA } from '../lib/config'
-import { useCarrito } from '../lib/carrito'
+import { useCarrito, precioCon } from '../lib/carrito'
 import { useAuth } from '../lib/auth'
 import { Metodos, Instrucciones } from '../components/Pago'
 import Texto from '../components/Texto'
@@ -132,7 +132,7 @@ export function Producto() {
         <div>
           <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
           <h1>{p.nombre}</h1>
-          {!(p.categoria === 'libros' && !(Number(p.precio) > 0)) && <p className="precio grande">{p.categoria === 'libros' ? 'Precio orientativo: ' : ''}{precio(p.precio)}</p>}
+          {!(p.categoria === 'libros' && !(Number(p.precio) > 0)) && <p className="precio grande">{p.categoria === 'libros' ? 'Precio orientativo: ' : ''}{precio(ops.includes(opcion) ? precioCon(p, opcion) : p.precio)}</p>}
           {esActividad && (
             <ul className="datos-actividad">
               {p.fecha && <li><b>Fecha:</b> {fecha(p.fecha)}</li>}
@@ -163,7 +163,7 @@ export function Producto() {
               <div className="tallas">
                 <span>Talla</span>
                 {tallas.map((t) => (
-                  <button key={t} type="button" className={tallaSel === t ? 'activo' : ''} disabled={colorSel && !ops.includes(`${colorSel} / ${t}`)} onClick={() => elegir(colorSel, t)}>{t}</button>
+                  <button key={t} type="button" className={tallaSel === t ? 'activo' : ''} disabled={colorSel && !ops.includes(`${colorSel} / ${t}`)} onClick={() => elegir(colorSel, t)}>{t}{p.suplementos?.[t] ? ` (+${euros(p.suplementos[t])})` : ''}</button>
                 ))}
               </div>
             </>
