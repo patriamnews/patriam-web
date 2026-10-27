@@ -16,8 +16,9 @@ import { CarritoProvider } from './lib/carrito.jsx'
 import { activarApp } from './lib/instalar'
 
 // publicar.movimientopatriam.es abre directamente la página «Publicar»
-if (/^publicar\./i.test(location.hostname) && !/^#\/publicar/.test(location.hash)) {
-  history.replaceState(null, '', '/#/publicar')
+// (se lleva a la web principal para que lo publicado y la sesión sean los mismos que en la web)
+if (/^publicar\./i.test(location.hostname)) {
+  location.replace('https://' + location.hostname.replace(/^publicar\./i, '') + '/#/publicar')
 }
 
 // En la Gestión y en Acceso, la web se puede instalar como aplicación
