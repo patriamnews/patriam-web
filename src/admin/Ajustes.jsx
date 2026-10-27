@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { getAjustes } from '../lib/data'
+import { urlBoletin } from '../lib/boletin'
 
 const CAMPOS = [
   ['Datos de pago', [
@@ -48,6 +49,11 @@ export default function Ajustes() {
   return (
     <>
       <h1>Ajustes de la web</h1>
+      <div className="caja-info">
+        <b>Pago con tarjeta (Stripe).</b> La clave secreta de Stripe no se escribe aquí: se guarda en el servidor desde el editor del boletín,
+        en Comunicaciones › Claves de envío › «Clave secreta de Stripe» (entran Carlos e Isabel). Así la clave nunca pasa por el navegador ni por GitHub.{' '}
+        <a href={`${urlBoletin(a)}editor.html`} target="_blank" rel="noopener noreferrer">Abrir el editor del boletín ↗</a>
+      </div>
       <form className="formulario" onSubmit={guardar}>
         {CAMPOS.map(([grupo, campos]) => (
           <fieldset key={grupo} className="grupo tarjeta-form">
