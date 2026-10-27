@@ -1508,3 +1508,7 @@ html, body, .sitio { background: var(--crema) !important; }
 .indice-tienda b { font-size: .95rem; }
 .indice-tienda small { color: #777; font-size: .78rem; }
 .tienda-apartado { scroll-margin-top: 90px; }
+
+/* Envío: aviso arriba de la tienda y nota bajo el precio */
+.aviso-envio { background: #f3efe6; border: 1px solid var(--linea); border-radius: 10px; padding: .6rem 1rem; font-size: .9rem; margin: .8rem 0 0; }
+.nota-precio { font-size: .82rem; color: #666; margin: -.3rem 0 .9rem; }

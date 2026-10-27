@@ -85,8 +85,10 @@ const SECCIONES = [
 export function Tienda() {
   const [intro, setIntro] = useState(null)
   const [lista, setLista] = useState(null)
+  const [ajT, setAjT] = useState(null)
 
   useEffect(() => {
+    getAjustes().then(setAjT)
     getPagina('tienda').then(setIntro)
     supabase.from('productos').select('*').eq('activo', true).order('orden').then(({ data }) => setLista(data || []))
   }, [])
@@ -98,6 +100,9 @@ export function Tienda() {
         <BotonCarrito />
       </div>
       {intro?.contenido && <Texto>{intro.contenido}</Texto>}
+      {Number(ajT?.envio_gratis_desde) > 0 && (
+        <p className="aviso-envio">🚚 <b>Envío gratis a partir de {euros(ajT.envio_gratis_desde)}</b> · Fabricado bajo pedido y enviado a toda España</p>
+      )}
       {lista === null ? (
         <p className="vacio">Cargando…</p>
       ) : (
@@ -238,6 +243,11 @@ export function Producto() {
           <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
           <h1>{p.nombre}</h1>
           {!(p.categoria === 'libros' && !(Number(p.precio) > 0)) && <p className="precio grande">{p.categoria === 'libros' ? 'Precio orientativo: ' : ''}{precio(ops.includes(opcion) ? precioCon(p, opcion) : p.precio)}</p>}
+          {p.gelato_uids && (
+            <p className="nota-precio">
+              Impuestos incluidos. <u>Gastos de envío</u> calculados al finalizar la compra{Number(aj?.envio_gratis_desde) > 0 ? ` · Envío gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}.
+            </p>
+          )}
           {esActividad && (
             <ul className="datos-actividad">
               {p.fecha && <li><b>Fecha:</b> {fecha(p.fecha)}</li>}
@@ -409,7 +419,9 @@ export function Carrito() {
               <div><span>Subtotal</span><span>{euros(subtotal)}</span></div>
               {conEnvio && <div><span>Envío ({prendas} {prendas === 1 ? 'prenda' : 'prendas'})</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
               <div className="total"><span>Total</span><span>{euros(total)}</span></div>
-              {conEnvio && Number.isFinite(gratisDesde) && <p className="letra-pequena">Envío gratis a partir de {euros(gratisDesde)}.</p>}
+              {conEnvio && Number.isFinite(gratisDesde) && (
+                <p className="letra-pequena">{subtotal < gratisDesde ? `Te faltan ${euros(gratisDesde - subtotal)} para el envío gratis (a partir de ${euros(gratisDesde)}).` : '¡Tienes el envío gratis!'}</p>
+              )}
             </div>
           </div>
 
