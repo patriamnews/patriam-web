@@ -5,7 +5,7 @@ import { useAuth } from '../lib/auth'
 import { ESTADOS, SECCIONES } from '../lib/config'
 import { fecha } from '../lib/data'
 
-export default function Articulos({ soloRevision }) {
+export default function Articulos({ soloRevision, base = '/gestion' }) {
   const { perfil } = useAuth()
   const [lista, setLista] = useState(null)
   const [filtro, setFiltro] = useState('')
@@ -25,7 +25,7 @@ export default function Articulos({ soloRevision }) {
     <>
       <div className="titulo-bloque">
         <h1>{soloRevision ? 'Pendientes de revisión' : 'Artículos'}</h1>
-        <Link to="/gestion/nuevo" className="btn">+ Nuevo</Link>
+        <Link to={`${base}/nuevo`} className="btn">+ Nuevo</Link>
       </div>
       {!soloRevision && (
         <div className="filtros">
@@ -49,7 +49,7 @@ export default function Articulos({ soloRevision }) {
               {lista.map((a) => (
                 <tr key={a.id}>
                   <td>
-                    <Link to={`/gestion/editar/${a.id}`}>{a.titulo}</Link>
+                    <Link to={`${base}/editar/${a.id}`}>{a.titulo}</Link>
                     {a.autor_id === perfil.id && <span className="mini"> (mío)</span>}
                     {a.uso_ia !== 'ninguno' && <span className="chip-ia">IA</span>}
                   </td>

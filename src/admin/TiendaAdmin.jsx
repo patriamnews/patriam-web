@@ -7,11 +7,11 @@ import { subirArchivo } from './subir'
 
 const NUEVO = { nombre: '', categoria: 'ropa', descripcion: '', precio: 0, opciones: '', stock: '', fecha: '', lugar: '', plazas: '', imagen_url: '', activo: true, orden: 0 }
 
-export default function TiendaAdmin() {
+export default function TiendaAdmin({ nuevo }) {
   const [vista, setVista] = useState('pedidos')
   const [productos, setProductos] = useState([])
   const [pedidos, setPedidos] = useState([])
-  const [f, setF] = useState(null)
+  const [f, setF] = useState(nuevo ? { ...NUEVO } : null)
   const [abierto, setAbierto] = useState(null)
   const [error, setError] = useState('')
 

@@ -15,6 +15,7 @@ import NoEncontrado from './pages/NoEncontrado'
 import Gestion from './admin/Gestion'
 import Acceso from './pages/Acceso'
 import MiCuenta from './pages/MiCuenta'
+import Publicar from './publicar/Publicar'
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="*" element={<NoEncontrado />} />
       </Route>
       <Route path="/gestion/*" element={<Gestion />} />
+      <Route path="/publicar/*" element={<Publicar />} />
     </Routes>
   )
 }

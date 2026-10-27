@@ -12,11 +12,11 @@ import { Foto } from '../components/ImagenPrueba'
 const NUEVA = { titulo: '', enlace_externo: '', medio: '', firma: '', tipo_recomendacion: 'prensa', resumen: '', imagen_url: '' }
 
 // Gestión rápida de recomendaciones: enlace, título, fuente, tipo, imagen y comentario
-export default function RecomendacionesAdmin() {
+export default function RecomendacionesAdmin({ nuevo }) {
   const { perfil } = useAuth()
   const aprueba = puedeAprobar(perfil)
   const [lista, setLista] = useState([])
-  const [f, setF] = useState(null)
+  const [f, setF] = useState(nuevo ? { ...NUEVA } : null)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
 

@@ -17,7 +17,7 @@ const NUEVA = (area) => ({
 })
 const fechaCorta = (d) => new Date(d).toLocaleString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 
-export default function AccionesAdmin() {
+export default function AccionesAdmin({ nuevo, seccion }) {
   const { perfil } = useAuth()
   const areas = AREAS.filter((a) => puedeGestionarArea(perfil, a))
   const aprueba = puedeAprobar(perfil)
@@ -27,6 +27,8 @@ export default function AccionesAdmin() {
   const [campanas, setCampanas] = useState([])
   const [filtro, setFiltro] = useState(areas.length === 1 ? areas[0] : '')
   const [f, setF] = useState(null)
+  // Desde «Publicar»: se abre directamente el formulario de una acción nueva
+  useEffect(() => { if (nuevo) setF(NUEVA(seccion || areas[0])) }, [nuevo]) // eslint-disable-line react-hooks/exhaustive-deps
   const [error, setError] = useState('')
 
   const cargar = () => {

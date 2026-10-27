@@ -24,11 +24,11 @@ const VACIO = {
   nota_revision: '',
 }
 
-export default function Editor() {
+export default function Editor({ seccionInicial, base = '/gestion' }) {
   const { id } = useParams()
   const { perfil } = useAuth()
   const navigate = useNavigate()
-  const [a, setA] = useState(id ? null : { ...VACIO, firma: perfil.nombre, seccion: seccionesDisponibles(perfil)[0] })
+  const [a, setA] = useState(id ? null : { ...VACIO, firma: perfil.nombre, seccion: seccionesDisponibles(perfil).includes(seccionInicial) ? seccionInicial : seccionesDisponibles(perfil)[0] })
   const [vista, setVista] = useState(false)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
@@ -101,14 +101,14 @@ export default function Editor() {
       (estado === 'publicado' ? 'Aprobado y publicado.' : estado === 'revision' ? `Enviado a ${APROBADOR.nombre} para su aprobación.` : estado === 'rechazado' ? 'Devuelto al autor.' : 'Guardado.') +
         (aviso ? ' ' + aviso : ''),
     )
-    if (!id) navigate(`/gestion/editar/${res.data.id}`, { replace: true })
+    if (!id) navigate(`${base}/editar/${res.data.id}`, { replace: true })
   }
 
   const borrar = async () => {
     if (!confirmar('¿Borrar definitivamente este artículo?')) return
     const { error } = await supabase.from('articulos').delete().eq('id', id)
     if (error) setError('No se ha podido borrar.')
-    else navigate('/gestion/articulos')
+    else navigate(base === '/gestion' ? '/gestion/articulos' : base)
   }
 
   return (

@@ -11,6 +11,10 @@ RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.es$ [NC]
 RewriteCond %{REQUEST_URI} !^/boletin/
 RewriteRule ^(.*)$ boletin/web/$1 [L]
 
+# Publicar: publicar.movimientopatriam.es (los demás dominios redirigen ahí). Sirve la misma web, que abre «Publicar»
+RewriteCond %{HTTP_HOST} ^publicar\.movimientopatriam\.(org|com|net)$ [NC]
+RewriteRule ^(.*)$ https://publicar.movimientopatriam.es/$1 [R=301,L]
+
 # Espejos (.org, .com, .net y www) -> dominio principal .es
 RewriteCond %{HTTP_HOST} ^(www\.)?movimientopatriam\.(org|com|net)$ [NC,OR]
 RewriteCond %{HTTP_HOST} ^www\.movimientopatriam\.es$ [NC]

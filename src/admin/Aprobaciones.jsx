@@ -6,7 +6,7 @@ import { fecha } from '../lib/data'
 import { enviarCorreo } from '../lib/correo'
 
 // Bandeja del aprobador: todo lo que espera su visto bueno antes de publicarse
-export default function Aprobaciones() {
+export default function Aprobaciones({ base = '/gestion' }) {
   const [d, setD] = useState(null)
   const [msg, setMsg] = useState('')
 
@@ -76,7 +76,7 @@ export default function Aprobaciones() {
               {d.arts.map((a) => (
                 <tr key={a.id}>
                   <td>{a.titulo}</td><td>{SECCIONES[a.seccion]?.nombre}</td><td>{d.gente[a.autor_id]?.nombre || a.firma}</td><td>{fecha(a.actualizado_at)}</td>
-                  <td><Link to={`/gestion/editar/${a.id}`}>Revisar y aprobar →</Link></td>
+                  <td><Link to={`${base}/editar/${a.id}`}>Revisar y aprobar →</Link></td>
                 </tr>
               ))}
             </tbody>
@@ -93,7 +93,7 @@ export default function Aprobaciones() {
                 <span><b>{a.titulo}</b> · {SECCIONES[a.seccion]?.nombre} · {fecha(a.fecha_inicio)}{a.lugar ? ` · ${a.lugar}` : ''}</span>
                 <span className="acciones-fila">
                   <button className="btn" onClick={() => aprobar('acciones', a, 'acción')}>Aprobar y publicar</button>
-                  <Link to="/gestion/acciones">Editar</Link>
+                  <Link to={`${base}/acciones`}>Editar</Link>
                 </span>
               </div>
               <div className="pedido-detalle"><p>{a.resumen}</p><p className="letra-pequena">Propuesta por {d.gente[a.creado_por]?.nombre || '—'}</p></div>
@@ -111,7 +111,7 @@ export default function Aprobaciones() {
                 <span><b>{c.titulo}</b> · {c.modo === 'externo' ? 'CitizenGO' : 'formulario propio'}</span>
                 <span className="acciones-fila">
                   <button className="btn" onClick={() => aprobar('campanas', c, 'campaña')}>Aprobar y publicar</button>
-                  <Link to="/gestion/campanas">Editar</Link>
+                  <Link to={`${base}/campanas`}>Editar</Link>
                 </span>
               </div>
               <div className="pedido-detalle"><p>{c.resumen}</p></div>

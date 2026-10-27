@@ -52,14 +52,14 @@ const csv = (filas, cols, nombre) => {
   a.click()
 }
 
-export default function CampanasAdmin() {
+export default function CampanasAdmin({ nuevo }) {
   const { perfil } = useAuth()
   const esAdmin = equipo(perfil)
   const aprueba = puedeAprobar(perfil)
   const [msg, setMsg] = useState('')
   const [lista, setLista] = useState([])
   const [cuentas, setCuentas] = useState({})
-  const [f, setF] = useState(null)
+  const [f, setF] = useState(nuevo ? { ...NUEVA } : null)
   const [error, setError] = useState('')
   const [preparar, setPreparar] = useState(null)
 

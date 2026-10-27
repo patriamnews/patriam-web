@@ -15,8 +15,13 @@ import { AuthProvider } from './lib/auth.jsx'
 import { CarritoProvider } from './lib/carrito.jsx'
 import { activarApp } from './lib/instalar'
 
+// publicar.movimientopatriam.es abre directamente la página «Publicar»
+if (/^publicar\./i.test(location.hostname) && !/^#\/publicar/.test(location.hash)) {
+  history.replaceState(null, '', '/#/publicar')
+}
+
 // En la Gestión y en Acceso, la web se puede instalar como aplicación
-if (/^#\/(gestion|acceso)/.test(location.hash)) activarApp()
+if (/^#\/(gestion|acceso|publicar)/.test(location.hash)) activarApp()
 
 // Rutas con # (patriam.netlify.app/#/sobre-patriam): funcionan en cualquier
 // alojamiento, aunque se suba solo la carpeta dist y sin reglas de redirección.

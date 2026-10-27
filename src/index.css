@@ -1374,3 +1374,42 @@ html, body, .sitio { background: var(--crema) !important; }
 .cuota-normal { font-size: 1.15rem; margin: 0 0 0.6rem; }
 .descuentos { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.4rem; }
 .check-mini { display: inline-flex; gap: 0.25rem; align-items: center; }
+
+/* ===== Publicar (publicar.movimientopatriam.es) ===== */
+.pub { min-height: 100vh; background: #f7f1e6; }
+.pub-cab { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 16px; background: #fffdf8; border-bottom: 3px solid #7b1c2c; position: sticky; top: 0; z-index: 50; }
+.pub-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: #7b1c2c; }
+.pub-logo img { height: 38px; }
+.pub-logo span { font: 700 1.15rem var(--serif, 'Spectral', serif); letter-spacing: 0.12em; text-transform: uppercase; border-left: 1px solid #d9cbb3; padding-left: 0.7rem; }
+.pub-quien { display: flex; gap: 1rem; align-items: center; font-size: 0.95rem; }
+.pub-main { max-width: 1100px; margin: 0 auto; padding: 1.8rem 16px 4rem; }
+.pub-saludo h1 { margin: 0 0 0.3rem; font-size: clamp(1.6rem, 4vw, 2.3rem); }
+.pub-saludo p { margin: 0 0 1.4rem; color: #5d524a; font-size: 1.05rem; }
+.pub-grupo { font-size: 0.85rem; letter-spacing: 0.16em; text-transform: uppercase; color: #7b1c2c; margin: 2rem 0 0.8rem; border-bottom: 1px solid #e3d6c1; padding-bottom: 0.4rem; }
+.pub-rejilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.pub-baldosa { display: flex; flex-direction: column; gap: 0.35rem; background: #fffdf8; border: 1px solid #e3d6c1; border-top: 4px solid #7b1c2c; padding: 1.1rem 1.1rem 1rem; text-decoration: none; color: #2a211d; transition: transform 0.12s, box-shadow 0.12s; min-height: 170px; }
+.pub-baldosa:hover, .pub-baldosa:focus-visible { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(60, 30, 20, 0.12); }
+.pub-baldosa b { font-size: 1.15rem; }
+.pub-baldosa small { color: #5d524a; font-size: 0.92rem; line-height: 1.4; }
+.pub-icono { color: #7b1c2c; }
+.pub-sale { margin-top: auto; font-size: 0.78rem; color: #8a7d6b; letter-spacing: 0.04em; }
+.pub-aprobar { display: flex; align-items: center; gap: 1rem; background: #fffdf8; border: 1px solid #e3d6c1; padding: 1rem 1.2rem; text-decoration: none; color: #2a211d; }
+.pub-aprobar.hay { border-color: #7b1c2c; background: #f8ece6; }
+.pub-aprobar span { display: flex; flex-direction: column; flex: 1; }
+.pub-aprobar svg { color: #2f6b3a; }
+.pub-aprobar em { font-style: normal; background: #7b1c2c; color: #fff; border-radius: 999px; min-width: 2rem; text-align: center; padding: 0.2rem 0.6rem; font-weight: 700; }
+.pub-enlaces { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.pub-enlaces a { display: inline-flex; align-items: center; gap: 0.4rem; background: #fffdf8; border: 1px solid #e3d6c1; padding: 0.55rem 0.9rem; text-decoration: none; color: #2a211d; }
+.pub-enlaces svg { width: 18px; height: 18px; color: #7b1c2c; }
+.pub-paso h1 { margin: 0.4rem 0 0.3rem; }
+.pub-volver { display: inline-block; text-decoration: none; color: #7b1c2c; font-weight: 600; }
+.pub-ayuda { background: #fffdf8; border-left: 4px solid #a8873a; padding: 0.7rem 1rem; margin: 0.6rem 0 1rem; }
+.pub-formulario { background: #fffdf8; border: 1px solid #e3d6c1; padding: 1rem 1.2rem; }
+.pub-formulario .titulo-bloque h1 { font-size: 1.3rem; }
+.pub-centro { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; padding: 16px; text-align: center; }
+.pub-entrar { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; background: #f7f1e6; }
+.pub-entrar-caja { background: #fffdf8; border-top: 4px solid #7b1c2c; padding: 2rem 1.6rem; width: min(420px, 100%); box-shadow: 0 10px 30px rgba(60, 30, 20, 0.12); }
+.pub-entrar-caja img { height: 54px; display: block; margin: 0 auto 0.4rem; }
+.pub-entrar-caja h1 { text-align: center; margin: 0; letter-spacing: 0.14em; text-transform: uppercase; color: #7b1c2c; font-size: 1.4rem; }
+.pub-entrar-caja p { text-align: center; color: #5d524a; }
+@media (max-width: 600px) { .pub-quien span { display: none; } .pub-baldosa { min-height: 0; } }

@@ -133,11 +133,8 @@ export function semilla() {
       { id: 4, ciudad: 'Valladolid', email: 'valladolid@patriam.es', lat: 41.65, lon: -4.72, orden: 4, activa: true, aprobada: true },
     ],
     cargos: [
-      { id: 1, nombre: '', cargo: 'Presidente', orden: 1, visible: false, consentimiento_publicacion: true, foto_url: null },
-      { id: 2, nombre: '', cargo: 'Vicepresidente', orden: 2, visible: false, consentimiento_publicacion: true, foto_url: null },
-      { id: 3, nombre: '', cargo: 'Secretario', orden: 3, visible: false, consentimiento_publicacion: true, foto_url: null },
-      { id: 4, nombre: '', cargo: 'Tesorero', orden: 4, visible: false, consentimiento_publicacion: true, foto_url: null },
-      { id: 5, nombre: 'Álvaro Mencos', cargo: 'Responsable de Acción ciudadana', orden: 5, visible: true, consentimiento_publicacion: true, foto_url: imgAlvaro, foto_ilustracion: true },
+      { id: 1, nombre: 'Álvaro Mencos', cargo: 'Presidente', orden: 1, visible: true, consentimiento_publicacion: true, foto_url: imgAlvaro, foto_ilustracion: true },
+      { id: 2, nombre: 'Carlos Rubio', cargo: 'Secretario y tesorero', orden: 2, visible: true, consentimiento_publicacion: true, foto_url: null },
     ],
     documentos: [
       { id: 1, titulo: 'Estatutos', categoria: 'constitucion', archivo_url: '', fecha: '2026-01-15', publico: true },
