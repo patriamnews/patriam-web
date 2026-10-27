@@ -52,7 +52,7 @@ export default function Inicio() {
   const itemArticulo = (a) => (
     <li key={a.id}>
       <Link to={a.seccion === 'recomendaciones' && a.enlace_externo ? '/revista/recomendaciones' : `/articulo/${a.slug}`}>
-        <span className="mini-fecha">{fecha(a.publicado_at)}</span>
+        <span className="mini-fecha">{fecha(a.fecha || a.publicado_at)}</span>
         <b>{a.titulo}</b>
         {a.medio && <span className="mini">{a.medio}</span>}
       </Link>
@@ -100,7 +100,7 @@ export default function Inicio() {
                 <div>
                   <span className="etiqueta">Noticias y comunicados</span>
                   <h3>{latNoticia.titulo}</h3>
-                  <span className="mini-fecha">{fecha(latNoticia.publicado_at)}</span>
+                  <span className="mini-fecha">{fecha(latNoticia.fecha || latNoticia.publicado_at)}</span>
                 </div>
               </Link>
             )}
