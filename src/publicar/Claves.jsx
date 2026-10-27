@@ -1,12 +1,29 @@
 import { useState } from 'react'
 
 // Claves de los pagos y de la tienda. Se guardan en el servidor; aquí nunca se vuelven a ver enteras.
-const CAMPOS = [
-  ['stripe', 'Clave secreta de Stripe', 'Stripe › Desarrolladores › Claves de API › Clave secreta. Empieza por sk_live_ (o sk_test_ para pruebas).', 'sk_live_…'],
-  ['stripeWebhook', 'Secreto del webhook de Stripe', 'Stripe › Desarrolladores › Webhooks › añadir destino https://movimientopatriam.es/api/stripe-webhook.php con el evento «checkout.session.completed». Empieza por whsec_.', 'whsec_…'],
-  ['gelato', 'Clave de la API de Gelato', 'Gelato › Developer › API keys (la clave secreta).', ''],
-  ['gelatoTienda', 'Identificador de la tienda de Gelato (Store ID)', 'El código que sale en la dirección del navegador al entrar en la tienda en Gelato.', ''],
+// Todas las claves de las aplicaciones que usan la web y el boletín, agrupadas
+const GRUPOS = [
+  ['Cobros con tarjeta · Stripe', [
+    ['stripe', 'Clave secreta (secret key)', 'Stripe › Desarrolladores › Claves de API › Clave secreta. Empieza por sk_live_ (o sk_test_ para pruebas).', 'sk_live_…'],
+    ['stripeWebhook', 'Secreto del webhook', 'Stripe › Desarrolladores › Webhooks › añadir destino https://movimientopatriam.es/api/stripe-webhook.php con el evento «checkout.session.completed». Empieza por whsec_.', 'whsec_…'],
+  ]],
+  ['Tienda · Gelato (camisetas y tazas)', [
+    ['gelato', 'Clave de la API (secret key)', 'Gelato › Developer › API keys.', ''],
+    ['gelatoTienda', 'Identificador de la tienda (Store ID)', 'El código que sale en la dirección del navegador al entrar en la tienda en Gelato.', ''],
+  ]],
+  ['Tienda · Awin (libros de Casa del Libro)', [
+    ['awin', 'Identificador de publisher de Awin', 'Awin › tu cuenta (número de publisher). No es secreto; sirve para los enlaces de afiliado.', ''],
+  ]],
+  ['Correo · Brevo (boletín y comunicaciones)', [
+    ['brevo', 'Clave de la API', 'Brevo › SMTP y API › Claves de API. Empieza por xkeysib-.', 'xkeysib-…'],
+  ]],
+  ['WhatsApp · Meta (comunicaciones)', [
+    ['waToken', 'Token de acceso', 'Meta › tu app › WhatsApp (mejor el token permanente de «Usuarios del sistema»).', 'EAA…'],
+    ['waPhone', 'Identificador del número (Phone number ID)', 'Meta › WhatsApp › Configuración de la API (es un número largo, no el teléfono).', ''],
+    ['waPlantilla', 'Nombre de la plantilla', 'La plantilla aprobada para las comunicaciones, por ejemplo comunicacion_patriam.', 'comunicacion_patriam'],
+  ]],
 ]
+const SIN_OCULTAR = ['gelatoTienda', 'awin', 'waPhone', 'waPlantilla']
 
 async function llamar(cuerpo) {
   const r = await fetch('/api/claves.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) })
@@ -73,13 +90,22 @@ export default function Claves() {
   return (
     <form className="formulario" onSubmit={guardar}>
       <p className="letra-pequena">Se guardan solo en el servidor de Hostinger, fuera de la web y de GitHub. Una vez guardadas no se vuelven a enseñar: solo sus últimas letras. Para cambiar una, escriba la nueva y guarde; para borrarla, escriba un guion (-).</p>
-      {CAMPOS.map(([k, t, ayuda, ph]) => (
-        <label key={k}>
-          {t} {estado?.[k] ? <span className="estado estado-publicado">Puesta {estado[k]}</span> : <span className="estado estado-rechazado">Sin poner</span>}
-          <input type={k === 'gelatoTienda' ? 'text' : 'password'} value={v[k] || ''} onChange={(e) => setV({ ...v, [k]: e.target.value })} placeholder={ph} autoComplete="off" />
-          <small>{ayuda}</small>
-        </label>
+      {GRUPOS.map(([grupo, campos]) => (
+        <fieldset key={grupo} className="grupo">
+          <legend>{grupo}</legend>
+          {campos.map(([k, t, ayuda, ph]) => (
+            <label key={k}>
+              {t} {estado?.[k] ? <span className="estado estado-publicado">Puesta {estado[k]}</span> : <span className="estado estado-rechazado">Sin poner</span>}
+              <input type={SIN_OCULTAR.includes(k) ? 'text' : 'password'} value={v[k] || ''} onChange={(e) => setV({ ...v, [k]: e.target.value })} placeholder={ph} autoComplete="off" />
+              <small>{ayuda}</small>
+            </label>
+          ))}
+        </fieldset>
       ))}
+      <div className="caja-info">
+        <b>Supabase (base de datos)</b> no va aquí: su dirección y su clave pública se ponen en GitHub › patriam-web › Settings › Secrets and variables › Actions
+        (VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY), porque la web las necesita al construirse. Las contraseñas de las cuentas (Hostinger, GitHub, Netlify…) van en el documento de accesos, no en la web.
+      </div>
       {msg && <p className="aviso-ok">{msg}</p>}
       {error && <p className="error">{error}</p>}
       <button className="btn">Guardar claves</button>

@@ -55,7 +55,7 @@ const COSAS = [
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
   { ruta: 'redes', titulo: 'Redes sociales', texto: 'Preparar y apuntar publicaciones en X, Instagram…', sale: 'Redes', icono: 'red', grupo: 'otros' },
-  { ruta: 'claves', titulo: 'Claves secretas (Stripe y Gelato)', texto: 'Secret keys de los cobros con tarjeta y de la tienda de Gelato. Con contraseña propia.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
+  { ruta: 'claves', titulo: 'Claves secretas (APIs)', texto: 'Stripe, Gelato, Awin, Brevo y WhatsApp. Se ponen una vez, con contraseña propia.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
 export default function Publicar() {
@@ -98,7 +98,7 @@ export default function Publicar() {
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
           <Route path="redes" element={<Paso titulo="Redes sociales"><Redes /></Paso>} />
-          <Route path="claves" element={<Paso titulo="Claves de los pagos y la tienda" ayuda="Stripe (cobros con tarjeta) y Gelato (camisetas y tazas). Se ponen una vez y quedan guardadas en el servidor."><Claves /></Paso>} />
+          <Route path="claves" element={<Paso titulo="Claves secretas de las aplicaciones" ayuda="Todas las claves de API que usan la web y el boletín. Se ponen una vez y quedan guardadas solo en el servidor."><Claves /></Paso>} />
           <Route path="mis-publicaciones" element={<Paso titulo="Lo publicado y en revisión"><Articulos base="/publicar" /></Paso>} />
           <Route path="aprobar" element={puedeAprobar(perfil) ? <Paso titulo="Pendiente de aprobar"><Aprobaciones base="/publicar" /></Paso> : <Navigate to="/publicar" replace />} />
           <Route path="*" element={<Navigate to="/publicar" replace />} />
