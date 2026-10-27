@@ -96,8 +96,9 @@ if ($tipo === 'cuota') {
   }
   if (!$i) salir(['error' => 'No hay nada que pagar.'], 400);
   // Envío: lo que esté puesto en Ajustes (una vez por pedido; gratis a partir de cierto importe)
-  $aj = supabaseLeer('ajustes?select=envio_coste,envio_gratis_desde&id=eq.1')[0] ?? [];
-  $envio = $gelato ? $euros($aj['envio_coste'] ?? 0) : 0;
+  $aj = supabaseLeer('ajustes?select=envio_coste,envio_adicional,envio_gratis_desde&id=eq.1')[0] ?? [];
+  $prendas = array_sum(array_map(fn($g) => $g['cantidad'], $gelato));
+  $envio = $gelato ? $euros((float)($aj['envio_coste'] ?? 0) + (float)($aj['envio_adicional'] ?? 0) * max(0, $prendas - 1)) : 0;
   $gratis = $euros($aj['envio_gratis_desde'] ?? 0);
   if ($gratis > 0 && $subtotal >= $gratis) $envio = 0;
   if ($envio > 0) {

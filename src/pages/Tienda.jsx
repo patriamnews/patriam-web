@@ -303,7 +303,7 @@ export function Producto() {
               Precio sin gastos de envío. Lo fabrica y envía Gelato, nuestro taller de impresión bajo demanda.{' '}
               {aj && !(Number(aj.envio_coste) > 0)
                 ? 'El envío es gratuito.'
-                : `El envío se cobra una sola vez al final del pedido (${euros(aj?.envio_coste)}), sea cual sea el número de productos${Number(aj?.envio_gratis_desde) > 0 ? `, y es gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}. Son los gastos de envío de Gelato, no de PATRIAM.`}
+                : `El precio es solo el de la prenda. El envío se suma al final del pedido: ${euros(aj?.envio_coste)} la primera prenda${Number(aj?.envio_adicional) > 0 ? ` y ${euros(aj.envio_adicional)} cada prenda más` : ''}${Number(aj?.envio_gratis_desde) > 0 ? `, gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}. Son los gastos de envío de Gelato, no de PATRIAM.`}
             </p>
           )}
           </>)}
@@ -336,7 +336,9 @@ export function Carrito() {
   // Sin recogida en la sede: todo lo físico se envía (lo fabrica y envía Gelato)
   const entrega = conEnvio ? 'envio' : 'no_aplica'
   const gratisDesde = Number(aj.envio_gratis_desde) || Infinity
-  const envio = entrega === 'envio' && subtotal < gratisDesde ? Number(aj.envio_coste) || 0 : 0
+  // Envío de Gelato: la primera prenda y un poco más por cada prenda adicional del mismo pedido
+  const prendas = items.filter((i) => i.gelato).reduce((t, i) => t + i.cantidad, 0) || items.reduce((t, i) => t + i.cantidad, 0)
+  const envio = entrega === 'envio' && subtotal < gratisDesde ? Math.round(((Number(aj.envio_coste) || 0) + (Number(aj.envio_adicional) || 0) * Math.max(0, prendas - 1)) * 100) / 100 : 0
   const total = subtotal + envio
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
 
@@ -405,7 +407,7 @@ export function Carrito() {
             </div>
             <div className="totales">
               <div><span>Subtotal</span><span>{euros(subtotal)}</span></div>
-              {conEnvio && <div><span>Envío</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
+              {conEnvio && <div><span>Envío ({prendas} {prendas === 1 ? 'prenda' : 'prendas'})</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
               <div className="total"><span>Total</span><span>{euros(total)}</span></div>
               {conEnvio && Number.isFinite(gratisDesde) && <p className="letra-pequena">Envío gratis a partir de {euros(gratisDesde)}.</p>}
             </div>
@@ -425,7 +427,7 @@ export function Carrito() {
                 <legend>Entrega</legend>
                 <p>Envío a domicilio</p>
                 {items.some((i) => i.gelato) && (
-                  <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). {envio ? 'Los gastos de envío se cobran una sola vez por pedido y son los de Gelato, no de PATRIAM.' : 'Envío gratuito.'}</p>
+                  <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). {envio ? 'Los gastos de envío van aparte, desglosados arriba, y son los de Gelato, no de PATRIAM.' : 'Envío gratuito.'}</p>
                 )}
                 <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
               </fieldset>
