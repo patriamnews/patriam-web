@@ -4,21 +4,12 @@
    (Comunicaciones › Claves de envío › Stripe) y queda en la carpeta privada del servidor de Hostinger.
    Este archivo crea la sesión de pago y devuelve la dirección de la página segura de Stripe. */
 
-header('Content-Type: application/json; charset=utf-8');
-header('Cache-Control: no-store');
-function salir($d, $c = 200) { http_response_code($c); echo json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); exit; }
+require_once __DIR__ . '/_comun.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permitido'], 405);
 
-// La clave se lee de la carpeta privada (la misma que usa el boletín)
-function claveStripe() {
-  foreach ([dirname(__DIR__, 2) . '/patriam-privado/claves.json', dirname(__DIR__) . '/patriam-privado/claves.json'] as $f) {
-    if (is_file($f)) { $k = json_decode(file_get_contents($f), true) ?: []; if (!empty($k['stripe'])) return $k['stripe']; }
-  }
-  return '';
-}
-$CLAVE = claveStripe();
+$CLAVE = claves()['stripe'] ?? '';
 if (!$CLAVE) salir(['error' => 'El pago con tarjeta aún no está activado. Inténtelo más tarde o escríbanos.'], 503);
 
 $p = json_decode(file_get_contents('php://input'), true) ?: [];
@@ -85,17 +76,24 @@ if ($tipo === 'cuota') {
   if (!$i) salir(['error' => 'No hay nada que pagar.'], 400);
   $f['mode'] = 'payment';
   $f['payment_intent_data[metadata][referencia]'] = $ref;
+  // Artículos que fabrica y envía Gelato: Stripe pide la dirección de envío y el pedido se guarda para mandarlo a Gelato al cobrar
+  $gelato = [];
+  foreach ($items as $n => $it) {
+    $g = $it['gelato'] ?? null;
+    if (!$g || empty($g['uid']) || empty($g['archivo'])) continue;
+    if (!preg_match('/^[a-z0-9_\-.]+$/i', $g['uid']) || !preg_match('#^https://#', $g['archivo'])) salir(['error' => 'Producto de Gelato mal configurado.'], 400);
+    $gelato[] = ['ref' => $ref . '-' . ($n + 1), 'uid' => $g['uid'], 'archivo' => $g['archivo'], 'cantidad' => max(1, min(50, (int)($it['cantidad'] ?? 1))), 'nombre' => $it['nombre'] ?? ''];
+  }
+  if ($gelato) {
+    $f['metadata[gelato]'] = '1';
+    $f['shipping_address_collection[allowed_countries][0]'] = 'ES';
+    $f['phone_number_collection[enabled]'] = 'true';
+    if (!leerPedido($ref)) guardarPedido($ref, ['referencia' => $ref, 'email' => $email, 'gelato' => $gelato, 'estado' => 'pendiente de pago', 'creado' => date('c')]);
+  }
 } else {
   salir(['error' => 'Tipo de pago no válido.'], 400);
 }
 
-$ch = curl_init('https://api.stripe.com/v1/checkout/sessions');
-curl_setopt_array($ch, [
-  CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 30, CURLOPT_POST => true,
-  CURLOPT_USERPWD => $CLAVE . ':', CURLOPT_POSTFIELDS => http_build_query($f),
-  CURLOPT_HTTPHEADER => ['Stripe-Version: 2024-06-20'],
-]);
-$r = curl_exec($ch); $c = curl_getinfo($ch, CURLINFO_RESPONSE_CODE); curl_close($ch);
-$d = json_decode((string)$r, true) ?: [];
+[$c, $d] = pedirHttp('https://api.stripe.com/v1/checkout/sessions', ['Stripe-Version: 2024-06-20'], http_build_query($f), $CLAVE . ':');
 if ($c !== 200 || empty($d['url'])) salir(['error' => 'Stripe no ha podido preparar el pago: ' . ($d['error']['message'] ?? 'error ' . $c)], 502);
 salir(['url' => $d['url']]);

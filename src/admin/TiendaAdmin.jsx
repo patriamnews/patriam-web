@@ -148,6 +148,23 @@ export default function TiendaAdmin({ nuevo }) {
                 </div>
               )}
               {f.categoria !== 'actividades' && (
+                <fieldset className="grupo">
+                  <legend>Gelato (lo fabrica y lo envía Gelato con la etiqueta y el embalaje de PATRIAM)</legend>
+                  <p className="letra-pequena">
+                    Rellénelo si este producto lo hace Gelato. El cliente paga aquí con tarjeta y el pedido le llega solo a Gelato.
+                    El código de cada talla se copia del catálogo de Gelato (Product UID). La etiqueta y el embalaje con vuestra marca se configuran en el panel de Gelato (plan Gelato+).
+                  </p>
+                  <label>
+                    Código de Gelato por talla (una línea por talla: TALLA=código; si no hay tallas, solo el código)
+                    <textarea rows={4} value={f.gelato_uids || ''} onChange={set('gelato_uids')} placeholder={'S=apparel_product_gca_t-shirt_…_gsi_s_gco_white_gpr_4-0\nM=apparel_product_gca_t-shirt_…_gsi_m_gco_white_gpr_4-0'} />
+                  </label>
+                  <label>
+                    Enlace al archivo del diseño para imprimir (PNG o PDF en alta resolución, dirección que empiece por https://)
+                    <input type="url" value={f.gelato_archivo || ''} onChange={set('gelato_archivo')} placeholder="https://…/diseno-camiseta.png" />
+                  </label>
+                </fieldset>
+              )}
+              {f.categoria !== 'actividades' && !f.gelato_uids && (
                 <label>
                   Enlace de La Tostadora (opcional)
                   <input type="url" value={f.enlace_externo || ''} onChange={set('enlace_externo')} placeholder="https://www.latostadora.com/…" />

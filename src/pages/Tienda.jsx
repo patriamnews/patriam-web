@@ -219,7 +219,7 @@ export function Carrito() {
           <h2>Pedido recibido</h2>
           <p>Referencia <b>{ok.referencia}</b>. Le enviaremos la confirmación a {ok.email}.</p>
           {ok.total > 0 ? (
-            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, items: ok.items.map((x) => ({ nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad })) }} />
+            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, items: ok.items.map((x) => ({ nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
           ) : (
             <p>Su inscripción es gratuita. No tiene que pagar nada.</p>
           )}
@@ -273,6 +273,9 @@ export function Carrito() {
                 <legend>Entrega</legend>
                 <label className="check"><input type="radio" checked={f.entrega === 'envio'} onChange={() => setF({ ...f, entrega: 'envio' })} /><span>Envío a domicilio</span></label>
                 <label className="check"><input type="radio" checked={f.entrega === 'recogida'} onChange={() => setF({ ...f, entrega: 'recogida' })} /><span>{aj.recogida || 'Recogida en la sede'}</span></label>
+                {items.some((i) => i.gelato) && (
+                  <p className="caja-aviso">Las prendas y tazas de PATRIAM las fabrica y envía nuestro taller de impresión a la dirección que indique al pagar con tarjeta (3 a 5 días laborables).</p>
+                )}
                 {f.entrega === 'envio' && (
                   <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
                 )}

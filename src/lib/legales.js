@@ -74,6 +74,7 @@ No cedemos sus datos a terceros salvo obligación legal. Prestan servicios a la 
 - Base de datos: Supabase, con servidores en la Unión Europea
 - Envío de correos y del boletín por correo electrónico: Brevo (Sendinblue SAS), con sede en Francia
 - Pagos con tarjeta: Stripe Payments Europe, Ltd., con sede en Irlanda
+- Fabricación y envío de prendas y tazas de la tienda: Gelato (Gelato AS, Noruega, y sus talleres asociados en Europa), solo con el nombre, la dirección, el email y el teléfono de entrega
 - Envíos de la tienda: la empresa de mensajería que realice cada envío, solo con el nombre y la dirección de entrega
 
 ## Transferencias internacionales
