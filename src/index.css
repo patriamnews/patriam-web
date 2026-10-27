@@ -1500,3 +1500,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .producto:hover .prod-img-hover, .producto:focus-visible .prod-img-hover { opacity: 1; }
 .puntos-color { display: flex; flex-wrap: wrap; gap: 5px; margin-top: .35rem; }
 .puntos-color i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); display: inline-block; }
+
+/* Índice de apartados arriba de la tienda */
+.indice-tienda { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .6rem; margin: 1rem 0 1.6rem; }
+.indice-tienda button { text-align: left; padding: .8rem 1rem; border: 1px solid var(--linea); border-radius: 10px; background: var(--papel); cursor: pointer; display: flex; flex-direction: column; gap: .15rem; font: inherit; color: var(--tinta); transition: border-color .15s, transform .15s; }
+.indice-tienda button:hover { border-color: var(--granate, #7a1c28); transform: translateY(-2px); }
+.indice-tienda b { font-size: .95rem; }
+.indice-tienda small { color: #777; font-size: .78rem; }
+.tienda-apartado { scroll-margin-top: 90px; }

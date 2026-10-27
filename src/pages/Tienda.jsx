@@ -30,7 +30,7 @@ export function ImagenProducto({ p, grande }) {
 
 // Color de cada variante para las muestras redondas de la tienda
 const COLOR_HEX = {
-  Blanco: '#f7f6f2', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
+  Blanco: '#f7f6f2', Marfil: '#efe9d9', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
   'Azul vaquero': '#637792', 'Azul hortensia': '#50638c', 'Verde oliva': '#3f4927', Teja: '#96483e', Gris: '#504c4b',
   'Marrón café': '#4a3c34', 'Azul noche': '#1b375e', Granate: '#6e1c28', Crema: '#ece4d3', Beige: '#d9c9a8', Moca: '#7a6254', 'Gris sombra': '#48484b', Avena: '#d6cbba',
 }
@@ -102,10 +102,21 @@ export function Tienda() {
         <p className="vacio">Cargando…</p>
       ) : (
         <>
+          <nav className="indice-tienda" aria-label="Apartados de la tienda">
+            {SECCIONES.map(([clave, titulo]) => {
+              const n = lista.filter((p) => p.categoria !== 'libros' && (p.seccion || 'otros') === clave).length
+              return n ? (
+                <button key={clave} type="button" onClick={() => document.getElementById('sec-' + clave)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                  <b>{titulo}</b>
+                  <small>{n} {n === 1 ? 'modelo' : 'modelos'}</small>
+                </button>
+              ) : null
+            })}
+          </nav>
           {SECCIONES.map(([clave, titulo, texto]) => {
             const items = lista.filter((p) => p.categoria !== 'libros' && (p.seccion || 'otros') === clave)
             return items.length ? (
-              <section key={clave} className="tienda-apartado">
+              <section key={clave} id={'sec-' + clave} className="tienda-apartado">
                 <h2 className="titulo-seccion">{titulo}</h2>
                 {texto && <p className="letra-pequena">{texto}</p>}
                 <Rejilla items={items} />
