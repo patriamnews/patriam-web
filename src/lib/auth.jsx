@@ -1,3 +1,4 @@
+import { salirEquipo } from './equipo'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
 
@@ -52,7 +53,7 @@ export function AuthProvider({ children }) {
     })()
   }, [session, version])
 
-  const salir = () => supabase.auth.signOut()
+  const salir = () => { salirEquipo(); return supabase.auth.signOut() }
   const recargar = () => setVersion((v) => v + 1)
   // Mientras no se han cargado los datos de la sesión actual, no se decide el tipo de cuenta
   const listo = !session || cargadoPara === session.user.id

@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../lib/auth'
+import { tokenEquipo } from '../lib/equipo'
 
 // Claves de los pagos y de la tienda. Se guardan en el servidor; aquí nunca se vuelven a ver enteras.
 // Todas las claves de las aplicaciones que usan la web y el boletín, agrupadas
@@ -26,66 +28,39 @@ const GRUPOS = [
 const SIN_OCULTAR = ['gelatoTienda', 'awin', 'waPhone', 'waPlantilla']
 
 async function llamar(cuerpo) {
-  const r = await fetch('/api/claves.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) })
+  const r = await fetch('/api/claves.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenEquipo(), ...cuerpo }) })
   const d = await r.json().catch(() => ({}))
-  if (!r.ok) throw new Error(d.error || 'No se ha podido conectar con el servidor.')
+  if (!r.ok) throw new Error(d.error === 'sesion' ? 'sesion' : d.error || 'No se ha podido conectar con el servidor.')
   return d
 }
 
 export default function Claves() {
-  const [clave, setClave] = useState('')
-  const [dentro, setDentro] = useState(false)
-  const [cambiar, setCambiar] = useState(false)
-  const [nueva, setNueva] = useState({ a: '', b: '' })
+  const { salir } = useAuth()
   const [estado, setEstado] = useState(null)
   const [v, setV] = useState({})
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
 
-  const entrar = async (e) => {
-    e.preventDefault(); setError(''); setMsg('')
-    try {
-      const d = await llamar({ clave })
-      if (d.cambiar) { setCambiar(true); return }
-      setEstado(d.estado); setDentro(true)
-    } catch (err) { setError(err.message) }
-  }
-  const cambiarClave = async (e) => {
-    e.preventDefault(); setError('')
-    if (nueva.a !== nueva.b) return setError('Las dos contraseñas no coinciden.')
-    try {
-      const d = await llamar({ clave, nueva: nueva.a })
-      setClave(nueva.a); setCambiar(false); setEstado(d.estado); setDentro(true); setMsg('Contraseña cambiada. Guárdela en un lugar seguro.')
-    } catch (err) { setError(err.message) }
-  }
+  useEffect(() => {
+    llamar({}).then((d) => setEstado(d.estado)).catch((err) => setError(err.message))
+  }, [])
+
   const guardar = async (e) => {
     e.preventDefault(); setError(''); setMsg('')
     try {
-      const d = await llamar({ clave, valores: v })
+      const d = await llamar({ valores: v })
       setEstado(d.estado); setV({}); setMsg('Claves guardadas en el servidor.')
     } catch (err) { setError(err.message) }
   }
 
-  if (cambiar)
+  if (error === 'sesion')
     return (
-      <form className="formulario" onSubmit={cambiarClave}>
-        <p>Es la primera vez: ponga una contraseña nueva para las claves (al menos 10 caracteres). Solo la necesitarán quienes vayan a cambiar las claves de pago.</p>
-        <label>Nueva contraseña<input type="password" required minLength={10} value={nueva.a} onChange={(e) => setNueva({ ...nueva, a: e.target.value })} autoComplete="new-password" /></label>
-        <label>Repítala<input type="password" required minLength={10} value={nueva.b} onChange={(e) => setNueva({ ...nueva, b: e.target.value })} autoComplete="new-password" /></label>
-        {error && <p className="error">{error}</p>}
-        <button className="btn">Guardar contraseña</button>
-      </form>
+      <div>
+        <p>Por seguridad, para ver las claves hay que volver a entrar con su email y su contraseña.</p>
+        <button className="btn" onClick={salir}>Volver a entrar</button>
+      </div>
     )
-
-  if (!dentro)
-    return (
-      <form className="formulario" onSubmit={entrar}>
-        <p>Por seguridad, las claves de pago tienen su propia contraseña, que comprueba el servidor. La primera vez es <b>patriam12345</b> y le pedirá cambiarla.</p>
-        <label>Contraseña de claves<input type="password" required value={clave} onChange={(e) => setClave(e.target.value)} autoComplete="current-password" /></label>
-        {error && <p className="error">{error}</p>}
-        <button className="btn">Entrar</button>
-      </form>
-    )
+  if (!estado && !error) return <p className="vacio">Cargando…</p>
 
   return (
     <form className="formulario" onSubmit={guardar}>

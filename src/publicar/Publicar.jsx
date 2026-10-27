@@ -4,6 +4,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
+import { entrar as entrarEquipo } from '../lib/equipo'
 import { useAuth } from '../lib/auth'
 import { getAjustes } from '../lib/data'
 import { urlBoletin } from '../lib/boletin'
@@ -55,7 +56,7 @@ const COSAS = [
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
   { ruta: 'redes', titulo: 'Redes sociales', texto: 'Preparar y apuntar publicaciones en X, Instagram…', sale: 'Redes', icono: 'red', grupo: 'otros' },
-  { ruta: 'claves', titulo: 'Claves secretas (APIs)', texto: 'Stripe, Gelato, Awin, Brevo y WhatsApp. Se ponen una vez, con contraseña propia.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
+  { ruta: 'claves', titulo: 'Claves secretas (APIs)', texto: 'Stripe, Gelato, Awin, Brevo y WhatsApp. Se ponen una vez y quedan en el servidor.', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
 export default function Publicar() {
@@ -208,9 +209,9 @@ function Entrar() {
     e.preventDefault()
     setError('')
     setEnviando(true)
-    const { error } = await supabase.auth.signInWithPassword({ email: f.email.trim(), password: f.clave })
+    const { error } = await entrarEquipo(f.email.trim(), f.clave)
     setEnviando(false)
-    if (error) setError('Email o contraseña incorrectos.')
+    if (error) setError(error.message && !/Credenciales/.test(error.message) ? error.message : 'Email o contraseña incorrectos.')
   }
   return (
     <div className="pub-entrar">

@@ -341,6 +341,21 @@ const auth = {
     avisar()
     return { data: { session: sesion }, error: null }
   },
+  // Solo en la demostración: el servidor (api/equipo.php) ya ha comprobado la contraseña del equipo;
+  // aquí se abre la sesión de ese miembro del equipo en este navegador.
+  async entrarEquipo(email, cambiar) {
+    const correo = email.trim().toLowerCase()
+    const eh = await sha(correo)
+    const u = db.usuarios.find((x) => x.email_hash === eh)
+    if (!u) return { error: { message: 'Credenciales incorrectas' } }
+    const p = db.perfiles.find((x) => x.id === u.id)
+    if (p) { p.email = correo; p.cambiar_clave = !!cambiar }
+    guardar()
+    sesion = { user: { id: u.id, email: correo } }
+    escribir(SESION, sesion)
+    avisar()
+    return { data: { session: sesion }, error: null }
+  },
   async signUp({ email, password, options }) {
     const eh = await sha(email.trim().toLowerCase())
     if (db.usuarios.some((x) => x.email_hash === eh || (x.email || '').toLowerCase() === email.toLowerCase())) return { error: { message: 'Ese email ya está registrado' } }

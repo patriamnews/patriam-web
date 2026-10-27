@@ -51,3 +51,21 @@ function avisar($asunto, $texto) {
     'textContent' => $texto,
   ], JSON_UNESCAPED_UNICODE));
 }
+
+/* Sesión del equipo: ficha firmada por el servidor (12 horas) */
+function secretoWeb() {
+  $f = privado() . '/secreto-web.txt';
+  if (!is_file($f)) { file_put_contents($f, bin2hex(random_bytes(32)), LOCK_EX); @chmod($f, 0600); }
+  return trim(file_get_contents($f));
+}
+function crearToken($h) {
+  $d = rtrim(strtr(base64_encode(json_encode(['h' => $h, 'x' => time() + 43200])), '+/', '-_'), '=');
+  return $d . '.' . hash_hmac('sha256', $d, secretoWeb());
+}
+function comprobarToken($t) {
+  $t = (string)$t; if (strpos($t, '.') === false) return null;
+  [$d, $firma] = explode('.', $t, 2);
+  if (!hash_equals(hash_hmac('sha256', $d, secretoWeb()), $firma)) return null;
+  $j = json_decode(base64_decode(strtr($d, '-_', '+/')), true);
+  return ($j && ($j['x'] ?? 0) > time()) ? ($j['h'] ?? null) : null;
+}

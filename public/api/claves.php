@@ -1,35 +1,16 @@
 <?php
-/* Claves de los pagos y de la tienda (Stripe y Gelato), puestas desde «Publicar».
+/* Claves secretas de las aplicaciones (Stripe, Gelato, Awin, Brevo, WhatsApp), puestas desde «Publicar».
    Se guardan solo en la carpeta privada del servidor (fuera de la web y de GitHub) y nunca se devuelven enteras.
-   Para poder verlas o cambiarlas hace falta la contraseña de claves. La primera vez es patriam12345 y obliga a cambiarla.
-   Tras 5 intentos fallidos se bloquea 15 minutos. */
+   Solo entra el equipo con su sesión de Publicar (comprobada por el servidor en equipo.php). */
 require_once __DIR__ . '/_comun.php';
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permitido'], 405);
 
-$fA = privado() . '/acceso-claves.json';
-$acc = is_file($fA) ? (json_decode(file_get_contents($fA), true) ?: []) : [];
-if (empty($acc['hash'])) $acc = ['hash' => password_hash('patriam12345', PASSWORD_DEFAULT), 'cambiar' => true, 'fallos' => 0, 'hasta' => 0];
-$guardarAcc = function () use (&$acc, $fA) { file_put_contents($fA, json_encode($acc), LOCK_EX); @chmod($fA, 0600); };
-
 $p = json_decode(file_get_contents('php://input'), true) ?: [];
-if (($acc['hasta'] ?? 0) > time()) salir(['error' => 'Demasiados intentos. Espere unos minutos.'], 429);
-if (!password_verify((string)($p['clave'] ?? ''), $acc['hash'])) {
-  $acc['fallos'] = ($acc['fallos'] ?? 0) + 1;
-  if ($acc['fallos'] >= 5) { $acc['hasta'] = time() + 900; $acc['fallos'] = 0; }
-  $guardarAcc();
-  salir(['error' => 'Contraseña incorrecta.'], 401);
-}
-$acc['fallos'] = 0; $acc['hasta'] = 0;
-
-// Cambio de contraseña (obligatorio la primera vez)
-$nueva = (string)($p['nueva'] ?? '');
-if ($nueva !== '') {
-  if (mb_strlen($nueva) < 10) salir(['error' => 'La nueva contraseña debe tener al menos 10 caracteres.'], 400);
-  if ($nueva === 'patriam12345') salir(['error' => 'La nueva contraseña no puede ser la inicial.'], 400);
-  $acc['hash'] = password_hash($nueva, PASSWORD_DEFAULT); $acc['cambiar'] = false;
-}
-$guardarAcc();
-if (!empty($acc['cambiar'])) salir(['cambiar' => true]);
+// Solo el equipo, con su sesión de Publicar (la misma contraseña con la que entra)
+$h = comprobarToken($p['token'] ?? '');
+$eq = is_file(privado() . '/equipo.json') ? (json_decode(file_get_contents(privado() . '/equipo.json'), true) ?: []) : [];
+if (!$h || empty($eq[$h])) salir(['error' => 'sesion'], 401);
+if (!empty($eq[$h]['cambiar'])) salir(['error' => 'Antes tiene que cambiar su contraseña inicial.'], 403);
 
 // Guardar claves (solo las que se escriben; «-» borra)
 $fK = privado() . '/claves.json';

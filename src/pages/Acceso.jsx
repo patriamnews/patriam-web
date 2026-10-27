@@ -1,3 +1,4 @@
+import { entrar as entrarEquipo } from '../lib/equipo'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { supabase, DEMO } from '../lib/supabase'
@@ -28,8 +29,8 @@ export default function Acceso() {
     setMsg('')
     setError('')
     if (modo === 'entrar') {
-      const { error } = await supabase.auth.signInWithPassword({ email: f.email.trim(), password: f.clave })
-      if (error) setError('Email o contraseña incorrectos.')
+      const { error } = await entrarEquipo(f.email.trim(), f.clave)
+      if (error) setError(error.message && !/Credenciales/.test(error.message) ? error.message : 'Email o contraseña incorrectos.')
     } else if (modo === 'registro') {
       const { error } = await supabase.auth.signUp({
         email: f.email.trim(),

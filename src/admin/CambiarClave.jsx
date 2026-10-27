@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../lib/auth'
+import { cambiarClaveEquipo } from '../lib/equipo'
 import logoClaro from '../assets/logo.png'
 
 // Primera entrada: obligatorio cambiar la contraseña inicial antes de usar el panel
@@ -16,6 +17,8 @@ export default function CambiarClave() {
     if (f.a.length < 10) return setError('La contraseña debe tener al menos 10 caracteres.')
     if (f.a !== f.b) return setError('Las dos contraseñas no coinciden.')
     setEnviando(true)
+    const srv = await cambiarClaveEquipo(f.a)
+    if (srv.error) { setEnviando(false); return setError(srv.error) }
     const { error: e1 } = await supabase.auth.updateUser({ password: f.a })
     if (!e1) await supabase.from('perfiles').update({ cambiar_clave: false }).eq('id', perfil.id)
     setEnviando(false)
