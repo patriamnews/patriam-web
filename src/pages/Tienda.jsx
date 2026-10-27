@@ -110,9 +110,16 @@ export function Producto() {
   if (!p) return <NoEncontrado />
 
   const ops = opciones(p)
+  // Opciones «Color / Talla»: se eligen por separado y la foto cambia con el color
+  const dobles = ops.length > 0 && ops.every((o) => o.includes(' / '))
+  const colores = dobles ? [...new Set(ops.map((o) => o.split(' / ')[0]))] : []
+  const tallas = dobles ? [...new Set(ops.map((o) => o.split(' / ')[1]))] : []
+  const [colorSel, tallaSel] = dobles ? (opcion || ' / ').split(' / ') : []
+  const elegir = (c, t) => setOpcion(c && t && ops.includes(`${c} / ${t}`) ? `${c} / ${t}` : `${c || ''} / ${t || ''}`)
+  const foto = dobles && colorSel && p.fotos?.[colorSel] ? { ...p, imagen_url: p.fotos[colorSel] } : p
   const esActividad = p.categoria === 'actividades'
   const agregar = () => {
-    if (ops.length && !opcion) return
+    if (ops.length && !ops.includes(opcion)) return
     anadir(p, opcion, cantidad)
     setOk(true)
   }
@@ -121,7 +128,7 @@ export function Producto() {
     <div className="contenedor bloque">
       <Link to="/tienda" className="etiqueta">← Tienda</Link>
       <div className="ficha">
-        <ImagenProducto p={p} grande />
+        <ImagenProducto p={foto} grande />
         <div>
           <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
           <h1>{p.nombre}</h1>
@@ -145,7 +152,23 @@ export function Producto() {
               </p>
             </>
           ) : (<>
-          {ops.length > 0 && (
+          {dobles && (
+            <>
+              <div className="tallas">
+                <span>Color</span>
+                {colores.map((c) => (
+                  <button key={c} type="button" className={colorSel === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>{c}</button>
+                ))}
+              </div>
+              <div className="tallas">
+                <span>Talla</span>
+                {tallas.map((t) => (
+                  <button key={t} type="button" className={tallaSel === t ? 'activo' : ''} disabled={colorSel && !ops.includes(`${colorSel} / ${t}`)} onClick={() => elegir(colorSel, t)}>{t}</button>
+                ))}
+              </div>
+            </>
+          )}
+          {ops.length > 0 && !dobles && (
             <div className="tallas">
               <span>Talla</span>
               {ops.map((o) => (
@@ -155,11 +178,11 @@ export function Producto() {
           )}
           <div className="acciones">
             <input className="cantidad" type="number" min="1" max={esActividad ? 5 : 20} value={cantidad} onChange={(e) => setCantidad(Math.max(1, Number(e.target.value)))} aria-label="Cantidad" />
-            <button className="btn" onClick={agregar} disabled={ops.length > 0 && !opcion}>
+            <button className="btn" onClick={agregar} disabled={ops.length > 0 && !ops.includes(opcion)}>
               {esActividad ? (Number(p.precio) === 0 ? 'Inscribirme' : 'Reservar plaza') : 'Añadir al carrito'}
             </button>
           </div>
-          {ops.length > 0 && !opcion && <p className="letra-pequena">Elija una talla.</p>}
+          {ops.length > 0 && !ops.includes(opcion) && <p className="letra-pequena">{dobles ? 'Elija color y talla.' : 'Elija una talla.'}</p>}
           </>)}
           {ok && (
             <p className="aviso-ok">

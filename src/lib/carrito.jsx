@@ -28,13 +28,15 @@ export function CarritoProvider({ children }) {
   // Productos de Gelato: código de producto (cambia con la talla) y archivo del diseño
   const datosGelato = (p, opcion) => {
     // Cada código puede ir con «#variante» si el producto se hizo en la tienda de Gelato (allí ya está el diseño)
-    if (!p.gelato_uids || (!p.gelato_archivo && !p.gelato_producto)) return null
+    if (!p.gelato_uids) return null
     const lineas = String(p.gelato_uids).split('\n').map((l) => l.trim()).filter(Boolean)
     const conTalla = lineas.map((l) => l.split('=')).find(([t]) => opcion && t.trim().toLowerCase() === String(opcion).toLowerCase())
     const uid = conTalla ? conTalla.slice(1).join('=').trim() : lineas.length === 1 && !lineas[0].includes('=') ? lineas[0] : ''
     if (!uid) return null
-    const [codigo, variante] = uid.split('#')
-    return { uid: codigo.trim(), variante: variante?.trim() || null, archivo: p.gelato_archivo || null }
+    // «código#variante» (producto de la tienda de Gelato) o «código@archivo» (diseño propio de esa talla/color)
+    const [conVariante, archivoPropio] = uid.split('@')
+    const [codigo, variante] = conVariante.split('#')
+    return { uid: codigo.trim(), variante: variante?.trim() || null, archivo: archivoPropio?.trim() || p.gelato_archivo || null }
   }
 
   const anadir = (p, opcion, cantidad = 1) =>

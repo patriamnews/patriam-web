@@ -1160,3 +1160,4 @@ $$;
 create or replace function public.puede_publicar(s seccion_web) returns boolean language sql stable security definer set search_path = 'public' as $$
   select puede_aprobar()
 $$;
+alter table productos add column if not exists fotos jsonb;
