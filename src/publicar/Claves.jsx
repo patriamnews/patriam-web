@@ -11,7 +11,7 @@ const APPS = [
   { id: 'hostinger-correo', nombre: 'Hostinger · correo', para: 'Buzón hola@movimientopatriam.com: recibe todo el correo de PATRIAM y los avisos de pedidos', url: 'https://mail.hostinger.com' },
   { id: 'github', nombre: 'GitHub', para: 'Código de la web (patriam-web) y del boletín (boletin.patriam). Cada cambio se publica solo', url: 'https://github.com/patriamnews' },
   { id: 'netlify', nombre: 'Netlify', para: 'Servidor del boletín: sesiones del editor, suscriptores y datos', url: 'https://app.netlify.com' },
-  { id: 'supabase', nombre: 'Supabase', para: 'Base de datos de la web (pendiente de conectar)', url: 'https://supabase.com/dashboard',
+  { id: 'supabase', nombre: 'Supabase', para: 'Base de datos de la web: contenido, socios, equipo y archivos', url: 'https://supabase.com/dashboard',
     claves: [['supabaseUrl', 'Dirección del proyecto (Project URL)', 'https://xxxx.supabase.co'], ['supabaseAnon', 'Clave pública (anon key)', 'eyJ…']],
     nota: 'Para conectarla de verdad, estas dos también se ponen en GitHub › patriam-web › Settings › Secrets and variables › Actions.' },
   { id: 'brevo', nombre: 'Brevo', para: 'Envía por correo el boletín y las comunicaciones', url: 'https://app.brevo.com',

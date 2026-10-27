@@ -20,7 +20,11 @@ export async function entrar(email, clave) {
   if (!res.r.ok) return { error: { message: res.d.error || 'Email o contraseña incorrectos.' } }
   guardarToken(res.d.token)
   if (DEMO) return supabase.auth.entrarEquipo(email, res.d.cambiar)
-  return supabase.auth.signInWithPassword({ email, password: clave })
+  const primero = await supabase.auth.signInWithPassword({ email, password: clave })
+  if (!primero.error) return primero
+  // La contraseña buena es la del servidor: se copia a la base de datos y se vuelve a entrar
+  const { data: ok } = await supabase.rpc('sincronizar_clave_equipo', { p_email: email, p_clave: clave })
+  return ok ? supabase.auth.signInWithPassword({ email, password: clave }) : primero
 }
 
 export async function cambiarClaveEquipo(nueva) {
