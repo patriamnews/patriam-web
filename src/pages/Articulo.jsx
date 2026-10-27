@@ -26,7 +26,7 @@ export default function Articulo() {
       <div className="meta">
         {a.medio && <span className="medio">{a.medio}</span>}
         {a.firma && !a.medio && <span>{a.firma}</span>}
-        <span>{fecha(a.publicado_at)}</span>
+        <span>{fecha(a.fecha || a.publicado_at)}</span>
       </div>
       {!a.imagen_url && <Foto className="imagen-articulo" />}
       {a.imagen_url && (

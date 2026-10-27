@@ -1150,3 +1150,4 @@ alter table productos add column if not exists enlace_externo text;
 alter table productos drop constraint if exists productos_categoria_check;
 alter table productos add constraint productos_categoria_check check (categoria in ('libros', 'ropa', 'regalos', 'actividades'));
 alter table productos add column if not exists gelato_uids text, add column if not exists gelato_archivo text;  -- productos que fabrica y envía Gelato
+alter table articulos add column if not exists fecha date;  -- fecha del comunicado o de la aparición en medios (ordena y separa nuevos y anteriores)

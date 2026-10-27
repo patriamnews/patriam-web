@@ -10,7 +10,7 @@ export async function getPagina(clave) {
 export async function listarPublicados({ seccion, limite = 20 } = {}) {
   let q = supabase
     .from('articulos')
-    .select('id, titulo, slug, resumen, seccion, firma, medio, enlace_externo, tipo_recomendacion, imagen_url, imagen_ia, uso_ia, publicado_at')
+    .select('id, titulo, slug, resumen, seccion, firma, medio, enlace_externo, tipo_recomendacion, imagen_url, imagen_ia, uso_ia, publicado_at, fecha')
     .eq('estado', 'publicado')
     .order('publicado_at', { ascending: false })
     .limit(limite)

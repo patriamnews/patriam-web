@@ -18,7 +18,7 @@ export default function Tarjeta({ a }) {
         <div className="meta">
           {a.medio && <span className="medio">{a.medio}</span>}
           {a.firma && !a.medio && <span>{a.firma}</span>}
-          <span>{fecha(a.publicado_at)}</span>
+          <span>{fecha(a.fecha || a.publicado_at)}</span>
         </div>
       </div>
     </article>

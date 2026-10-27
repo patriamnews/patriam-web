@@ -36,6 +36,39 @@ export function Recomendacion({ r }) {
   )
 }
 
+// Comunicados y Medios: los del último mes arriba; los demás en «Anteriores», por años
+const UN_MES = 31 * 24 * 3600 * 1000
+function PorFecha({ items, seccion }) {
+  const f = (a) => new Date(a.fecha || a.publicado_at || 0)
+  const orden = [...items].sort((x, y) => f(y) - f(x))
+  const hoy = Date.now()
+  const nuevos = orden.filter((a) => hoy - f(a) <= UN_MES)
+  const antiguos = orden.filter((a) => hoy - f(a) > UN_MES)
+  const anos = [...new Set(antiguos.map((a) => f(a).getFullYear()))]
+  const nombre = seccion === 'noticias' ? 'comunicados' : 'apariciones'
+  return (
+    <>
+      <h2 className="titulo-seccion">{seccion === 'noticias' ? 'Últimos comunicados' : 'Lo más reciente'}</h2>
+      {nuevos.length ? <div className="rejilla">{nuevos.map((a) => <Tarjeta key={a.id} a={a} />)}</div> : <p className="vacio">No hay {nombre} en el último mes.</p>}
+      {antiguos.length > 0 && (
+        <div className="anteriores">
+          <h2 className="titulo-seccion">{seccion === 'noticias' ? 'Comunicados anteriores' : 'Anteriores'}</h2>
+          {anos.map((ano) => (
+            <details key={ano} open={ano === anos[0]}>
+              <summary>{ano} · {antiguos.filter((a) => f(a).getFullYear() === ano).length}</summary>
+              <ul className="lista-anteriores">
+                {antiguos.filter((a) => f(a).getFullYear() === ano).map((a) => (
+                  <li key={a.id}><span>{fecha(a.fecha || a.publicado_at)}</span> <Link to={`/articulo/${a.slug}`}>{a.titulo}</Link>{a.medio && <em> · {a.medio}</em>}</li>
+                ))}
+              </ul>
+            </details>
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
+
 export default function Seccion({ seccion }) {
   const s = SECCIONES[seccion]
   const [intro, setIntro] = useState(null)
@@ -91,6 +124,8 @@ export default function Seccion({ seccion }) {
         ) : visibles.length ? (
           esRec ? (
             <div className="lista-recomendaciones">{visibles.map((r) => <Recomendacion key={r.id} r={r} />)}</div>
+          ) : ['noticias', 'medios'].includes(seccion) ? (
+            <PorFecha items={visibles} seccion={seccion} />
           ) : (
             <div className="rejilla">{visibles.map((a) => <Tarjeta key={a.id} a={a} />)}</div>
           )

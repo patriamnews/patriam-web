@@ -63,6 +63,7 @@ export default function Editor({ seccionInicial, base = '/gestion' }) {
     setError('')
     setMsg('')
     if (!a.titulo.trim()) return setError('Falta el título.')
+    if (['noticias', 'medios'].includes(a.seccion) && !a.fecha) return setError(a.seccion === 'noticias' ? 'Falta la fecha del comunicado.' : 'Falta la fecha de la aparición en el medio.')
     setGuardando(true)
     const datos = {
       titulo: a.titulo.trim(),
@@ -78,6 +79,7 @@ export default function Editor({ seccionInicial, base = '/gestion' }) {
       medio: ['medios', 'recomendaciones'].includes(a.seccion) ? a.medio : null,
       enlace_externo: ['medios', 'recomendaciones'].includes(a.seccion) ? a.enlace_externo : null,
       tipo_recomendacion: a.seccion === 'recomendaciones' ? a.tipo_recomendacion || 'articulo' : null,
+      fecha: ['noticias', 'medios'].includes(a.seccion) ? a.fecha || null : null,
     }
     let res
     if (id) res = await supabase.from('articulos').update(datos).eq('id', id).select().single()
@@ -152,6 +154,13 @@ export default function Editor({ seccionInicial, base = '/gestion' }) {
               <input value={a.firma || ''} onChange={set('firma')} />
             </label>
           </div>
+          {['noticias', 'medios'].includes(a.seccion) && (
+            <label>
+              {a.seccion === 'noticias' ? 'Fecha del comunicado' : 'Fecha en que salió en el medio'}
+              <input type="date" required value={(a.fecha || '').slice(0, 10)} onChange={set('fecha')} max={new Date().toISOString().slice(0, 10)} />
+              <small>{a.seccion === 'noticias' ? 'Con esta fecha se ordena. Los de más de un mes pasan solos a «Comunicados anteriores».' : 'Con esta fecha se ordena. Las de más de un mes pasan solas a «Anteriores».'}</small>
+            </label>
+          )}
           {a.seccion === 'medios' && (
             <div className="dos-col">
               <label>

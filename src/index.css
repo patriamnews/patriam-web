@@ -1413,3 +1413,10 @@ html, body, .sitio { background: var(--crema) !important; }
 .pub-entrar-caja h1 { text-align: center; margin: 0; letter-spacing: 0.14em; text-transform: uppercase; color: #7b1c2c; font-size: 1.4rem; }
 .pub-entrar-caja p { text-align: center; color: #5d524a; }
 @media (max-width: 600px) { .pub-quien span { display: none; } .pub-baldosa { min-height: 0; } }
+
+.anteriores { margin-top: 2.5rem; }
+.anteriores details { border-top: 1px solid var(--linea, #e3d6c1); padding: 0.6rem 0; }
+.anteriores summary { cursor: pointer; font-weight: 600; color: #7b1c2c; }
+.lista-anteriores { list-style: none; padding: 0; margin: 0.6rem 0 0; }
+.lista-anteriores li { padding: 0.45rem 0; border-bottom: 1px dotted #e3d6c1; }
+.lista-anteriores li span { color: #8a7d6b; font-size: 0.9rem; min-width: 8.5rem; display: inline-block; }
