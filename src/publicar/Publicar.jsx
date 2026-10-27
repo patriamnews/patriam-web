@@ -19,7 +19,7 @@ import CampanasAdmin from '../admin/CampanasAdmin'
 import TiendaAdmin from '../admin/TiendaAdmin'
 import RecomendacionesAdmin from '../admin/RecomendacionesAdmin'
 import Paginas from '../admin/Paginas'
-import Redes from '../admin/Redes'
+import Rrss from './Rrss'
 import Aprobaciones from '../admin/Aprobaciones'
 import Claves from './Claves'
 import ProductoGelato from './ProductoGelato'
@@ -60,7 +60,7 @@ const COSAS = [
   { ruta: 'gelato', titulo: 'Camiseta, taza… con Gelato', texto: 'Sube el diseño, pon nombre y precio: se crea en Gelato y sale a la venta.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
-  { ruta: 'redes', titulo: 'Redes sociales', texto: 'Preparar y apuntar publicaciones en X, Instagram…', sale: 'Redes', icono: 'red', grupo: 'otros' },
+  { ruta: 'redes', titulo: 'RRSS', texto: 'Crear diseños para X, Instagram…, descargarlos, y seguir tus cuentas y publicaciones.', sale: 'Redes sociales', icono: 'red', grupo: 'otros' },
   { ruta: 'claves', titulo: 'Cuentas y claves', texto: 'Usuario, contraseña, API keys y secret keys de cada aplicación (Hostinger, GitHub, Stripe, Gelato, Brevo…).', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
@@ -110,7 +110,7 @@ export default function Publicar() {
           <Route path="gelato" element={<Paso titulo="Nuevo producto con Gelato" ayuda="Elija el artículo, suba el diseño y ponga el precio. Gelato lo fabrica y lo envía cuando alguien lo compra."><ProductoGelato /></Paso>} />
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
-          <Route path="redes" element={<Paso titulo="Redes sociales"><Redes /></Paso>} />
+          <Route path="redes" element={<Paso titulo="RRSS" ayuda="Cree el diseño, descárguelo y súbalo a la red. En «Mis cuentas» apunte sus cuentas y los seguidores; en «Publicaciones», lo publicado y sus cifras."><Rrss /></Paso>} />
           <Route path="claves" element={<Paso titulo="Cuentas y claves" ayuda="Cada aplicación que usan la web y el boletín: para qué sirve, dónde se entra, usuario, contraseña y claves. Pulse una para abrirla."><Claves /></Paso>} />
           <Route path="mis-publicaciones" element={<Paso titulo="Lo publicado y en revisión"><Articulos base="/publicar" /></Paso>} />
           <Route path="aprobar" element={puedeAprobar(perfil) ? <Paso titulo="Pendiente de aprobar"><Aprobaciones base="/publicar" /></Paso> : <Navigate to="/publicar" replace />} />

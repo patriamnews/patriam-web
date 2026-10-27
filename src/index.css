@@ -1434,3 +1434,28 @@ html, body, .sitio { background: var(--crema) !important; }
 .cuenta-campo { display: flex; flex-direction: column; gap: 0.25rem; }
 .cuenta-input { display: flex; gap: 0.4rem; align-items: center; }
 .cuenta-input input { flex: 1; min-width: 0; font-family: ui-monospace, monospace; }
+
+/* Publicar › RRSS */
+.rrss-cuerpo { background: var(--papel, #fffdf8); border: 1px solid #e3d6c1; padding: 1rem; }
+.rrss-disenar { display: grid; gap: 1.2rem; }
+@media (min-width: 900px) { .rrss-disenar { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: start; } }
+.rrss-fondos { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.3rem 0 0.8rem; }
+.rrss-fondos button { display: inline-flex; align-items: center; gap: 0.4rem; background: #fff; border: 1px solid #e3d6c1; padding: 0.4rem 0.7rem; cursor: pointer; font: inherit; }
+.rrss-fondos button.activa { border-color: #7b1c2c; box-shadow: inset 0 0 0 1px #7b1c2c; }
+.rrss-fondos i { width: 16px; height: 16px; border: 1px solid #c9b99c; display: inline-block; }
+.rrss-vista { min-width: 0; }
+.rrss-lienzo { display: block; width: 100%; height: auto; max-height: 70vh; object-fit: contain; background: #eee5d6; box-shadow: 0 6px 20px rgba(60, 30, 20, 0.15); margin-bottom: 0.8rem; }
+.rrss-lienzo.f-historia { width: auto; max-width: 100%; margin-left: auto; margin-right: auto; }
+.rrss-post { margin-top: 1.2rem; border-top: 1px solid #e3d6c1; padding-top: 0.8rem; }
+.rrss-post h3 { margin: 0 0 0.5rem; }
+.rrss-lista { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); margin-top: 1rem; }
+.rrss-cuenta { background: #fff; border: 1px solid #e3d6c1; border-top: 3px solid #7b1c2c; padding: 0.8rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.rrss-cuenta-cab { display: flex; justify-content: space-between; gap: 0.5rem; align-items: baseline; overflow-wrap: anywhere; }
+.rrss-cifra b { font: 700 1.6rem 'Spectral', Georgia, serif; margin-right: 0.3rem; }
+.rrss-cifra span { display: block; font-size: 0.85rem; }
+.rrss-cifra .sube { color: #2f6b3a; }
+.rrss-cifra .baja { color: #a3322b; }
+.rrss-apuntar { display: flex; gap: 0.4rem; }
+.rrss-apuntar input { flex: 1; min-width: 0; }
+.rrss-grafica { width: 100%; height: 60px; color: #7b1c2c; }
+@media (max-width: 600px) { .rrss-cuerpo { padding: 0.6rem; } .pub-formulario .pestanas.grandes button { padding: 0.55rem 0.7rem; font-size: 0.92rem; flex: 1; } }
