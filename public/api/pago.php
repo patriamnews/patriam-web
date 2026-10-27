@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permiti
 
 // La clave se lee de la carpeta privada (la misma que usa el boletín)
 function claveStripe() {
-  foreach ([dirname(__DIR__) . '/patriam-privado/claves.json', dirname(__DIR__, 2) . '/patriam-privado/claves.json'] as $f) {
+  foreach ([dirname(__DIR__, 2) . '/patriam-privado/claves.json', dirname(__DIR__) . '/patriam-privado/claves.json'] as $f) {
     if (is_file($f)) { $k = json_decode(file_get_contents($f), true) ?: []; if (!empty($k['stripe'])) return $k['stripe']; }
   }
   return '';

@@ -23,6 +23,12 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      # El boletín vive en la carpeta boletin/ del mismo alojamiento: se incluye aquí para que
+      # publicar la web no lo borre (Hostinger deja la carpeta igual que la rama hostinger)
+      - name: Incluir el boletín (repositorio boletin.patriam)
+        run: |
+          git clone --depth 1 https://github.com/patriamnews/boletin.patriam.git dist/boletin
+          rm -rf dist/boletin/.git
       - name: Subir la web compilada a la rama hostinger
         run: |
           cd dist
