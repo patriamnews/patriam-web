@@ -5,6 +5,10 @@
 require_once __DIR__ . '/_comun.php';
 if (!hash_equals(claveWebhookGelato(), (string)($_GET['k'] ?? ''))) salir(['error' => 'no'], 403);
 $e = json_decode(file_get_contents('php://input'), true) ?: [];
+if (($e['event'] ?? '') === 'store_product_created') {
+  avisar('Nuevo producto en Gelato: póngale precio', 'Se ha creado «' . mb_substr((string)($e['title'] ?? 'un producto'), 0, 150) . "» en la tienda de Gelato.\nPara venderlo en la web: publicar.movimientopatriam.es › Mis productos de Gelato › ponga el precio › Poner a la venta.");
+  salir(['ok' => true]);
+}
 $ref = (string)($e['orderReferenceId'] ?? '');
 if (!preg_match('/^[A-Za-z0-9\-_]{4,60}$/', $ref)) salir(['ok' => true]);
 $ped = leerPedido($ref);

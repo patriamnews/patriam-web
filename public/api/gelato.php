@@ -65,6 +65,28 @@ switch ($p['accion'] ?? '') {
     if ($c < 200 || $c >= 300 || empty($d['id'])) $fallo($c, $raw);
     salir(['id' => $d['id'], 'estado' => $d['status'] ?? '', 'preview' => $d['previewUrl'] ?? '']);
 
+  case 'tienda': // productos hechos en la tienda de Gelato (en su web), para ponerlos a la venta aquí
+    if (empty($K['gelatoTienda'])) salir(['error' => 'Falta el identificador de la tienda de Gelato (Store ID) en Cuentas y claves › Gelato.'], 400);
+    $st = $id($K['gelatoTienda']);
+    $lista = [];
+    for ($off = 0; $off < 500; $off += 100) {
+      [$c, $d, $raw] = pedirHttp("$API/stores/$st/products?limit=100&offset=$off", $cab);
+      if ($c !== 200) $fallo($c, $raw);
+      $ps = $d['products'] ?? [];
+      foreach ($ps as $pr) $lista[] = $pr;
+      if (count($ps) < 100) break;
+    }
+    $out = [];
+    foreach (array_slice($lista, 0, 200) as $n => $pr) {
+      if (empty($pr['variants']) && $n < 60) { [$c, $det] = pedirHttp("$API/stores/$st/products/" . rawurlencode($pr['id']), $cab); if ($c === 200) $pr = $det + $pr; }
+      $fotos = array_values(array_filter(array_map(fn($i) => $i['fileUrl'] ?? '', $pr['productImages'] ?? [])));
+      $out[] = ['id' => $pr['id'], 'titulo' => $pr['title'] ?? '', 'descripcion' => trim(preg_replace('/\s+/', ' ', strip_tags($pr['description'] ?? ''))),
+        'estado' => $pr['status'] ?? '', 'foto' => $pr['previewUrl'] ?? ($fotos[0] ?? ''), 'fotos' => $fotos,
+        'variantes' => array_values(array_filter(array_map(fn($v) => ['id' => $v['id'] ?? '', 'titulo' => $v['title'] ?? '', 'uid' => $v['productUid'] ?? '',
+          'precio' => $v['price'] ?? null], $pr['variants'] ?? []), fn($v) => $v['uid'] && $v['id']))];
+    }
+    salir(['productos' => $out]);
+
   case 'producto': // estado del producto en Gelato y sus fotos de muestra (se generan en unos segundos)
     if (empty($K['gelatoTienda'])) salir(['error' => 'Falta el Store ID.'], 400);
     [$c, $d, $raw] = pedirHttp("$API/stores/" . $id($K['gelatoTienda']) . '/products/' . $id($p['id'] ?? ''), $cab);
