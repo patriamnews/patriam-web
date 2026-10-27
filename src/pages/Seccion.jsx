@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getPagina, listarPublicados, fecha } from '../lib/data'
+import { getPagina, listarPublicados, fecha, convocatoriaPasada } from '../lib/data'
 import { SECCIONES, TIPOS_RECOMENDACION } from '../lib/config'
 import Texto from '../components/Texto'
 import Tarjeta from '../components/Tarjeta'
@@ -42,8 +42,9 @@ function PorFecha({ items, seccion }) {
   const f = (a) => new Date(a.fecha || a.publicado_at || 0)
   const orden = [...items].sort((x, y) => f(y) - f(x))
   const hoy = Date.now()
-  const nuevos = orden.filter((a) => hoy - f(a) <= UN_MES)
-  const antiguos = orden.filter((a) => hoy - f(a) > UN_MES)
+  // Las convocatorias cuya fecha ya pasó van directamente a «anteriores»
+  const nuevos = orden.filter((a) => hoy - f(a) <= UN_MES && !convocatoriaPasada(a))
+  const antiguos = orden.filter((a) => !nuevos.includes(a))
   const anos = [...new Set(antiguos.map((a) => f(a).getFullYear()))]
   const nombre = seccion === 'noticias' ? 'comunicados' : 'apariciones'
   return (
@@ -58,7 +59,7 @@ function PorFecha({ items, seccion }) {
               <summary>{ano} · {antiguos.filter((a) => f(a).getFullYear() === ano).length}</summary>
               <ul className="lista-anteriores">
                 {antiguos.filter((a) => f(a).getFullYear() === ano).map((a) => (
-                  <li key={a.id}><span>{fecha(a.fecha || a.publicado_at)}</span> <Link to={`/articulo/${a.slug}`}>{a.titulo}</Link>{a.medio && <em> · {a.medio}</em>}</li>
+                  <li key={a.id}><span>{fecha(a.fecha || a.publicado_at)}</span> <Link to={`/articulo/${a.slug}`}>{a.titulo}</Link>{a.medio && <em> · {a.medio}</em>}{convocatoriaPasada(a) && <em> · ya celebrada</em>}</li>
                 ))}
               </ul>
             </details>

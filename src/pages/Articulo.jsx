@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getArticulo, fecha } from '../lib/data'
+import { getArticulo, fecha, convocatoriaPasada } from '../lib/data'
 import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
 import { Foto } from '../components/ImagenPrueba'
@@ -28,6 +28,7 @@ export default function Articulo() {
         {a.firma && !a.medio && <span>{a.firma}</span>}
         <span>{fecha(a.fecha || a.publicado_at)}</span>
       </div>
+      {convocatoriaPasada(a) && <p className="caja-aviso">Esta convocatoria ya se celebró. Mira las próximas acciones en la agenda.</p>}
       {!a.imagen_url && <Foto className="imagen-articulo" />}
       {a.imagen_url && (
         <figure className="imagen-articulo">

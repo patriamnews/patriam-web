@@ -82,3 +82,24 @@ export const fecha = (d) =>
   d ? new Date(d).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : ''
 
 export const euros = (n) => `${Number(n).toLocaleString('es-ES')} €`
+
+// Convocatorias (concentraciones, manifestaciones, actos…) cuya fecha, escrita en el título o en el resumen
+// («… el 8 de octubre», «jueves 8 de octubre de 2026»), ya ha pasado: no deben salir como novedad.
+const MESES_ES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+export function fechaEnTexto(a) {
+  const texto = `${a.titulo || ''} ${a.resumen || ''}`.toLowerCase()
+  const m = texto.match(/(\d{1,2})\s+de\s+(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre)(?:\s+de\s+(\d{4}))?/)
+  if (!m) return a.fecha ? new Date(a.fecha) : null
+  const mes = m[2] === 'setiembre' ? 8 : MESES_ES.indexOf(m[2])
+  const base = new Date(a.publicado_at || Date.now())
+  let ano = m[3] ? Number(m[3]) : base.getFullYear()
+  // Sin año: si el mes queda muy por detrás de la publicación, es del año siguiente
+  if (!m[3] && mes < base.getMonth() - 6) ano += 1
+  return new Date(ano, mes, Number(m[1]), 23, 59)
+}
+export const esConvocatoria = (a) => /convoca|concentraci|manifestaci|movilizaci|\bacto\b|homenaje|misa|jornada/i.test(a.titulo || '')
+export function convocatoriaPasada(a, ahora = new Date()) {
+  if (!esConvocatoria(a)) return false
+  const f = fechaEnTexto(a)
+  return !!f && f < ahora
+}

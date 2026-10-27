@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
-import { getPagina, getAjustes, listarPublicados, listarCampanas, totalFirmas, fecha, euros } from '../lib/data'
+import { getPagina, getAjustes, listarPublicados, listarCampanas, totalFirmas, fecha, euros, convocatoriaPasada } from '../lib/data'
 import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
 import { ImagenProducto } from './Tienda'
@@ -35,7 +35,8 @@ export default function Inicio() {
   useEffect(() => {
     getPagina('inicio').then(setIntro)
     getAjustes().then((x) => setAj(x || {}))
-    listarPublicados({ limite: 40 }).then(setUltimos)
+    // Las convocatorias ya celebradas no salen como novedad en la portada
+    listarPublicados({ limite: 40 }).then((l) => setUltimos((l || []).filter((a) => !convocatoriaPasada(a))))
     listarCampanas().then(async ([c]) => c && setCampana({ ...c, n: await totalFirmas(c) }))
     supabase.from('acciones').select('*').eq('publicada', true).eq('aprobada', true).gte('fecha_inicio', new Date().toISOString()).order('fecha_inicio').limit(4)
       .then(({ data }) => setAcciones(data || []))
