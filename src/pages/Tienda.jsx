@@ -164,11 +164,13 @@ export function Producto() {
   const corteDe = (c) => (c.includes(' · ') ? c.split(' · ')[0] : '')
   const sinCorte = (c) => (c.includes(' · ') ? c.split(' · ').slice(1).join(' · ') : c)
   const cortes = [...new Set(colores.map(corteDe).filter(Boolean))]
-  const corteSel = corteDe(colorSel || colores[0] || '')
+  // Color que se ve al abrir: el de la foto de la tienda
+  const colorInicial = colores.find((c) => Array.isArray(p.fotos?.[c]) && p.fotos[c][0] === p.imagen_url) || colores[0]
+  const corteSel = corteDe(colorSel || colorInicial || '')
   const coloresCorte = cortes.length ? colores.filter((c) => corteDe(c) === corteSel) : colores
   const elegir = (c, t) => setOpcion(c && t && ops.includes(`${c} / ${t}`) ? `${c} / ${t}` : `${c || ''} / ${t || ''}`)
   // Fotos del color elegido (si el producto tiene varias por color: [detrás, delante…]); si no, la galería general
-  const fotosColor = dobles ? p.fotos?.[colorSel || colores[0]] : null
+  const fotosColor = dobles ? p.fotos?.[colorSel || colorInicial] : null
   const galeria = Array.isArray(fotosColor) && fotosColor.length ? fotosColor : Array.isArray(p.galeria) && p.galeria.length ? p.galeria : null
   const fotoActiva = galeria ? (galeria.includes(fotoSel) ? fotoSel : galeria[0]) : null
   const foto = fotoActiva ? { ...p, imagen_url: fotoActiva } : dobles && colorSel && typeof p.fotos?.[colorSel] === 'string' ? { ...p, imagen_url: p.fotos[colorSel] } : p
@@ -212,7 +214,7 @@ export function Producto() {
               <span>Colores</span>
               <div>
                 {coloresCorte.map((c) => (
-                  <button key={c} type="button" className={(colorSel || colores[0]) === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>
+                  <button key={c} type="button" className={(colorSel || colorInicial) === c ? 'activo' : ''} onClick={() => elegir(c, tallaSel)}>
                     {Array.isArray(p.fotos?.[c]) && <img src={p.fotos[c][0]} alt="" loading="lazy" />}
                     <small>{sinCorte(c)}</small>
                   </button>
