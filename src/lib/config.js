@@ -104,7 +104,7 @@ export const USO_IA = {
 }
 
 // Tienda
-// Tienda: merchandising que fabrica y envía Gelato, y libros recomendados (enlace de afiliado de Casa del Libro)
+// Tienda: Colección PATRIAM (ropa y regalos) que fabrica y envía Gelato, y libros recomendados (enlace de afiliado de Casa del Libro)
 export const CATEGORIAS_TIENDA = {
   ropa: 'Ropa',
   regalos: 'Tazas y regalos',

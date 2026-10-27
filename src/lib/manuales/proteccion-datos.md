@@ -47,7 +47,7 @@ La asociación organiza sus comunicaciones en listas separadas por colectivo: So
 
 - **Opt-in:** la inclusión en cada lista es voluntaria y se recoge de forma expresa y acreditable (fecha, origen y texto aceptado), salvo las comunicaciones propias de la relación asociativa con los socios.
 - **Opt-out:** cada envío incluye un enlace de baja sencillo y gratuito (art. 21 LSSI). La baja de una lista no afecta a las demás ni a las comunicaciones obligatorias.
-- **Acceso restringido:** solo tienen los listados el responsable del tratamiento, a través de la persona autorizada por la Junta Directiva, y la encargada del tratamiento, Isabel Olivares de la Cerda, que desarrolla y mantiene la web, la tienda de merchandising y el boletín, con contrato del art. 28 RGPD. Nadie más conserva copias. Los listados se guardan en un fichero dentro del sistema del boletín, protegido con un nivel de acceso adicional que solo permite entrar al responsable y a la encargada.
+- **Acceso restringido:** solo tienen los listados el responsable del tratamiento, a través de la persona autorizada por la Junta Directiva, y la encargada del tratamiento, Isabel Olivares de la Cerda, que desarrolla y mantiene la web, la tienda (Colección PATRIAM) y el boletín, con contrato del art. 28 RGPD. Nadie más conserva copias. Los listados se guardan en un fichero dentro del sistema del boletín, protegido con un nivel de acceso adicional que solo permite entrar al responsable y a la encargada.
 - **Envíos:** siempre desde la plataforma o con destinatarios ocultos; nunca con las direcciones visibles.
 
 ## 2. Categorías especiales de datos

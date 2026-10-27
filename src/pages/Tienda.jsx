@@ -70,7 +70,7 @@ export function Tienda() {
       ) : (
         <>
           <section className="tienda-apartado">
-            <h2 className="titulo-seccion">Merchandising PATRIAM</h2>
+            <h2 className="titulo-seccion">Colección PATRIAM</h2>
             <p className="letra-pequena">Camisetas, sudaderas, tazas y regalos. Se pagan aquí con tarjeta y te los enviamos a casa.</p>
             <Rejilla items={lista.filter((p) => p.categoria !== 'libros')} vacio="Muy pronto, nuestras camisetas y tazas." />
           </section>
