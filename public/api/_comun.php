@@ -40,17 +40,19 @@ function pedirHttp($url, $cab = [], $cuerpo = null, $usuario = null) {
   return [$c, json_decode((string)$r, true) ?: [], (string)$r];
 }
 
-// Aviso por correo a la asociación (con Brevo, si su clave está puesta)
-function avisar($asunto, $texto) {
+// Correo con Brevo (si su clave está puesta). avisar() escribe a la asociación.
+function enviarCorreo($para, $asunto, $texto) {
   $k = claves();
-  if (empty($k['brevo'])) return;
+  if (empty($k['brevo']) || !filter_var($para, FILTER_VALIDATE_EMAIL)) return;
   pedirHttp('https://api.brevo.com/v3/smtp/email', ['api-key: ' . $k['brevo'], 'Content-Type: application/json', 'Accept: application/json'], json_encode([
     'sender' => ['name' => 'Tienda PATRIAM', 'email' => 'tienda@movimientopatriam.es'],
-    'to' => [['email' => 'hola@movimientopatriam.com']],
+    'replyTo' => ['email' => 'hola@movimientopatriam.com'],
+    'to' => [['email' => $para]],
     'subject' => $asunto,
     'textContent' => $texto,
   ], JSON_UNESCAPED_UNICODE));
 }
+function avisar($asunto, $texto) { enviarCorreo('hola@movimientopatriam.com', $asunto, $texto); }
 
 /* Sesión del equipo: ficha firmada por el servidor (12 horas) */
 function secretoWeb() {
@@ -69,3 +71,15 @@ function comprobarToken($t) {
   $j = json_decode(base64_decode(strtr($d, '-_', '+/')), true);
   return ($j && ($j['x'] ?? 0) > time()) ? ($j['h'] ?? null) : null;
 }
+
+// Solo el equipo, con su sesión de Publicar ya con la contraseña propia (no la inicial)
+function exigirEquipo($p) {
+  $h = comprobarToken($p['token'] ?? '');
+  $eq = is_file(privado() . '/equipo.json') ? (json_decode(file_get_contents(privado() . '/equipo.json'), true) ?: []) : [];
+  if (!$h || empty($eq[$h])) salir(['error' => 'sesion'], 401);
+  if (!empty($eq[$h]['cambiar'])) salir(['error' => 'Antes tiene que cambiar su contraseña inicial.'], 403);
+  return $h;
+}
+// Dirección secreta del aviso (webhook) de Gelato: se pega una vez en el panel de Gelato
+function claveWebhookGelato() { return substr(hash_hmac('sha256', 'gelato-webhook', secretoWeb()), 0, 32); }
+function urlWebhookGelato() { return 'https://movimientopatriam.es/api/gelato-webhook.php?k=' . claveWebhookGelato(); }

@@ -7,10 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permiti
 
 $p = json_decode(file_get_contents('php://input'), true) ?: [];
 // Solo el equipo, con su sesión de Publicar (la misma contraseña con la que entra)
-$h = comprobarToken($p['token'] ?? '');
-$eq = is_file(privado() . '/equipo.json') ? (json_decode(file_get_contents(privado() . '/equipo.json'), true) ?: []) : [];
-if (!$h || empty($eq[$h])) salir(['error' => 'sesion'], 401);
-if (!empty($eq[$h]['cambiar'])) salir(['error' => 'Antes tiene que cambiar su contraseña inicial.'], 403);
+exigirEquipo($p);
 
 // Claves de API que usan la web y el boletín, y cuentas (usuario, contraseña y notas) de cada aplicación.
 // El equipo las ve enteras (para poder pasárselas a los responsables); conviene cambiarlas tras la entrega.
@@ -40,4 +37,4 @@ if (isset($p['valores']) || isset($p['cuentas'])) {
   file_put_contents($fK, json_encode($k), LOCK_EX); @chmod($fK, 0600);
   file_put_contents($fC, json_encode($cu, JSON_UNESCAPED_UNICODE), LOCK_EX); @chmod($fC, 0600);
 }
-salir(['ok' => true, 'claves' => (object)$k, 'cuentas' => (object)$cu]);
+salir(['ok' => true, 'claves' => (object)$k, 'cuentas' => (object)$cu, 'webhookGelato' => urlWebhookGelato()]);

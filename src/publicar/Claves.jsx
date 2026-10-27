@@ -22,7 +22,8 @@ const APPS = [
     claves: [['stripe', 'Clave secreta (sk_live_…)', 'sk_live_…', true], ['stripePublica', 'Clave publicable (pk_live_…)', 'pk_live_…'], ['stripeWebhook', 'Secreto del webhook (whsec_…)', 'whsec_…', true]],
     nota: 'Webhook: https://movimientopatriam.es/api/stripe-webhook.php con el evento checkout.session.completed.' },
   { id: 'gelato', nombre: 'Gelato', para: 'Fabrica y envía camisetas, sudaderas y tazas de la tienda', url: 'https://dashboard.gelato.com',
-    claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]] },
+    claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]],
+    nota: 'El Store ID está en la dirección de la página de la tienda en Gelato (…/stores/ESTE-CÓDIGO/…). Aviso de envíos: en Gelato › Developer › Webhooks, pegue la dirección de abajo y marque «Order status updated» y «Order item tracking code updated».' },
   { id: 'awin', nombre: 'Awin · Casa del Libro', para: 'Enlaces de afiliado de los libros recomendados', url: 'https://ui.awin.com',
     claves: [['awin', 'Identificador de publisher', '', true]] },
   { id: 'citizengo', nombre: 'CitizenGO', para: 'Campañas de recogida de firmas', url: 'https://www.citizengo.org' },
@@ -59,13 +60,14 @@ function Campo({ etiqueta, valor, onChange, secreto, placeholder }) {
 export default function Claves() {
   const { salir } = useAuth()
   const [claves, setClaves] = useState(null)
+  const [webhook, setWebhook] = useState('')
   const [cuentas, setCuentas] = useState({})
   const [abierta, setAbierta] = useState(null)
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
 
   useEffect(() => {
-    llamar({}).then((d) => { setClaves(d.claves || {}); setCuentas(d.cuentas || {}) }).catch((err) => setError(err.message))
+    llamar({}).then((d) => { setClaves(d.claves || {}); setCuentas(d.cuentas || {}); setWebhook(d.webhookGelato || '') }).catch((err) => setError(err.message))
   }, [])
 
   const guardar = async (app) => {
@@ -112,6 +114,7 @@ export default function Claves() {
                 <Campo key={k} etiqueta={t + (usada ? ' · la usa la web' : '')} valor={claves[k]} onChange={(v) => setClaves({ ...claves, [k]: v })} secreto={!['gelatoTienda', 'waPhone', 'waPlantilla', 'awin', 'supabaseUrl'].includes(k)} placeholder={ph} />
               ))}
               {a.nota && <p className="letra-pequena">{a.nota}</p>}
+              {a.id === 'gelato' && webhook && <Campo etiqueta="Dirección del webhook (para pegar en Gelato)" valor={webhook} onChange={() => {}} />}
               <label className="cuenta-campo">
                 <span>Notas (verificación en dos pasos, móvil de recuperación…)</span>
                 <textarea rows={2} value={cuentas[a.id]?.notas || ''} onChange={(e) => setCuenta(a.id, 'notas', e.target.value)} />
