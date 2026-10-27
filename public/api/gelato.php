@@ -57,8 +57,8 @@ switch ($p['accion'] ?? '') {
     file_put_contents($fP, json_encode($plantillas, JSON_UNESCAPED_UNICODE), LOCK_EX);
     salir(['id' => $t, 'nombre' => $nombre, 'titulo' => $d['title'] ?? '', 'descripcion' => $d['description'] ?? '', 'preview' => $d['previewUrl'] ?? '', 'variantes' => $variantes, 'plantillas' => $plantillas]);
 
-  case 'crear': // crea el producto en la tienda de Gelato con el diseño en todas las tallas/colores elegidos
-    if (empty($K['gelatoTienda'])) salir(['error' => 'Falta el identificador de la tienda de Gelato (Store ID) en Cuentas y claves › Gelato.'], 400);
+  case 'crear': // con tienda en Gelato, crea allí el producto (fotos de muestra); sin tienda no hace falta: se vende en la web
+    if (empty($K['gelatoTienda'])) salir(['id' => null, 'sinTienda' => true]);
     $t = $id($p['plantilla'] ?? '');
     $archivo = (string)($p['archivo'] ?? '');
     if (!preg_match('#^https://#', $archivo)) salir(['error' => 'Falta el archivo del diseño.'], 400);
@@ -78,7 +78,7 @@ switch ($p['accion'] ?? '') {
     salir(['id' => $d['id'], 'estado' => $d['status'] ?? '', 'preview' => $d['previewUrl'] ?? '']);
 
   case 'tienda': // productos hechos en la tienda de Gelato (en su web), para ponerlos a la venta aquí
-    if (empty($K['gelatoTienda'])) salir(['error' => 'Falta el identificador de la tienda de Gelato (Store ID) en Cuentas y claves › Gelato.'], 400);
+    if (empty($K['gelatoTienda'])) salir(['productos' => [], 'sinTienda' => true]);
     $st = $id($K['gelatoTienda']);
     $lista = [];
     for ($off = 0; $off < 500; $off += 100) {

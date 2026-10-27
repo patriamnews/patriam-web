@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { slugify } from '../lib/data'
 import { tokenEquipo } from '../lib/equipo'
@@ -21,6 +22,7 @@ function etiquetas(vs) {
 
 export default function TiendaGelato() {
   const [lista, setLista] = useState(null)
+  const [sinTienda, setSinTienda] = useState(false)
   const [enWeb, setEnWeb] = useState({})
   const [datos, setDatos] = useState({})
   const [error, setError] = useState('')
@@ -30,8 +32,8 @@ export default function TiendaGelato() {
   const cargar = async () => {
     setError('')
     try {
-      const [{ productos }, { data }] = await Promise.all([gelato({ accion: 'tienda' }), supabase.from('productos').select('id, gelato_producto, precio, activo, aprobada').not('gelato_producto', 'is', null)])
-      setLista(productos || [])
+      const [{ productos, sinTienda: st }, { data }] = await Promise.all([gelato({ accion: 'tienda' }), supabase.from('productos').select('id, gelato_producto, precio, activo, aprobada').not('gelato_producto', 'is', null)])
+      setLista(productos || []); setSinTienda(!!st)
       setEnWeb(Object.fromEntries((data || []).map((p) => [p.gelato_producto, p])))
     } catch (e) { setError(e.message); setLista([]) }
   }
@@ -68,6 +70,18 @@ export default function TiendaGelato() {
   }
 
   if (!lista) return <p className="vacio">Mirando la tienda de Gelato…</p>
+  if (sinTienda)
+    return (
+      <div className="formulario">
+        <p>
+          Vuestra cuenta de Gelato no tiene ninguna tienda conectada, y no hace falta: la tienda es la web de PATRIAM. Gelato solo fabrica y envía.
+        </p>
+        <p>
+          Los productos se crean en <Link to="/publicar/gelato">Camiseta, taza… con Gelato</Link>: se elige la plantilla hecha en Gelato, se sube el diseño, se pone el precio
+          y sale a la venta en la web.
+        </p>
+      </div>
+    )
   const nuevos = lista.filter((p) => !enWeb[p.id])
   const ya = lista.filter((p) => enWeb[p.id])
   return (

@@ -67,11 +67,11 @@ export default function ProductoGelato() {
     const precio = Number(String(f.precio).replace(',', '.'))
     if (!(precio > 0)) return setError('Ponga el precio de venta en la web.')
     try {
-      setPaso('Creando el producto en Gelato…')
+      setPaso('Preparando el producto…')
       const c = await gelato({ accion: 'crear', plantilla: pl.id, titulo: f.titulo, descripcion: f.descripcion, archivo, variantes })
-      // Gelato prepara las fotos de muestra en unos segundos
+      // Si hay tienda en Gelato, Gelato prepara allí las fotos de muestra en unos segundos
       let foto = c.preview || ''
-      for (let i = 0; i < 8 && !foto; i++) {
+      for (let i = 0; i < 8 && !foto && c.id; i++) {
         setPaso('Gelato está preparando las fotos de muestra…')
         await espera(4000)
         const d = await gelato({ accion: 'producto', id: c.id }).catch(() => null)
@@ -101,7 +101,7 @@ export default function ProductoGelato() {
   if (hecho)
     return (
       <div className="formulario">
-        <p className="aviso-ok">✓ «{hecho.nombre}» creado en Gelato y guardado en la tienda de la web.</p>
+        <p className="aviso-ok">✓ «{hecho.nombre}» guardado en la tienda de la web.</p>
         {hecho.imagen_url && <img src={hecho.imagen_url} alt="" style={{ maxWidth: 260, borderRadius: 8 }} />}
         <p className="mini">
           {perfil?.rol === 'director' ? 'Ya está a la venta.' : 'Saldrá a la venta en cuanto lo apruebe Carlos (Pendiente de aprobar).'} Cuando alguien lo compre, se cobra con
