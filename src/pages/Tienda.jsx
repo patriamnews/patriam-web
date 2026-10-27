@@ -183,6 +183,11 @@ export function Producto() {
             </button>
           </div>
           {ops.length > 0 && !ops.includes(opcion) && <p className="letra-pequena">{dobles ? 'Elija color y talla.' : 'Elija una talla.'}</p>}
+          {p.gelato_uids && (
+            <p className="letra-pequena">
+              Este producto lo fabrica y envía Gelato, nuestro taller de impresión bajo demanda. Los gastos de envío no son de PATRIAM: son los que cobra Gelato por el envío.
+            </p>
+          )}
           </>)}
           {ok && (
             <p className="aviso-ok">
@@ -210,7 +215,8 @@ export function Carrito() {
 
   if (!aj) return <p className="contenedor vacio">Cargando…</p>
 
-  const entrega = conEnvio ? f.entrega : 'no_aplica'
+  // Sin recogida en la sede: todo lo físico se envía (lo fabrica y envía Gelato)
+  const entrega = conEnvio ? 'envio' : 'no_aplica'
   const gratisDesde = Number(aj.envio_gratis_desde) || Infinity
   const envio = entrega === 'envio' && subtotal < gratisDesde ? Number(aj.envio_coste) || 0 : 0
   const total = subtotal + envio
@@ -299,14 +305,11 @@ export function Carrito() {
             {conEnvio && (
               <fieldset className="grupo">
                 <legend>Entrega</legend>
-                <label className="check"><input type="radio" checked={f.entrega === 'envio'} onChange={() => setF({ ...f, entrega: 'envio' })} /><span>Envío a domicilio</span></label>
-                <label className="check"><input type="radio" checked={f.entrega === 'recogida'} onChange={() => setF({ ...f, entrega: 'recogida' })} /><span>{aj.recogida || 'Recogida en la sede'}</span></label>
+                <p>Envío a domicilio</p>
                 {items.some((i) => i.gelato) && (
-                  <p className="caja-aviso">Las prendas y tazas de PATRIAM las fabrica y envía nuestro taller de impresión a la dirección que indique al pagar con tarjeta (3 a 5 días laborables).</p>
+                  <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). Los gastos de envío son los que cobra Gelato por el envío, no son de PATRIAM.</p>
                 )}
-                {f.entrega === 'envio' && (
-                  <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
-                )}
+                <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
               </fieldset>
             )}
             {total > 0 && (

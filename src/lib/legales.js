@@ -155,7 +155,8 @@ Tarjeta (Visa, Mastercard, Apple Pay o Google Pay), a través de la pasarela seg
 
 - **Plazo:** entre 3 y 7 días laborables desde la confirmación del pago.
 - **Zona:** España.
-- **Recogida:** también puede recoger su pedido en la sede (C/ Tórtola, 21, Valladolid), previa cita por email.
+- **Fabricación y envío:** los productos de la Colección PATRIAM los fabrica bajo demanda y los envía Gelato. Los gastos de envío que se indican al comprar son los que cobra Gelato por el envío, no de la asociación.
+- **Recogida:** no hay recogida en la sede; todos los pedidos se envían a domicilio.
 
 ## Derecho de desistimiento
 

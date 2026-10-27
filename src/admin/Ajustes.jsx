@@ -12,9 +12,8 @@ const CAMPOS = [
     ['donativos', 'Donativos sugeridos (€, separados por comas)'],
   ]],
   ['Tienda', [
-    ['envio_coste', 'Gastos de envío (€)'],
-    ['envio_gratis_desde', 'Envío gratis a partir de (€; vacío = nunca)'],
-    ['recogida', 'Texto de la opción de recogida'],
+    ['envio_coste', 'Gastos de envío (€): los que cobra Gelato por el envío'],
+    ['envio_gratis_desde', 'Envío gratis a partir de (€; vacío = nunca; si se pone, el envío de Gelato lo paga PATRIAM)'],
   ]],
   ['Boletín semanal', [
     ['boletin_url', 'Dirección del boletín «Lo que hay que saber» (p. ej. https://boletin.movimientopatriam.es/)'],
