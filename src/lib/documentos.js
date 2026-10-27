@@ -84,15 +84,22 @@ Al firmar, el asociado declara haber leído y comprendido esta declaración y ac
 
   ideario: {
     titulo: 'Ideario',
-    contenido: `PATRIAM aboga por la supresión de los partidos políticos y propone en su lugar la representación de los cuerpos y comunidades naturales: familias, municipios, trabajo…
+    contenido: `PATRIAM resume su ideario en el lema de Dios, Patria y Justicia.
 
+- La Política debe concebirse como el **servicio a los demás** y especialmente a los más necesitados y encuentra todo su sentido cuando se orienta a la búsqueda del Bien común
+- PATRIAM aboga por la supresión de los partidos políticos y propone en su lugar la representación de los cuerpos y comunidades naturales: familias, municipios, trabajo…
 - PATRIAM propugna una legislación basada en la Ley natural y en la moral objetiva
-- PATRIAM defiende al Derecho Natural como fuente inspiradora de la legislación de nuestra patria
-- PATRIAM aboga por la implantación del mandato imperativo para los representantes políticos
-- PATRIAM defiende la recuperación de la figura del "juicio de residencia" para los representantes políticos
+- PATRIAM aboga por la implantación del mandato imperativo y del juicio de residencia para los representantes políticos
 - PATRIAM es firme partidario de la utilización de referéndums como herramienta de participación directa del Pueblo en la toma de decisiones importantes
+- El Estado, entendido como el conjunto de las AA.PP., existe únicamente para garantizar el Principio de subsidiariedad. Hacemos nuestro el lema de "más Sociedad y menos Estado"
+- La Economía debe estar subordinada al Bien Común, poniendo a las personas en el centro de las decisiones y asentarse sobre los valores de esfuerzo, ahorro, iniciativa privada y honradez.
+- La vida es un derecho natural inalienable desde su concepción hasta su fin natural. El aborto y la eutanasia son atentados contra la misma y estamos radicalmente opuestos a ellos
+- La libertad es otro derecho natural y sólo tiene sentido si se orienta a la defensa de lo Bueno, lo Bello y lo Verdadero
+- La única familia es la familia natural, entendida ésta como la unión en matrimonio de un hombre y una mujer abiertos a la vida
+- España está llamada a jugar un papel de liderazgo mundial y debemos contribuir con toda nuestra energía a volver a hacerlo realidad
+- La unidad, la soberanía y la prioridad nacional son innegociables
 
-La Economía debe estar subordinada al Bien Común, poniendo a las personas en el centro de las decisiones y asentarse sobre los valores de esfuerzo, ahorro, iniciativa privada y honradez.
+PATRIAM por una España unida, grande, próspera, libre, indómita e imperial
 
 Al firmar, el asociado declara conocer el ideario de la asociación y compartir sus fines.`,
   },
