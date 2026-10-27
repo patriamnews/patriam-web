@@ -109,6 +109,10 @@ Solo usa almacenamiento técnico estrictamente necesario, exento de consentimien
 - **Sesión del panel de gestión:** mantiene iniciada la sesión de los miembros que gestionan la web.
 - **Carrito de la tienda:** recuerda los productos que ha añadido al carrito en este navegador.
 
+## Enlaces de afiliado
+
+Los libros recomendados de la tienda llevan enlaces de afiliado (programa de Casa del Libro en Awin). Esta web no instala ninguna cookie por ello: solo si pulsa el enlace, la librería y Awin pueden usar sus propias cookies en su web para saber que la compra llegó desde PATRIAM.
+
 ## Pasarela de pago
 
 Al pagar con tarjeta, la pasarela de Stripe puede usar sus propias cookies técnicas y de prevención del fraude. Se rigen por su política de cookies: https://stripe.com/es/legal/cookies-policy.

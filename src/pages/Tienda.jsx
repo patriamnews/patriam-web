@@ -31,9 +31,25 @@ export function ImagenProducto({ p, grande }) {
 const precio = (n) => (Number(n) === 0 ? 'Gratuito' : euros(n))
 const opciones = (p) => (p.opciones || '').split(',').map((x) => x.trim()).filter(Boolean)
 
+function Rejilla({ items, vacio }) {
+  if (!items.length) return <p className="vacio">{vacio}</p>
+  return (
+    <div className="rejilla-tienda">
+      {items.map((p) => (
+        <Link key={p.id} to={`/tienda/${p.slug}`} className="producto">
+          <ImagenProducto p={p} />
+          <div className="producto-cuerpo">
+            <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
+            <h3>{p.nombre}</h3>
+            {Number(p.precio) > 0 && <b className="precio">{euros(p.precio)}</b>}
+          </div>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
 export function Tienda() {
-  const [params, setParams] = useSearchParams()
-  const cat = params.get('cat') || ''
   const [intro, setIntro] = useState(null)
   const [lista, setLista] = useState(null)
 
@@ -42,8 +58,6 @@ export function Tienda() {
     supabase.from('productos').select('*').eq('activo', true).order('orden').then(({ data }) => setLista(data || []))
   }, [])
 
-  const visibles = (lista || []).filter((p) => !cat || p.categoria === cat)
-
   return (
     <div className="contenedor bloque">
       <div className="titulo-bloque">
@@ -51,30 +65,21 @@ export function Tienda() {
         <BotonCarrito />
       </div>
       {intro?.contenido && <Texto>{intro.contenido}</Texto>}
-      <div className="chips">
-        <button className={!cat ? 'activo' : ''} onClick={() => setParams({})}>Todo</button>
-        {Object.entries(CATEGORIAS_TIENDA).map(([k, v]) => (
-          <button key={k} className={cat === k ? 'activo' : ''} onClick={() => setParams({ cat: k })}>{v}</button>
-        ))}
-      </div>
       {lista === null ? (
         <p className="vacio">Cargando…</p>
-      ) : visibles.length === 0 ? (
-        <p className="vacio">No hay productos en esta categoría.</p>
       ) : (
-        <div className="rejilla-tienda">
-          {visibles.map((p) => (
-            <Link key={p.id} to={`/tienda/${p.slug}`} className="producto">
-              <ImagenProducto p={p} />
-              <div className="producto-cuerpo">
-                <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
-                <h3>{p.nombre}</h3>
-                {p.categoria === 'actividades' && p.fecha && <span className="mini">{fecha(p.fecha)}</span>}
-                <b className="precio">{precio(p.precio)}</b>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <>
+          <section className="tienda-apartado">
+            <h2 className="titulo-seccion">Merchandising PATRIAM</h2>
+            <p className="letra-pequena">Camisetas, sudaderas, tazas y regalos. Se pagan aquí con tarjeta y te los enviamos a casa.</p>
+            <Rejilla items={lista.filter((p) => p.categoria !== 'libros')} vacio="Muy pronto, nuestras camisetas y tazas." />
+          </section>
+          <section className="tienda-apartado">
+            <h2 className="titulo-seccion">Libros recomendados</h2>
+            <p className="letra-pequena">Lecturas que recomendamos. Se compran en la librería online: si lo haces desde aquí, PATRIAM recibe una pequeña comisión sin que te cueste más.</p>
+            <Rejilla items={lista.filter((p) => p.categoria === 'libros')} vacio="Pronto añadiremos los libros que recomendamos." />
+          </section>
+        </>
       )}
     </div>
   )
@@ -120,7 +125,7 @@ export function Producto() {
         <div>
           <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
           <h1>{p.nombre}</h1>
-          <p className="precio grande">{precio(p.precio)}</p>
+          {!(p.categoria === 'libros' && !(Number(p.precio) > 0)) && <p className="precio grande">{p.categoria === 'libros' ? 'Precio orientativo: ' : ''}{precio(p.precio)}</p>}
           {esActividad && (
             <ul className="datos-actividad">
               {p.fecha && <li><b>Fecha:</b> {fecha(p.fecha)}</li>}
@@ -132,11 +137,11 @@ export function Producto() {
           {p.enlace_externo ? (
             <>
               <div className="acciones">
-                <a className="btn" href={p.enlace_externo} target="_blank" rel="noopener noreferrer">Comprar en La Tostadora ↗</a>
+                <a className="btn" href={p.enlace_externo} target="_blank" rel="sponsored noopener noreferrer">Comprar el libro ↗</a>
               </div>
               <p className="letra-pequena">
-                Este artículo lo fabrica y envía La Tostadora. Se abre su tienda en una pestaña nueva: allí elige la talla o el color y paga (puede comprar
-                como invitado, sin crear cuenta). Parte del precio es para PATRIAM.
+                Enlace de afiliado: se abre la librería en una pestaña nueva y allí se compra. Si lo compras desde este enlace, PATRIAM recibe una pequeña
+                comisión, sin que a ti te cueste más.
               </p>
             </>
           ) : (<>

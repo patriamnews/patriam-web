@@ -124,7 +124,7 @@ export function semilla() {
       { clave: 'revista', titulo: "Revista", contenido: "Artículos de opinión, análisis y formación para poder argumentar. Los artículos expresan el criterio de sus autores y se publican tras su revisión." },
       { clave: 'noticias', titulo: "Comunicados", contenido: "Comunicados oficiales de PATRIAM: posicionamientos, convocatorias y avisos de la asociación." },
       { clave: 'medios', titulo: "Medios", contenido: "Apariciones de PATRIAM en prensa, radio, televisión y medios digitales." },
-      { clave: 'tienda', titulo: "Tienda", contenido: "Libros, ropa y actividades de la asociación. Con cada compra sostienes la acción de PATRIAM." },
+      { clave: 'tienda', titulo: "Tienda", contenido: "Ropa, tazas y regalos de PATRIAM, y los libros que recomendamos. Con cada compra sostienes la acción de PATRIAM." },
     ],
     sedes: [
       { id: 1, ciudad: 'Madrid', email: 'madrid@patriam.es', lat: 40.42, lon: -3.7, orden: 1, activa: true, aprobada: true },
@@ -221,25 +221,13 @@ export function semilla() {
       { id: 2, fecha: hace(9).slice(0, 10), tipo: 'gasto', categoria: 'bancos', concepto: 'Comisiones bancarias', importe: 6.5, creado_at: hace(9) },
     ],
     correos: [],
-    productos: [
-      { id: 1, nombre: 'Programa de PATRIAM (edición impresa)', slug: 'programa-patriam', categoria: 'libros', descripcion: 'El programa completo de PATRIAM: introducción, Sistema político, economía y medidas. Edición impresa en rústica.', precio: 18, opciones: '', stock: 40, fecha: null, lugar: null, plazas: null, imagen_url: null, activo: true, orden: 1 },
-      { id: 2, nombre: 'Camiseta PATRIAM', slug: 'camiseta-patriam', categoria: 'ropa', descripcion: 'Camiseta de algodón 100 % con el logotipo de la asociación.', precio: 15, opciones: 'S,M,L,XL,XXL', stock: 100, fecha: null, lugar: null, plazas: null, imagen_url: null, activo: true, orden: 2 },
-      { id: 3, nombre: 'Polo PATRIAM', slug: 'polo-patriam', categoria: 'ropa', descripcion: 'Polo de piqué con el escudo bordado.', precio: 25, opciones: 'S,M,L,XL,XXL', stock: 60, fecha: null, lugar: null, plazas: null, imagen_url: null, activo: true, orden: 3 },
-      { id: 4, nombre: 'Gorra PATRIAM', slug: 'gorra-patriam', categoria: 'ropa', descripcion: 'Gorra ajustable con la bandera bordada. Talla única.', precio: 12, opciones: '', stock: 50, fecha: null, lugar: null, plazas: null, imagen_url: null, activo: true, orden: 4 },
-      { id: 5, nombre: 'Curso de formación: el ideario de PATRIAM', slug: 'curso-ideario', categoria: 'actividades', descripcion: 'Cuatro sesiones para formarse y poder argumentar: Dios, Patria y Justicia; la ley natural; la representación orgánica; economía y Bien Común.', precio: 30, opciones: '', stock: null, fecha: hace(-20), lugar: 'Madrid (sede de la asociación)', plazas: 25, imagen_url: null, activo: true, orden: 5 },
-      { id: 6, nombre: 'Charla-coloquio: por qué no somos un partido', slug: 'charla-no-somos-un-partido', categoria: 'actividades', descripcion: 'Charla abierta sobre qué es PATRIAM y por qué no es un partido político, con coloquio posterior. Entrada gratuita con inscripción previa.', precio: 0, opciones: '', stock: null, fecha: hace(-9), lugar: 'Madrid', plazas: 80, imagen_url: null, activo: true, orden: 6 },
-    ],
+    productos: [],
     acciones: [
       // Acción ciudadana
       { id: 11, seccion: 'ciudadana', titulo: 'Concentración en Valladolid', slug: 'concentracion-valladolid-8-octubre', fecha_inicio: new Date('2026-10-08T20:30:00+02:00').toISOString(), fecha_fin: null, lugar: 'Valladolid, Plaza de San Pablo', resumen: 'Concentración convocada por PATRIAM con motivo de la visita a Valladolid. Jueves 8 de octubre, 20:30.', descripcion: '## La convocatoria\n\nConcentración el **jueves 8 de octubre a las 20:30** en la **Plaza de San Pablo de Valladolid**.\n\n## Normas de la concentración\n\n- Concentración pacífica y comunicada a la Delegación del Gobierno\n- Sigue en todo momento las indicaciones de la organización y de las fuerzas de seguridad\n- Recuerda que te comprometiste a cumplir las normas de la asociación', porque_id: null, cronica_id: null, campana_id: null, estado: 'programada', publicada: true, aprobada: true, imagen_url: cartelValladolid, imagen_ia: true },
       { id: 12, seccion: 'ciudadana', titulo: 'Concentración por Ceuta', slug: 'concentracion-por-ceuta-25-octubre', fecha_inicio: new Date('2026-10-25T10:30:00+02:00').toISOString(), fecha_fin: new Date('2026-10-25T14:00:00+01:00').toISOString(), lugar: 'Madrid, glorieta de Atocha', resumen: 'Concentración y marcha por Ceuta convocada por Mujeres Caballas, de Atocha a la plaza de las Cortes. Domingo 25 de octubre, 10:30.', descripcion: '## La convocatoria\n\nConvoca **Mujeres Caballas**, movimiento cívico de madres de Ceuta. PATRIAM se suma y anima a participar.\n\n- **Domingo 25 de octubre**\n- **10:30** concentración en la **glorieta de Atocha** (plaza del Emperador Carlos V)\n- **11:30** sale la marcha hacia la **plaza de las Cortes**, frente al Congreso, donde se lee el manifiesto\n\n## Qué se pide\n\nUna Ceuta segura, digna y tranquila: más seguridad, refuerzo de la frontera y de la Guardia Civil, y soluciones urgentes para que Ceuta no caiga en el olvido.', porque_id: null, cronica_id: null, campana_id: null, estado: 'realizada', dirigida: 'todos', publicada: true, aprobada: true, imagen_url: null, imagen_ia: false },
     ],
-    pedidos: [
-      { id: 1, referencia: 'PED-0001', items: [{ k: '2|L', id: 2, nombre: 'Camiseta PATRIAM', categoria: 'ropa', precio: 15, opcion: 'L', cantidad: 2 }], subtotal: 30, envio: 4.95, total: 34.95, nombre: 'Juan Pérez', email: 'cliente@patriam.demo', entrega: 'envio', direccion: 'Calle Mayor 1, 28001 Madrid', metodo: 'bizum', estado: 'enviado', consentimiento: true, usuario_id: id(8), creado_at: hace(2) },
-      { id: 2, referencia: 'PED-0002', items: [{ k: '1|', id: 1, nombre: 'Programa de PATRIAM (edición impresa)', categoria: 'libros', precio: 18, opcion: null, cantidad: 1 }, { k: '3|M', id: 3, nombre: 'Polo PATRIAM', categoria: 'ropa', precio: 25, opcion: 'M', cantidad: 1 }], subtotal: 43, envio: 0, total: 43, nombre: 'María López', email: 'socia@patriam.demo', entrega: 'recogida', direccion: null, metodo: 'tarjeta', estado: 'entregado', consentimiento: true, usuario_id: id(7), creado_at: hace(25) },
-      { id: 3, referencia: 'PED-0003', items: [{ k: '5|', id: 5, nombre: 'Curso de formación: el ideario de PATRIAM', categoria: 'actividades', precio: 30, opcion: null, cantidad: 1 }], subtotal: 30, envio: 0, total: 30, nombre: 'María López', email: 'socia@patriam.demo', entrega: 'no_aplica', direccion: null, metodo: 'bizum', estado: 'pagado', consentimiento: true, usuario_id: id(7), creado_at: hace(6) },
-      { id: 4, referencia: 'PED-0004', items: [{ k: '6|', id: 6, nombre: 'Charla-coloquio: por qué no somos un partido', categoria: 'actividades', precio: 0, opcion: null, cantidad: 1 }], subtotal: 0, envio: 0, total: 0, nombre: 'María López', email: 'socia@patriam.demo', entrega: 'no_aplica', direccion: null, metodo: 'gratuito', estado: 'pagado', consentimiento: true, usuario_id: id(7), creado_at: hace(3) },
-    ],
+    pedidos: [],
     ajustes: [
       {
         id: 1,

@@ -104,11 +104,11 @@ export const USO_IA = {
 }
 
 // Tienda
+// Tienda: merchandising que fabrica y envía Gelato, y libros recomendados (enlace de afiliado de Casa del Libro)
 export const CATEGORIAS_TIENDA = {
-  libros: 'Libros',
   ropa: 'Ropa',
   regalos: 'Tazas y regalos',
-  actividades: 'Cursos y actividades',
+  libros: 'Libros recomendados',
 }
 
 export const ESTADOS_PEDIDO = {

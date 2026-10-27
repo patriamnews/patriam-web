@@ -5,7 +5,7 @@ import { euros, fecha, slugify } from '../lib/data'
 import { confirmar } from '../lib/confirmar'
 import { subirArchivo } from './subir'
 
-const NUEVO = { nombre: '', categoria: 'ropa', descripcion: '', precio: 0, opciones: '', stock: '', fecha: '', lugar: '', plazas: '', imagen_url: '', activo: true, orden: 0 }
+const NUEVO = { nombre: '', categoria: 'ropa', enlace_externo: '', gelato_uids: '', gelato_archivo: '', descripcion: '', precio: 0, opciones: '', stock: '', fecha: '', lugar: '', plazas: '', imagen_url: '', activo: true, orden: 0 }
 
 export default function TiendaAdmin({ nuevo }) {
   const [vista, setVista] = useState('pedidos')
@@ -31,7 +31,8 @@ export default function TiendaAdmin({ nuevo }) {
     d.stock = d.stock === '' || d.stock == null ? null : Number(d.stock)
     d.plazas = d.plazas === '' || d.plazas == null ? null : Number(d.plazas)
     d.orden = Number(d.orden) || 0
-    d.fecha = d.categoria === 'actividades' && d.fecha ? d.fecha : null
+    d.fecha = null
+    if (d.categoria === 'libros') { d.gelato_uids = null; d.gelato_archivo = null; d.opciones = '' } else d.enlace_externo = null
     const res = id
       ? await supabase.from('productos').update(d).eq('id', id)
       : await supabase.from('productos').insert({ ...d, slug: `${slugify(d.nombre)}-${Date.now().toString(36).slice(-4)}` })
@@ -115,7 +116,7 @@ export default function TiendaAdmin({ nuevo }) {
         </div>
       ) : (
         <>
-          <div className="acciones"><button className="btn" onClick={() => setF({ ...NUEVO })}>+ Nuevo producto o actividad</button></div>
+          <div className="acciones"><button className="btn" onClick={() => setF({ ...NUEVO })}>+ Nuevo producto o libro</button></div>
           {f && (
             <form className="formulario tarjeta-form" onSubmit={guardar}>
               <h3>{f.id ? 'Editar' : 'Nuevo'}</h3>
@@ -128,51 +129,47 @@ export default function TiendaAdmin({ nuevo }) {
                   </select>
                 </label>
               </div>
-              <label>Descripción<textarea rows={4} value={f.descripcion || ''} onChange={set('descripcion')} /></label>
-              <div className="tres-col">
-                <label>Precio (€, 0 = gratuito)<input type="number" min="0" step="0.01" value={f.precio} onChange={set('precio')} /></label>
-                {f.categoria === 'actividades' ? (
-                  <label>Plazas<input type="number" min="0" value={f.plazas ?? ''} onChange={set('plazas')} /></label>
-                ) : (
-                  <label>Stock (vacío = sin control)<input type="number" min="0" value={f.stock ?? ''} onChange={set('stock')} /></label>
-                )}
-                <label>Orden en la tienda<input type="number" value={f.orden} onChange={set('orden')} /></label>
-              </div>
-              {f.categoria === 'ropa' && (
-                <label>Tallas (separadas por comas; vacío = talla única)<input value={f.opciones || ''} onChange={set('opciones')} placeholder="S,M,L,XL,XXL" /></label>
-              )}
-              {f.categoria === 'actividades' && (
-                <div className="dos-col">
-                  <label>Fecha<input type="date" value={(f.fecha || '').slice(0, 10)} onChange={set('fecha')} /></label>
-                  <label>Lugar<input value={f.lugar || ''} onChange={set('lugar')} /></label>
-                </div>
-              )}
-              {f.categoria !== 'actividades' && (
-                <fieldset className="grupo">
-                  <legend>Gelato (lo fabrica y lo envía Gelato con la etiqueta y el embalaje de PATRIAM)</legend>
-                  <p className="letra-pequena">
-                    Rellénelo si este producto lo hace Gelato. El cliente paga aquí con tarjeta y el pedido le llega solo a Gelato.
-                    El código de cada talla se copia del catálogo de Gelato (Product UID). La etiqueta y el embalaje con vuestra marca se configuran en el panel de Gelato (plan Gelato+).
-                  </p>
-                  <label>
-                    Código de Gelato por talla (una línea por talla: TALLA=código; si no hay tallas, solo el código)
-                    <textarea rows={4} value={f.gelato_uids || ''} onChange={set('gelato_uids')} placeholder={'S=apparel_product_gca_t-shirt_…_gsi_s_gco_white_gpr_4-0\nM=apparel_product_gca_t-shirt_…_gsi_m_gco_white_gpr_4-0'} />
-                  </label>
-                  <label>
-                    Enlace al archivo del diseño para imprimir (PNG o PDF en alta resolución, dirección que empiece por https://)
-                    <input type="url" value={f.gelato_archivo || ''} onChange={set('gelato_archivo')} placeholder="https://…/diseno-camiseta.png" />
-                  </label>
-                </fieldset>
-              )}
-              {f.categoria !== 'actividades' && !f.gelato_uids && (
-                <label>
-                  Enlace de La Tostadora (opcional)
-                  <input type="url" value={f.enlace_externo || ''} onChange={set('enlace_externo')} placeholder="https://www.latostadora.com/…" />
-                  <small>Si el producto se vende en La Tostadora, pegue aquí el enlace a su página. El botón de compra llevará allí: La Tostadora cobra, fabrica y envía. Si lo deja vacío, se compra en esta web.</small>
-                </label>
+              {f.categoria === 'libros' ? (
+                <>
+                  <label>Autor y breve reseña (por qué lo recomendamos)<textarea rows={4} value={f.descripcion || ''} onChange={set('descripcion')} /></label>
+                  <div className="dos-col">
+                    <label>
+                      Enlace de afiliado de Casa del Libro
+                      <input type="url" required value={f.enlace_externo || ''} onChange={set('enlace_externo')} placeholder="https://www.awin1.com/cread.php?…" />
+                      <small>Se crea en Awin (programa de afiliados de Casa del Libro) a partir de la página del libro. Si alguien compra desde ese enlace, PATRIAM recibe una comisión.</small>
+                    </label>
+                    <label>Precio orientativo (€, opcional)<input type="number" min="0" step="0.01" value={f.precio} onChange={set('precio')} /></label>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <label>Descripción<textarea rows={4} value={f.descripcion || ''} onChange={set('descripcion')} /></label>
+                  <div className="dos-col">
+                    <label>Precio de venta (€)<input type="number" min="0" step="0.01" required value={f.precio} onChange={set('precio')} /></label>
+                    <label>Orden en la tienda<input type="number" value={f.orden} onChange={set('orden')} /></label>
+                  </div>
+                  {f.categoria === 'ropa' && (
+                    <label>Tallas (separadas por comas; vacío = talla única)<input value={f.opciones || ''} onChange={set('opciones')} placeholder="S,M,L,XL,XXL" /></label>
+                  )}
+                  <fieldset className="grupo">
+                    <legend>Gelato (lo fabrica y lo envía Gelato con la etiqueta y el embalaje de PATRIAM)</legend>
+                    <p className="letra-pequena">
+                      El cliente paga aquí con tarjeta y el pedido le llega solo a Gelato. El código de cada talla se copia del catálogo de Gelato (Product UID).
+                      La etiqueta y el embalaje con vuestra marca se configuran en el panel de Gelato (plan Gelato+).
+                    </p>
+                    <label>
+                      Código de Gelato por talla (una línea por talla: TALLA=código; si no hay tallas, solo el código)
+                      <textarea rows={4} required value={f.gelato_uids || ''} onChange={set('gelato_uids')} placeholder={'S=apparel_product_gca_t-shirt_…_gsi_s_gco_white_gpr_4-0\nM=apparel_product_gca_t-shirt_…_gsi_m_gco_white_gpr_4-0'} />
+                    </label>
+                    <label>
+                      Enlace al archivo del diseño para imprimir (PNG o PDF en alta resolución, dirección que empiece por https://)
+                      <input type="url" required value={f.gelato_archivo || ''} onChange={set('gelato_archivo')} placeholder="https://…/diseno-camiseta.png" />
+                    </label>
+                  </fieldset>
+                </>
               )}
               <label>Imagen<input type="file" accept="image/*" onChange={imagen} />{f.imagen_url && <img src={f.imagen_url} alt="" className="miniatura" />}</label>
-              <label className="check"><input type="checkbox" checked={f.activo} onChange={set('activo')} /><span>A la venta (visible en la tienda)</span></label>
+              <label className="check"><input type="checkbox" checked={f.activo} onChange={set('activo')} /><span>Visible en la tienda</span></label>
               {error && <p className="error">{error}</p>}
               <div className="acciones">
                 <button className="btn">Guardar</button>

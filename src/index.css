@@ -1420,3 +1420,5 @@ html, body, .sitio { background: var(--crema) !important; }
 .lista-anteriores { list-style: none; padding: 0; margin: 0.6rem 0 0; }
 .lista-anteriores li { padding: 0.45rem 0; border-bottom: 1px dotted #e3d6c1; }
 .lista-anteriores li span { color: #8a7d6b; font-size: 0.9rem; min-width: 8.5rem; display: inline-block; }
+.tienda-apartado { margin-bottom: 2.5rem; }
+.tienda-apartado > p { margin-top: -0.3rem; }
