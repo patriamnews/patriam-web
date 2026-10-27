@@ -51,7 +51,8 @@ function Rejilla({ items, vacio }) {
           <div className="prod-img-par">
             <ImagenProducto p={p} />
             {(() => {
-              const f = p.fotos && Object.values(p.fotos)[0]
+              const lista = p.fotos ? Object.values(p.fotos).filter(Array.isArray) : []
+              const f = lista.find((x) => x[0] === p.imagen_url) || lista[0]
               return Array.isArray(f) && f[1] ? <img className="prod-img-hover" src={f[1]} alt="" loading="lazy" /> : null
             })()}
           </div>
