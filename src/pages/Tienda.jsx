@@ -28,6 +28,17 @@ export function ImagenProducto({ p, grande }) {
   )
 }
 
+// Color de cada variante para las muestras redondas de la tienda
+const COLOR_HEX = {
+  Blanco: '#f7f6f2', 'Azul hielo': '#cbd8dc', 'Amarillo mantequilla': '#f2e3b8', Caqui: '#c4b594', 'Verde salvia': '#b0bda7',
+  'Azul vaquero': '#637792', 'Azul hortensia': '#50638c', 'Verde oliva': '#3f4927', Teja: '#96483e', Gris: '#504c4b',
+  'Marrón café': '#4a3c34', 'Azul noche': '#1b375e', Granate: '#6e1c28', Crema: '#efe6d2', Beige: '#d9c9a8',
+}
+const coloresDe = (p) => {
+  const ops = (p.opciones || '').split(',').map((x) => x.trim()).filter((x) => x.includes(' / '))
+  return [...new Set(ops.map((o) => o.split(' / ')[0]))]
+}
+
 const precio = (n) => (Number(n) === 0 ? 'Gratuito' : euros(n))
 const opciones = (p) => (p.opciones || '').split(',').map((x) => x.trim()).filter(Boolean)
 
@@ -37,11 +48,22 @@ function Rejilla({ items, vacio }) {
     <div className="rejilla-tienda">
       {items.map((p) => (
         <Link key={p.id} to={`/tienda/${p.slug}`} className={`producto cat-${p.categoria}`}>
-          <ImagenProducto p={p} />
+          <div className="prod-img-par">
+            <ImagenProducto p={p} />
+            {(() => {
+              const f = p.fotos && Object.values(p.fotos)[0]
+              return Array.isArray(f) && f[1] ? <img className="prod-img-hover" src={f[1]} alt="" loading="lazy" /> : null
+            })()}
+          </div>
           <div className="producto-cuerpo">
             <span className="etiqueta">{CATEGORIAS_TIENDA[p.categoria]}</span>
             <h3>{p.nombre}</h3>
             {Number(p.precio) > 0 && <b className="precio">{euros(p.precio)}</b>}
+            {coloresDe(p).length > 1 && (
+              <span className="puntos-color" aria-label={`${coloresDe(p).length} colores`}>
+                {coloresDe(p).map((c) => <i key={c} title={c} style={{ background: COLOR_HEX[c] || '#ccc' }} />)}
+              </span>
+            )}
           </div>
         </Link>
       ))}

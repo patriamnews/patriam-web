@@ -1492,3 +1492,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .muestras-color button img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
 .muestras-color button small { display: block; font-size: .68rem; line-height: 1.2; padding: .25rem .2rem 0; }
 .muestras-color button.activo { border-color: var(--granate, #7a1c28); }
+
+/* Tienda: al pasar el ratón se ve la parte de delante; puntos con los colores disponibles */
+.prod-img-par { position: relative; overflow: hidden; }
+.prod-img-hover { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .25s; }
+.rejilla-tienda .producto.cat-ropa .prod-img-hover { transform: scale(1.4); transform-origin: 50% 40%; }
+.producto:hover .prod-img-hover, .producto:focus-visible .prod-img-hover { opacity: 1; }
+.puntos-color { display: flex; flex-wrap: wrap; gap: 5px; margin-top: .35rem; }
+.puntos-color i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,.18); display: inline-block; }
