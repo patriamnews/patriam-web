@@ -1512,3 +1512,14 @@ html, body, .sitio { background: var(--crema) !important; }
 /* Envío: aviso arriba de la tienda y nota bajo el precio */
 .aviso-envio { background: #f3efe6; border: 1px solid var(--linea); border-radius: 10px; padding: .6rem 1rem; font-size: .9rem; margin: .8rem 0 0; }
 .nota-precio { font-size: .82rem; color: #666; margin: -.3rem 0 .9rem; }
+
+/* ---------- Menú en el móvil: carrusel que se desliza con el dedo ---------- */
+@media (max-width: 760px) {
+  .menu-principal .menu-in { flex-wrap: nowrap; justify-content: flex-start; gap: 0 1.4rem; overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-left: 1rem; padding-right: 2.2rem; }
+  .menu-principal .menu-in::-webkit-scrollbar { display: none; }
+  .menu-principal .menu-in > * { flex: none; scroll-snap-align: start; white-space: nowrap; }
+  /* sombra a la derecha para que se vea que hay más */
+  .menu-principal::after { content: ""; position: absolute; top: 0; right: 0; bottom: 3px; width: 2.4rem; pointer-events: none; z-index: 1;
+    background: linear-gradient(90deg, rgba(123,28,44,0), var(--acento) 80%); }
+}

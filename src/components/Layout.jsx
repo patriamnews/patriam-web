@@ -68,13 +68,13 @@ const menuBoletin = (base, bol) => ({
   // Mismo orden y mismos nombres que el menú del propio boletín
   hijos: [
     { texto: 'Boletín semanal', externo: base, desc: 'El número de esta semana', icono: 'sobre' },
-    { texto: 'Editorial', externo: base + '#/editoriales', desc: 'Todas las editoriales', icono: 'pluma' },
-    { texto: 'Noticias', externo: base + '#/noticias', desc: 'Con resumen y comentario', icono: 'periodico' },
-    { texto: 'Historia', externo: base + '#/historia', desc: 'Podcasts, series y libros', icono: 'libro' },
-    { texto: 'Análisis', externo: base + '#/analisis', desc: 'Reflexión para el debate', icono: 'estrella' },
-    { texto: 'Colaboraciones', externo: base + '#/colaboraciones', desc: 'Firmas invitadas', icono: 'firma' },
+    { texto: 'Actualidad', externo: base + '#/noticias', desc: 'Noticias con resumen y comentario', icono: 'periodico' },
+    { texto: 'Historia', externo: base + '#/historia', desc: 'Episodios que forjaron España', icono: 'libro' },
+    { texto: 'Sociedad', externo: base + '#/sociedad', desc: 'Cómo vivimos y cómo vivíamos', icono: 'pluma' },
+    { texto: 'Criterio', externo: base + '#/criterio', desc: 'Análisis, podcasts, libros y películas', icono: 'estrella' },
     { texto: 'Iniciativas', externo: base + '#/iniciativas', desc: 'Agenda y convocatorias', icono: 'bandera' },
     { texto: 'Boletines', externo: base + '#/boletines', desc: 'Todos los números', icono: 'periodico' },
+    { texto: 'Quién es quién', externo: base + '#/colaboraciones', desc: 'Colaboraciones y colaboradores', icono: 'firma' },
   ],
   destacado: {
     etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + '#/suscribirse', boton: 'Suscríbete ↗',
