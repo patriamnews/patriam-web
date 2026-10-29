@@ -313,7 +313,7 @@ export function Producto() {
               Precio sin gastos de envío. Lo fabrica y envía Gelato, nuestro taller de impresión bajo demanda.{' '}
               {aj && !(Number(aj.envio_coste) > 0)
                 ? 'El envío es gratuito.'
-                : `El precio es solo el de la prenda. El envío se suma al final del pedido: ${euros(aj?.envio_coste)} la primera prenda${Number(aj?.envio_adicional) > 0 ? ` y ${euros(aj.envio_adicional)} cada prenda más` : ''}${Number(aj?.envio_gratis_desde) > 0 ? `, gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}. Son los gastos de envío de Gelato, no de PATRIAM.`}
+                : `El precio es solo el del producto. El envío se suma al final del pedido: ${euros(p.envio_primera ?? aj?.envio_coste)} el primero${Number(p.envio_extra ?? aj?.envio_adicional) > 0 ? ` y ${euros(p.envio_extra ?? aj.envio_adicional)} cada uno más` : ''}${Number(aj?.envio_gratis_desde) > 0 ? `, gratis a partir de ${euros(aj.envio_gratis_desde)}` : ''}. Son los gastos de envío de Gelato, no de PATRIAM.`}
             </p>
           )}
           </>)}
@@ -417,7 +417,7 @@ export function Carrito() {
             </div>
             <div className="totales">
               <div><span>Subtotal</span><span>{euros(subtotal)}</span></div>
-              {conEnvio && <div><span>Envío ({prendas} {prendas === 1 ? 'prenda' : 'prendas'})</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
+              {conEnvio && <div><span>Envío ({prendas} {prendas === 1 ? 'artículo' : 'artículos'})</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
               <div className="total"><span>Total</span><span>{euros(total)}</span></div>
               {conEnvio && Number.isFinite(gratisDesde) && (
                 <p className="letra-pequena">{subtotal < gratisDesde ? `Te faltan ${euros(gratisDesde - subtotal)} para el envío gratis (a partir de ${euros(gratisDesde)}).` : '¡Tienes el envío gratis!'}</p>
