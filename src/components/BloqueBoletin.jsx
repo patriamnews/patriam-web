@@ -37,7 +37,7 @@ export default function BloqueBoletin({ base }) {
           )}
           <div className="botones">
             <a className="btn" href={base} {...abrir}>Leer el boletín ↗</a>
-            <a className="btn btn-claro" href={`${base}#/suscribirse`} {...abrir}>Suscríbete</a>
+            <a className="btn btn-claro" href={`${base}suscribirse`} {...abrir}>Suscríbete</a>
           </div>
           <small>Se abre en una pestaña nueva; la web de PATRIAM sigue abierta.</small>
         </div>

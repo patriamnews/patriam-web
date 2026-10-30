@@ -68,16 +68,16 @@ const menuBoletin = (base, bol) => ({
   // Mismo orden y mismos nombres que el menú del propio boletín
   hijos: [
     { texto: 'Boletín semanal', externo: base, desc: 'El número de esta semana', icono: 'sobre' },
-    { texto: 'Actualidad', externo: base + '#/noticias', desc: 'Noticias con resumen y comentario', icono: 'periodico' },
-    { texto: 'Historia', externo: base + '#/historia', desc: 'Episodios que forjaron España', icono: 'libro' },
-    { texto: 'Sociedad', externo: base + '#/sociedad', desc: 'Cómo vivimos y cómo vivíamos', icono: 'pluma' },
-    { texto: 'Criterio', externo: base + '#/criterio', desc: 'Análisis, podcasts, libros y películas', icono: 'estrella' },
-    { texto: 'Iniciativas', externo: base + '#/iniciativas', desc: 'Agenda y convocatorias', icono: 'bandera' },
-    { texto: 'Boletines', externo: base + '#/boletines', desc: 'Todos los números', icono: 'periodico' },
-    { texto: 'Quién es quién', externo: base + '#/colaboraciones', desc: 'Colaboraciones y colaboradores', icono: 'firma' },
+    { texto: 'Actualidad', externo: base + 'noticias', desc: 'Noticias con resumen y comentario', icono: 'periodico' },
+    { texto: 'Historia', externo: base + 'historia', desc: 'Episodios que forjaron España', icono: 'libro' },
+    { texto: 'Sociedad', externo: base + 'sociedad', desc: 'Cómo vivimos y cómo vivíamos', icono: 'pluma' },
+    { texto: 'Criterio', externo: base + 'criterio', desc: 'Análisis, podcasts, libros y películas', icono: 'estrella' },
+    { texto: 'Iniciativas', externo: base + 'iniciativas', desc: 'Agenda y convocatorias', icono: 'bandera' },
+    { texto: 'Boletines', externo: base + 'boletines', desc: 'Todos los números', icono: 'periodico' },
+    { texto: 'Quién es quién', externo: base + 'colaboraciones', desc: 'Colaboraciones y colaboradores', icono: 'firma' },
   ],
   destacado: {
-    etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + '#/suscribirse', boton: 'Suscríbete ↗',
+    etiqueta: 'Gratis, cada semana', titulo: 'Suscríbete al boletín', texto: 'Recíbelo cada semana.', externo: base + 'suscribirse', boton: 'Suscríbete ↗',
     tarjeta: { enlace: bol ? `${base}boletin/${bol.numero}` : base, img: bol?.tarjeta, banner: bol?.banner, cabecera: bol?.cabecera || 'Lo que hay que saber', claim: bol?.claim || 'con criterio', numero: bol?.numero },
   },
 })
@@ -223,7 +223,7 @@ export default function Layout() {
             <Link to="/tienda">Tienda</Link>
             <Link to="/contacto">Contacto</Link>
             <a href={urlBoletin(aj)} target="_blank" rel="noopener noreferrer">Boletín semanal ↗</a>
-            <a href={`${urlBoletin(aj)}#/suscribirse`} target="_blank" rel="noopener noreferrer">Suscríbete al boletín ↗</a>
+            <a href={`${urlBoletin(aj)}suscribirse`} target="_blank" rel="noopener noreferrer">Suscríbete al boletín ↗</a>
           </nav>
           <nav>
             <Link to="/nosotros#transparencia">Transparencia</Link>

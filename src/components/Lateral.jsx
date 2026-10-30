@@ -91,7 +91,7 @@ export default function Lateral({ conCalendario = true }) {
         {bol?.editorial?.titulo && <p className="lat-edit">«{bol.editorial.titulo}»</p>}
         <div className="lat-botones">
           <a className="btn" href={enlaceBol} target="_blank" rel="noopener noreferrer">Leer ↗</a>
-          <a className="btn btn-claro" href={`${base}#/suscribirse`} target="_blank" rel="noopener noreferrer">Suscríbete</a>
+          <a className="btn btn-claro" href={`${base}suscribirse`} target="_blank" rel="noopener noreferrer">Suscríbete</a>
         </div>
       </section>
 
