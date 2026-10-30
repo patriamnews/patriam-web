@@ -7,6 +7,7 @@ import { euros, fecha } from '../lib/data'
 import { confirmar } from '../lib/confirmar'
 import { huella } from '../lib/documentos'
 import Texto from '../components/Texto'
+import { useSeo } from '../lib/seo'
 
 const PERIODO = { mensual: 'al mes', trimestral: 'al trimestre', anual: 'al año' }
 const fechaHora = (d) => new Date(d).toLocaleString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })
@@ -40,6 +41,7 @@ function useMisDatos() {
 }
 
 export default function MiCuenta() {
+  useSeo({ titulo: 'Mi cuenta', noindex: true })
   const { session, perfil, socio, tipo, cargando, salir } = useAuth()
   const datos = useMisDatos()
 

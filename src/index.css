@@ -1548,3 +1548,13 @@ html, body, .sitio { background: var(--crema) !important; }
 .est-dia { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; margin-left: .4rem; }
 .est-dia input { padding: .3rem .5rem; border: 1px solid #d9c9b0; border-radius: 6px; font: inherit; }
 .est-horas { display: flex; justify-content: space-between; font-size: .72rem; color: #7a6d66; }
+
+/* ---------- SEO: apartados de la tienda como enlaces, migas y texto de categoría ---------- */
+.indice-tienda a { text-align: left; padding: .8rem 1rem; border: 1px solid var(--linea); border-radius: 10px; background: var(--papel); display: flex; flex-direction: column; gap: .15rem; color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
+.indice-tienda a:hover, .indice-tienda a.activo { border-color: var(--granate, #7a1c28); transform: translateY(-2px); }
+.indice-tienda a.activo { box-shadow: inset 0 -3px 0 var(--granate, #7a1c28); }
+.titulo-seccion a { color: inherit; text-decoration: none; }
+.titulo-seccion a:hover { color: var(--acento); }
+.migas { font-size: .82rem; color: #7a6d66; margin-bottom: .6rem; }
+.migas a { color: inherit; }
+.intro-categoria { max-width: 760px; font-size: 1.05rem; line-height: 1.55; color: #4a3f3a; }

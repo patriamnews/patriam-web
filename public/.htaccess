@@ -11,6 +11,9 @@ RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.es$ [NC]
 RewriteCond %{REQUEST_URI} !^/boletin/
 RewriteRule ^(.*)$ boletin/web/$1 [L]
 
+# publicar.movimientopatriam.es no se indexa en Google (es la herramienta del equipo, no una copia de la web)
+RewriteCond %{HTTP_HOST} ^publicar\. [NC]
+RewriteRule ^robots\.txt$ robots-publicar.txt [L]
 # Publicar: publicar.movimientopatriam.es (los demás dominios redirigen ahí). Sirve la misma web, que abre «Publicar»
 RewriteCond %{HTTP_HOST} ^publicar\.movimientopatriam\.(org|com|net)$ [NC]
 RewriteRule ^(.*)$ https://publicar.movimientopatriam.es/$1 [R=301,L]
@@ -20,13 +23,28 @@ RewriteCond %{HTTP_HOST} ^(www\.)?movimientopatriam\.(org|com|net)$ [NC,OR]
 RewriteCond %{HTTP_HOST} ^www\.movimientopatriam\.es$ [NC]
 RewriteRule ^(.*)$ https://movimientopatriam.es/$1 [R=301,L]
 
-# La web es una sola página: cualquier ruta la sirve index.html
+# Páginas ya preparadas para Google (tienda, productos, artículos…): /tienda sirve tienda/index.html, sin añadir «/» al final
+DirectorySlash Off
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html -f
+RewriteRule ^(.+?)/?$ $1/index.html [L]
+# Direcciones con «/» al final: se quitan (una sola dirección por página)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} ^/(.+)/$
+RewriteCond %{REQUEST_URI} !^/(boletin|api)/
+RewriteRule ^ /%1 [R=301,L]
+
+# El resto de la web es una sola página: cualquier otra ruta la sirve app.html (index.html si aún no existe)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/app.html -f
+RewriteRule ^ app.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
 
 # La página, el service worker y el manifiesto no se guardan en caché: cada cambio publicado se ve al momento
-<FilesMatch "^(index\.html|sw\.js|gestion\.webmanifest)$">
+<FilesMatch "^(index\.html|app\.html|sw\.js|gestion\.webmanifest|sitemap\.xml|robots\.txt)$">
   <IfModule mod_headers.c>
     Header set Cache-Control "no-cache, must-revalidate"
   </IfModule>

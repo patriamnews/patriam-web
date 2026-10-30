@@ -5,6 +5,7 @@ import { SECCIONES, TIPOS_RECOMENDACION } from '../lib/config'
 import Texto from '../components/Texto'
 import Tarjeta from '../components/Tarjeta'
 import { Foto } from '../components/ImagenPrueba'
+import { useSeo } from '../lib/seo'
 
 // Ficha de una recomendación: lleva directamente al original (otra web, periódico, revista o libro)
 export function Recomendacion({ r }) {
@@ -86,6 +87,9 @@ export default function Seccion({ seccion }) {
     if (seccion === 'revista') listarPublicados({ seccion: 'recomendaciones', limite: 4 }).then(setRecs)
     else setRecs([])
   }, [seccion])
+
+  const RUTAS = { revista: '/revista', recomendaciones: '/revista/recomendaciones', noticias: '/comunicados', medios: '/medios' }
+  useSeo({ titulo: s?.nombre, descripcion: intro?.contenido || s?.lema, ruta: RUTAS[seccion] })
 
   const esRec = seccion === 'recomendaciones'
   const visibles = (items || []).filter((r) => !tipo || r.tipo_recomendacion === tipo)

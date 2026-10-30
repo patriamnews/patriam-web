@@ -4,7 +4,7 @@
   "short_name": "Publicar",
   "description": "Publicar en la web, el boletín y la tienda de PATRIAM",
   "lang": "es",
-  "start_url": "/#/publicar",
+  "start_url": "/publicar",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -31,15 +31,15 @@
   "shortcuts": [
     {
       "name": "Nuevo comunicado",
-      "url": "/#/publicar/comunicado"
+      "url": "/publicar/comunicado"
     },
     {
       "name": "Nueva acción en la agenda",
-      "url": "/#/publicar/accion"
+      "url": "/publicar/accion"
     },
     {
       "name": "Pendiente de aprobar",
-      "url": "/#/publicar/aprobar"
+      "url": "/publicar/aprobar"
     }
   ]
 }

@@ -4,6 +4,7 @@ import { getCampana, getPagina, listarCampanas, totalFirmas, enviarFirma } from 
 import Texto from '../components/Texto'
 import NoEncontrado from './NoEncontrado'
 import { Foto } from '../components/ImagenPrueba'
+import { useSeo } from '../lib/seo'
 
 function Progreso({ n, objetivo }) {
   const pct = objetivo ? Math.min(100, Math.round((n / objetivo) * 100)) : 0
@@ -20,6 +21,8 @@ function Progreso({ n, objetivo }) {
 export function ListaCampanas() {
   const [intro, setIntro] = useState(null)
   const [lista, setLista] = useState(null)
+
+  useSeo({ titulo: 'Campañas de firmas', descripcion: intro?.contenido || 'Campañas de recogida de firmas de PATRIAM: firma y comparte las peticiones que defendemos.', ruta: '/campanas' })
 
   useEffect(() => {
     getPagina('campanas').then(setIntro)
@@ -64,6 +67,10 @@ export function Campana() {
       if (d) setN(await totalFirmas(d))
     })
   }, [slug])
+
+  useSeo(c ? { titulo: c.titulo, descripcion: c.resumen || c.texto, imagen: c.imagen_url, ruta: `/campanas/${c.slug}`,
+    jsonld: { '@context': 'https://schema.org', '@type': 'WebPage', name: c.titulo, description: (c.resumen || '').slice(0, 300), url: `https://movimientopatriam.es/campanas/${c.slug}` } }
+    : { noindex: c === null })
 
   if (c === undefined) return <p className="contenedor vacio">Cargando…</p>
   if (!c) return <NoEncontrado />

@@ -6,6 +6,7 @@ import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
 import { ImagenProducto } from './Tienda'
 import { Foto } from '../components/ImagenPrueba'
+import { useSeo } from '../lib/seo'
 
 // Imagen del artículo o, si no tiene, un fondo granate con el nombre de la sección
 function Portadilla({ a, grande }) {
@@ -31,6 +32,17 @@ export default function Inicio() {
   const [acciones, setAcciones] = useState([])
   const [productos, setProductos] = useState([])
   const [, setAj] = useState({})
+  useSeo({
+    descripcion: 'PATRIAM es un movimiento de acción ciudadana, cultural y social en España: Dios, Patria, Justicia. Agenda de acciones, revista, campañas de firmas, boletín semanal y tienda.',
+    ruta: '/',
+    jsonld: [
+      { '@context': 'https://schema.org', '@type': 'Organization', name: 'PATRIAM', alternateName: 'Asociación PATRIAM', url: 'https://movimientopatriam.es/',
+        logo: 'https://movimientopatriam.es/og-patriam.jpg', slogan: 'Dios, Patria, Justicia', email: 'movimientopatriam@gmail.com',
+        address: { '@type': 'PostalAddress', streetAddress: 'C/ Tórtola, 21', addressLocality: 'Valladolid', addressCountry: 'ES' },
+        sameAs: ['https://x.com/patriam_es'] },
+      { '@context': 'https://schema.org', '@type': 'WebSite', name: 'PATRIAM', url: 'https://movimientopatriam.es/', inLanguage: 'es-ES' },
+    ],
+  })
 
   useEffect(() => {
     getPagina('inicio').then(setIntro)

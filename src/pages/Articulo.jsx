@@ -5,6 +5,7 @@ import { SECCIONES } from '../lib/config'
 import Texto from '../components/Texto'
 import { Foto } from '../components/ImagenPrueba'
 import NoEncontrado from './NoEncontrado'
+import { useSeo } from '../lib/seo'
 
 export default function Articulo() {
   const { slug } = useParams()
@@ -13,6 +14,15 @@ export default function Articulo() {
   useEffect(() => {
     getArticulo(slug).then(setA)
   }, [slug])
+
+  useSeo(a ? {
+    titulo: a.titulo, descripcion: a.resumen || a.contenido, imagen: a.imagen_url, tipo: 'article', ruta: `/articulo/${a.slug}`,
+    jsonld: [{ '@context': 'https://schema.org', '@type': 'Article', headline: a.titulo, description: (a.resumen || '').slice(0, 300),
+      image: a.imagen_url ? [a.imagen_url] : undefined, datePublished: a.publicado_at || a.fecha, dateModified: a.actualizado_at || a.publicado_at,
+      author: { '@type': a.firma ? 'Person' : 'Organization', name: a.firma || 'PATRIAM' },
+      publisher: { '@type': 'Organization', name: 'PATRIAM', logo: { '@type': 'ImageObject', url: 'https://movimientopatriam.es/og-patriam.jpg' } },
+      mainEntityOfPage: `https://movimientopatriam.es/articulo/${a.slug}`, inLanguage: 'es-ES' }],
+  } : { titulo: a === null ? 'Página no encontrada' : '', noindex: a === null })
 
   if (a === undefined) return <p className="contenedor vacio">Cargando…</p>
   if (!a) return <NoEncontrado />

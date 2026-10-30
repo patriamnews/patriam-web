@@ -5,6 +5,7 @@ import { supabase, DEMO } from '../lib/supabase'
 import { useAuth, destino } from '../lib/auth'
 import { USUARIOS_DEMO, CLIENTES_DEMO } from '../lib/mock/seed'
 import { reiniciarDemo } from '../lib/mock/client'
+import { useSeo } from '../lib/seo'
 
 // Acceso único para todos: equipo, asociados y clientes.
 // Tras entrar, se reconoce el tipo de cuenta por el correo y se lleva a cada uno a su área.
@@ -15,6 +16,7 @@ export default function Acceso() {
   const [modo, setModo] = useState(params.get('modo') || 'entrar') // entrar | registro | olvido
   const [f, setF] = useState({ nombre: '', email: '', clave: '' })
   const [msg, setMsg] = useState('')
+  useSeo({ titulo: 'Acceder', noindex: true })
   const [error, setError] = useState('')
 
   // Redirección automática según el tipo de cuenta

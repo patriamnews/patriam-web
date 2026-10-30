@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { enviarContacto, getPagina } from '../lib/data'
 import Texto from '../components/Texto'
 import Sedes from '../components/Sedes'
+import { useSeo } from '../lib/seo'
 
 const INTERESES = {
   informacion: 'Recibir información',
@@ -13,6 +14,7 @@ const INTERESES = {
 
 export default function Colabora() {
   const [intro, setIntro] = useState(null)
+  useSeo({ titulo: 'Contacto', descripcion: 'Escribe a PATRIAM: información, colaboración, prensa o voluntariado.', ruta: '/contacto' })
   const [f, setF] = useState({ nombre: '', email: '', interes: 'informacion', mensaje: '' })
   const [ok, setOk] = useState(false)
   const [consiente, setConsiente] = useState(false)

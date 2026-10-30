@@ -4,7 +4,7 @@
   "short_name": "PATRIAM",
   "description": "Panel de gestión de la Asociación PATRIAM",
   "lang": "es",
-  "start_url": "/#/gestion",
+  "start_url": "/gestion",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
@@ -16,7 +16,7 @@
     { "src": "/gestion-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "Drive del equipo", "url": "/#/gestion/drive" },
-    { "name": "Pendientes de aprobación", "url": "/#/gestion/aprobaciones" }
+    { "name": "Drive del equipo", "url": "/gestion/drive" },
+    { "name": "Pendientes de aprobación", "url": "/gestion/aprobaciones" }
   ]
 }

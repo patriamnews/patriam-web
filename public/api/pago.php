@@ -24,8 +24,8 @@ $f = [
   'client_reference_id' => $ref,
   'metadata[referencia]' => $ref,
   'metadata[tipo]' => $tipo,
-  'success_url' => $WEB . '/#/pago-correcto?ref=' . rawurlencode($ref),
-  'cancel_url' => $WEB . '/#/pago-cancelado?ref=' . rawurlencode($ref),
+  'success_url' => $WEB . '/pago-correcto?ref=' . rawurlencode($ref),
+  'cancel_url' => $WEB . '/pago-cancelado?ref=' . rawurlencode($ref),
 ];
 if ($email) $f['customer_email'] = $email;
 $euros = fn($n) => (int)round(((float)$n) * 100);

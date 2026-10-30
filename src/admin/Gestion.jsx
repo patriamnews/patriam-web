@@ -29,9 +29,11 @@ import RecomendacionesAdmin from './RecomendacionesAdmin'
 import Administracion from './Administracion'
 import CambiarClave from './CambiarClave'
 import Manuales from './Manuales'
+import { useSeo } from '../lib/seo'
 
 export default function Gestion() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
+  useSeo({ titulo: 'Gestión', noindex: true })
   useEffect(() => {
     activarApp()
   }, [])

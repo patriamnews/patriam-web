@@ -41,7 +41,7 @@ export function activarApp() {
     Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v))
     document.head.appendChild(el)
   }
-  const publicar = /^publicar\./i.test(location.hostname) || /^#\/publicar/.test(location.hash)
+  const publicar = /^publicar\./i.test(location.hostname) || /^\/publicar/.test(location.pathname)
   add('link', { rel: 'manifest', href: publicar ? '/publicar.webmanifest' : '/gestion.webmanifest' })
   add('meta', { name: 'theme-color', content: '#7b1c2c' })
   add('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' })

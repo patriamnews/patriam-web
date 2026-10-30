@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import { getPagina, listarCargos, listarDocumentos, fecha } from '../lib/data'
 import { CATEGORIAS_DOC } from '../lib/config'
 import Texto from '../components/Texto'
+import { useSeo } from '../lib/seo'
 
 export default function Nosotros() {
   const [intro, setIntro] = useState(null)
   const [cargos, setCargos] = useState([])
   const [docs, setDocs] = useState([])
+  useSeo({ titulo: 'Nosotros', descripcion: 'Quiénes somos en PATRIAM: junta directiva, estatutos, ideario y transparencia de la asociación.', ruta: '/nosotros' })
 
   useEffect(() => {
     getPagina('nosotros').then(setIntro)

@@ -9,6 +9,8 @@ import { Metodos, Instrucciones } from '../components/Pago'
 import Texto from '../components/Texto'
 import NoEncontrado from './NoEncontrado'
 import { Foto } from '../components/ImagenPrueba'
+import { useSeo, migas, productoLd } from '../lib/seo'
+import { SEO_TIENDA } from '../lib/seoTienda.js'
 
 const ICONOS = {
   libros: 'M4 5a2 2 0 012-2h5v16H6a2 2 0 00-2 2zM20 5a2 2 0 00-2-2h-5v16h5a2 2 0 012 2z',
@@ -83,6 +85,8 @@ const SECCIONES = [
 ]
 
 export function Tienda() {
+  const { clave } = useParams()
+  const cat = clave && SEO_TIENDA[clave] ? clave : ''
   const [intro, setIntro] = useState(null)
   const [lista, setLista] = useState(null)
   const [ajT, setAjT] = useState(null)
@@ -93,13 +97,28 @@ export function Tienda() {
     supabase.from('productos').select('*').eq('activo', true).order('orden').then(({ data }) => setLista(data || []))
   }, [])
 
+  const visiblesSeo = (lista || []).filter((p) => p.categoria !== 'libros' && (!cat || (p.seccion || 'otros') === cat))
+  useSeo(cat ? {
+    titulo: SEO_TIENDA[cat].h1, descripcion: SEO_TIENDA[cat].desc, ruta: '/tienda/categoria/' + cat,
+    imagen: visiblesSeo[0]?.imagen_url,
+    jsonld: [migas([['Inicio', '/'], ['Tienda', '/tienda'], [SEO_TIENDA[cat].h1, '/tienda/categoria/' + cat]]),
+      { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: visiblesSeo.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: 'https://movimientopatriam.es/tienda/' + p.slug, name: p.nombre })) }],
+  } : {
+    titulo: 'Tienda: camisetas patrióticas, sudaderas y regalos',
+    descripcion: 'Tienda de PATRIAM: camisetas patrióticas españolas, camisetas oversize, sudaderas con capucha, tazas y botellas. Fabricado bajo pedido y enviado a toda España. Con cada compra apoyas a PATRIAM.',
+    ruta: '/tienda',
+    jsonld: [migas([['Inicio', '/'], ['Tienda', '/tienda']]),
+      { '@context': 'https://schema.org', '@type': 'ItemList', itemListElement: visiblesSeo.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: 'https://movimientopatriam.es/tienda/' + p.slug, name: p.nombre })) }],
+  })
+
   return (
     <div className="contenedor bloque">
+      {cat && <nav className="migas" aria-label="Estás en"><Link to="/">Inicio</Link> › <Link to="/tienda">Tienda</Link> › <span>{SEO_TIENDA[cat].h1}</span></nav>}
       <div className="titulo-bloque">
-        <h1>{intro?.titulo || 'Tienda'}</h1>
+        <h1>{cat ? SEO_TIENDA[cat].h1 : intro?.titulo || 'Tienda'}</h1>
         <BotonCarrito />
       </div>
-      {intro?.contenido && <Texto>{intro.contenido}</Texto>}
+      {cat ? <p className="intro-categoria">{SEO_TIENDA[cat].desc}</p> : intro?.contenido && <Texto>{intro.contenido}</Texto>}
       {Number(ajT?.envio_gratis_desde) > 0 && (
         <p className="aviso-envio">🚚 <b>Envío gratis a partir de {euros(ajT.envio_gratis_desde)}</b> · Fabricado bajo pedido y enviado a toda España</p>
       )}
@@ -111,29 +130,37 @@ export function Tienda() {
             {SECCIONES.map(([clave, titulo]) => {
               const n = lista.filter((p) => p.categoria !== 'libros' && (p.seccion || 'otros') === clave).length
               return n ? (
-                <button key={clave} type="button" onClick={() => document.getElementById('sec-' + clave)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-                  <b>{titulo}</b>
-                  <small>{n} {n === 1 ? 'modelo' : 'modelos'}</small>
-                </button>
+                SEO_TIENDA[clave] ? (
+                  <Link key={clave} to={'/tienda/categoria/' + clave} className={cat === clave ? 'activo' : ''}>
+                    <b>{titulo}</b>
+                    <small>{n} {n === 1 ? 'modelo' : 'modelos'}</small>
+                  </Link>
+                ) : (
+                  <button key={clave} type="button" onClick={() => document.getElementById('sec-' + clave)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                    <b>{titulo}</b>
+                    <small>{n} {n === 1 ? 'modelo' : 'modelos'}</small>
+                  </button>
+                )
               ) : null
             })}
           </nav>
-          {SECCIONES.map(([clave, titulo, texto]) => {
+          {SECCIONES.filter(([clave]) => !cat || clave === cat).map(([clave, titulo, texto]) => {
             const items = lista.filter((p) => p.categoria !== 'libros' && (p.seccion || 'otros') === clave)
             return items.length ? (
               <section key={clave} id={'sec-' + clave} className="tienda-apartado">
-                <h2 className="titulo-seccion">{titulo}</h2>
+                <h2 className="titulo-seccion">{!cat && SEO_TIENDA[clave] ? <Link to={'/tienda/categoria/' + clave}>{titulo}</Link> : titulo}</h2>
                 {texto && <p className="letra-pequena">{texto}</p>}
                 <Rejilla items={items} />
               </section>
             ) : null
           })}
           {!lista.some((p) => p.categoria !== 'libros') && <p className="vacio">Muy pronto, nuestras camisetas y tazas.</p>}
-          <section className="tienda-apartado">
+          {cat && <p><Link to="/tienda" className="btn btn-claro">← Ver toda la tienda</Link></p>}
+          {!cat && <section className="tienda-apartado">
             <h2 className="titulo-seccion">Libros recomendados</h2>
             <p className="letra-pequena">Lecturas que recomendamos. Se compran en la librería online: si lo haces desde aquí, PATRIAM recibe una pequeña comisión sin que te cueste más.</p>
             <Rejilla items={lista.filter((p) => p.categoria === 'libros')} vacio="Pronto añadiremos los libros que recomendamos." />
-          </section>
+          </section>}
         </>
       )}
     </div>
@@ -166,6 +193,15 @@ export function Producto() {
   useEffect(() => {
     supabase.from('productos').select('*').eq('slug', slug).eq('activo', true).maybeSingle().then(({ data }) => setP(data))
   }, [slug])
+
+  const seoCat = p && SEO_TIENDA[p.seccion]
+  useSeo(p ? {
+    titulo: `${p.nombre}${seoCat && !/camiseta|sudadera|taza|botella/i.test(p.nombre) ? ' · ' + seoCat.tipo : ''} · Tienda`,
+    descripcion: `${seoCat ? seoCat.tipo + ' «' + p.nombre + '». ' : ''}${p.descripcion || ''}`,
+    imagen: p.imagen_url, tipo: 'product', ruta: `/tienda/${p.slug}`,
+    jsonld: [productoLd(p, { envio: p.gelato_uids ? (p.envio_primera ?? aj?.envio_coste) : undefined }),
+      migas([['Inicio', '/'], ['Tienda', '/tienda'], ...(seoCat ? [[seoCat.h1, '/tienda/categoria/' + p.seccion]] : []), [p.nombre, `/tienda/${p.slug}`]])],
+  } : { noindex: p === null })
 
   if (p === undefined) return <p className="contenedor vacio">Cargando…</p>
   if (!p) return <NoEncontrado />
@@ -329,6 +365,7 @@ export function Producto() {
 }
 
 export function Carrito() {
+  useSeo({ titulo: 'Carrito', noindex: true })
   const { items, cambiar, vaciar, subtotal, conEnvio } = useCarrito()
   const { session, perfil } = useAuth()
   const [aj, setAj] = useState(null)

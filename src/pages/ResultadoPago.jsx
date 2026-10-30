@@ -1,7 +1,9 @@
 import { Link, useSearchParams } from 'react-router-dom'
+import { useSeo } from '../lib/seo'
 
 // Páginas a las que vuelve Stripe después del pago
 export function PagoCorrecto() {
+  useSeo({ titulo: 'Pago correcto', noindex: true })
   const [q] = useSearchParams()
   return (
     <div className="contenedor estrecho bloque">
@@ -15,6 +17,7 @@ export function PagoCorrecto() {
 }
 
 export function PagoCancelado() {
+  useSeo({ titulo: 'Pago cancelado', noindex: true })
   const [q] = useSearchParams()
   return (
     <div className="contenedor estrecho bloque">

@@ -44,6 +44,7 @@ export default function App() {
         <Route path="/campanas/:slug" element={<Campana />} />
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/tienda/carrito" element={<Carrito />} />
+        <Route path="/tienda/categoria/:clave" element={<Tienda />} />
         <Route path="/tienda/:slug" element={<Producto />} />
         <Route path="/condiciones-de-venta" element={<Pagina clave="condiciones-de-venta" />} />
         <Route path="/aviso-legal" element={<Pagina clave="aviso-legal" />} />

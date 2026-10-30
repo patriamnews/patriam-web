@@ -8,6 +8,7 @@ import Texto from '../components/Texto'
 import Tarjeta from '../components/Tarjeta'
 import { Foto } from '../components/ImagenPrueba'
 import NoEncontrado from './NoEncontrado'
+import { useSeo } from '../lib/seo'
 
 const diaSemana = (d) => new Date(d).toLocaleDateString('es-ES', { weekday: 'long' })
 const hora = (d) => new Date(d).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
@@ -66,6 +67,7 @@ export function AgendaSeccion({ seccion }) {
   const [mes, setMes] = useState([hoy.getFullYear(), hoy.getMonth()])
   const [dia, setDia] = useState(null)
   const [verPasadas, setVerPasadas] = useState(6)
+  useSeo({ titulo: s?.nombre, descripcion: intro?.contenido || s?.lema, ruta: '/accion-' + seccion })
 
   useEffect(() => {
     setAcciones(null)
@@ -191,6 +193,12 @@ export function FichaAccion() {
       setRel(r)
     })
   }, [slug])
+
+  useSeo(a ? { titulo: a.titulo, descripcion: a.resumen || a.descripcion, imagen: a.imagen_url, ruta: `/accion/${a.slug}`,
+    jsonld: { '@context': 'https://schema.org', '@type': 'Event', name: a.titulo, description: (a.resumen || a.descripcion || '').slice(0, 300),
+      startDate: a.fecha_inicio, endDate: a.fecha_fin || undefined, eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode', eventStatus: 'https://schema.org/EventScheduled',
+      location: a.lugar ? { '@type': 'Place', name: a.lugar, address: a.lugar } : undefined, image: a.imagen_url ? [a.imagen_url] : undefined,
+      organizer: { '@type': 'Organization', name: 'PATRIAM', url: 'https://movimientopatriam.es/' } } } : { noindex: a === null })
 
   if (a === undefined) return <p className="contenedor vacio">Cargando…</p>
   if (!a) return <NoEncontrado />

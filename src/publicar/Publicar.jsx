@@ -1,5 +1,5 @@
 // «Publicar»: la forma más sencilla de publicar en la web, el boletín y la tienda.
-// Se abre en publicar.movimientopatriam.es (o en /#/publicar). Cada uno entra con su email y su contraseña
+// Se abre en publicar.movimientopatriam.es (o en /publicar). Cada uno entra con su email y su contraseña
 // del equipo. Todo lo que se publica aquí pasa por la aprobación de Carlos, igual que desde la Gestión.
 import { useEffect, useState } from 'react'
 import { Link, Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
@@ -26,6 +26,7 @@ import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
 import Estadisticas from './Estadisticas'
 import InstalarApp from '../admin/InstalarApp'
+import { useSeo } from '../lib/seo'
 
 // Iconos de trazo (los mismos del menú de la web)
 const ICONOS = {
@@ -72,6 +73,7 @@ const WEB = EN_SUBDOMINIO ? 'https://' + location.hostname.replace(/^publicar\./
 
 export default function Publicar() {
   const { session, perfil, tipo, cargando, salir } = useAuth()
+  useSeo({ titulo: 'Publicar', noindex: true })
 
   if (cargando) return <div className="pub-centro">Cargando…</div>
   if (!session) return <Entrar />
@@ -181,8 +183,8 @@ function Inicio() {
         <Link to="/publicar/mis-publicaciones"><Icono n="lista" /> Artículos, comunicados y medios</Link>
         <Link to="/publicar/acciones"><Icono n="calendario" /> Toda la agenda</Link>
         <Link to="/publicar/campanas"><Icono n="firma" /> Todas las campañas</Link>
-        <a href={`${WEB}/#/`} target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
-        <a href={`${WEB}/#/gestion`} target={EN_SUBDOMINIO ? '_blank' : undefined} rel="noopener noreferrer">Ir a la Gestión completa{EN_SUBDOMINIO ? ' ↗' : ' →'}</a>
+        <a href={`${WEB}/`} target="_blank" rel="noopener noreferrer">Ver la web ↗</a>
+        <a href={`${WEB}/gestion`} target={EN_SUBDOMINIO ? '_blank' : undefined} rel="noopener noreferrer">Ir a la Gestión completa{EN_SUBDOMINIO ? ' ↗' : ' →'}</a>
       </div>
     </>
   )

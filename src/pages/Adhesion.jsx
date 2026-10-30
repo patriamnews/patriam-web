@@ -8,6 +8,7 @@ import { huella } from '../lib/documentos'
 import { enviarCorreo } from '../lib/correo'
 import FirmaDocumentos from '../components/FirmaDocumentos'
 import Texto from '../components/Texto'
+import { useSeo } from '../lib/seo'
 
 const lista = (s) => (s || '').split(',').map((x) => Number(x.trim())).filter(Boolean)
 
@@ -16,6 +17,7 @@ export default function Adhesion() {
   const pestana = params.get('tipo') === 'donativo' ? 'donativo' : 'socio'
   const [intro, setIntro] = useState(null)
   const [aj, setAj] = useState(null)
+  useSeo({ titulo: 'Únete a PATRIAM', descripcion: 'Hazte socio de PATRIAM o colabora con un donativo: cuota mensual, descuentos para familias numerosas, estudiantes, jubilados y desempleados.', ruta: '/adhierete' })
   const { tipo, socio } = useAuth()
 
   useEffect(() => {

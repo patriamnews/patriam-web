@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 // Tipografías alojadas en la propia web (sin llamadas a Google: mejor para el RGPD)
 import '@fontsource/spectral/latin-400.css'
 import '@fontsource/spectral/latin-400-italic.css'
@@ -17,21 +17,16 @@ import { activarApp } from './lib/instalar'
 
 // publicar.movimientopatriam.es abre directamente la página «Publicar»
 // (es una app aparte, instalable en el móvil y en el PC: siempre se queda en «Publicar»)
-if (/^publicar\./i.test(location.hostname) && !/^#\/publicar/.test(location.hash)) {
-  history.replaceState(null, '', '/#/publicar')
+if (/^publicar\./i.test(location.hostname) && !/^\/publicar/.test(location.pathname)) {
+  history.replaceState(null, '', '/publicar')
 }
 
 // En la Gestión y en Acceso, la web se puede instalar como aplicación
-if (/^#\/(gestion|acceso|publicar)/.test(location.hash)) activarApp()
+if (/^\/(gestion|acceso|publicar)/.test(location.pathname)) activarApp()
 
-// Rutas con # (patriam.netlify.app/#/sobre-patriam): funcionan en cualquier
-// alojamiento, aunque se suba solo la carpeta dist y sin reglas de redirección.
-const Router = HashRouter
-
-// Si alguien entra con una dirección sin # (p. ej. /sobre-patriam), se le lleva a /#/sobre-patriam
-if (window.location.pathname !== '/' && window.location.pathname !== '/index.html' && !window.location.hash && !window.location.protocol.startsWith('file')) {
-  window.location.replace('/#' + window.location.pathname + window.location.search)
-}
+// Direcciones limpias (movimientopatriam.es/tienda), buenas para Google. El servidor (.htaccess)
+// sirve index.html en cualquier ruta, y las direcciones antiguas con # se convierten en index.html.
+const Router = BrowserRouter
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
