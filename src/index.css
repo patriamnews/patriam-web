@@ -1545,3 +1545,6 @@ html, body, .sitio { background: var(--crema) !important; }
 .est-scroll { overflow-x: auto; }
 .est-nota { font-size: .88rem; color: #6f6258; }
 @media (max-width: 700px) { .est-cols { grid-template-columns: 1fr; } }
+.est-dia { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; margin-left: .4rem; }
+.est-dia input { padding: .3rem .5rem; border: 1px solid #d9c9b0; border-radius: 6px; font: inherit; }
+.est-horas { display: flex; justify-content: space-between; font-size: .72rem; color: #7a6d66; }

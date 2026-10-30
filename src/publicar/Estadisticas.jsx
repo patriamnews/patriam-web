@@ -17,6 +17,7 @@ function pagina(r) {
 
 export default function Estadisticas() {
   const [dias, setDias] = useState(30)
+  const [dia, setDia] = useState('')
   const [d, setD] = useState(null)
   const [error, setError] = useState('')
   useEffect(() => {
@@ -26,20 +27,21 @@ export default function Estadisticas() {
       try {
         const aj = await getAjustes()
         const { data } = await supabase.auth.getSession()
-        const r = await fetch(`${urlBoletin(aj)}est.php?accion=resumen&de=web&dias=${dias}`, { headers: { Authorization: 'Bearer ' + (data.session?.access_token || '') } })
+        const r = await fetch(`${urlBoletin(aj)}est.php?accion=resumen&de=web&dias=${dias}${dia ? '&dia=' + dia : ''}`, { headers: { Authorization: 'Bearer ' + (data.session?.access_token || '') } })
         const j = await r.json().catch(() => ({}))
         if (!r.ok) throw new Error(r.status === 401 ? 'La sesión ha caducado: sal y vuelve a entrar.' : j.error || 'Error ' + r.status)
         if (vivo) setD(j)
       } catch (e) { if (vivo) setError(e.message) }
     })()
     return () => { vivo = false }
-  }, [dias])
+  }, [dias, dia])
 
   const sel = (
     <div className="est-periodo">
       {[[7, '7 días'], [30, '30 días'], [90, '3 meses'], [365, 'Un año']].map(([n, t]) => (
-        <button key={n} type="button" className={n === dias ? 'activo' : ''} onClick={() => setDias(n)}>{t}</button>
+        <button key={n} type="button" className={!dia && n === dias ? 'activo' : ''} onClick={() => { setDia(''); setDias(n) }}>{t}</button>
       ))}
+      <label className="est-dia">o un día: <input type="date" value={dia} onChange={(e) => setDia(e.target.value)} /></label>
     </div>
   )
   if (error) return <>{sel}<p className="error">No se han podido cargar: {error}</p></>
@@ -50,13 +52,15 @@ export default function Estadisticas() {
     <div className="est">
       {sel}
       <div className="est-cifras">
-        {[['Visitas', T.visitas], ['Lectores', T.lectores], ['Veces compartido', T.compartidos], ['Visitas por reenvíos', T.porReenvio], ['Clics en enlaces', T.clics], ['Clics de comunicaciones', T.deComunicaciones]].map(([a, b]) => (
+        {[['Entradas al boletín', T.entradas || 0], ['Páginas vistas', T.visitas], [d.dia ? 'Lectores' : 'Lectores (uno por día)', T.lectores], ['Veces compartido', T.compartidos], ['Visitas por reenvíos', T.porReenvio], ['Clics en enlaces', T.clics], ['Clics de comunicaciones', T.deComunicaciones]].map(([a, b]) => (
           <div key={a}><b>{b}</b><span>{a}</span></div>
         ))}
       </div>
 
-      <h3>Visitas por día</h3>
-      <div className="est-barras">{d.porDia.map((x) => <i key={x.dia} title={`${x.dia}: ${x.visitas} visitas, ${x.lectores} lectores`} style={{ height: Math.round((x.visitas / max) * 100) + '%' }} />)}</div>
+      {d.dia && <p className="est-nota"><b>Solo el {new Date(d.dia + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</b> (hora de España). <button type="button" className="btn-texto" onClick={() => setDia('')}>Ver el periodo completo</button></p>}
+      <h3>{d.porHoras ? 'Páginas vistas por hora' : <>Páginas vistas por día <small>pulsa en una barra para ver ese día</small></>}</h3>
+      <div className="est-barras">{d.porDia.map((x) => <i key={x.dia} title={`${x.dia}: ${x.visitas} páginas vistas, ${x.lectores} lectores`} onClick={d.porHoras ? undefined : () => setDia(x.dia)} style={{ cursor: d.porHoras ? 'default' : 'pointer', height: Math.round((x.visitas / max) * 100) + '%' }} />)}</div>
+      {d.porHoras && <div className="est-horas"><span>0 h</span><span>6 h</span><span>12 h</span><span>18 h</span><span>23 h</span></div>}
 
       <div className="est-cols">
         <div><h3>Cómo llegan</h3><Tabla filas={d.origen.map((x) => [x.origen, x.visitas])} vacio="Todavía no hay datos" /></div>
@@ -69,8 +73,11 @@ export default function Estadisticas() {
           <tbody>{d.reenvios.map((x, i) => <tr key={i}><td>{fecha(x.fecha)}</td><td>{pagina(x.pagina)}</td><td>{x.redes.map((r) => RED[r] || r).join(', ') || '—'}</td><td className="n">{x.visitas}</td><td className="n">{x.lectores}</td><td className="n">{x.loVolvieronACompartir}</td></tr>)}</tbody></table></div>
       ) : <p className="est-nota">Todavía no hay reenvíos.</p>}
 
-      <h3>Lo más visto</h3>
-      <Tabla filas={d.paginas.map((x) => [pagina(x.pagina), x.visitas])} vacio="Todavía no hay datos" />
+      <h3>Por página <small>cuántas veces se abre cada página y cuántos clics se hacen desde ella</small></h3>
+      {(d.porPagina || []).length ? (
+        <div className="est-scroll"><table className="est-tabla"><thead><tr><th>Página</th><th className="n">Vistas</th><th className="n">Clics</th><th className="n">Lectores que pinchan</th></tr></thead>
+          <tbody>{d.porPagina.map((x, i) => <tr key={i}><td>{pagina(x.pagina)}</td><td className="n">{x.visitas}</td><td className="n">{x.clics}</td><td className="n">{x.lectoresClic}</td></tr>)}</tbody></table></div>
+      ) : <p className="est-nota">Todavía no hay datos.</p>}
 
       <h3>En qué pinchan <small>noticias, vídeos y enlaces de fuera</small></h3>
       {d.clics.length ? (
