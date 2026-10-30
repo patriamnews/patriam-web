@@ -33,7 +33,7 @@ const migas = (items) => ({ '@context': 'https://schema.org', '@type': 'Breadcru
 
 const urls = [] // para el sitemap
 function pagina(ruta, { titulo, desc, imagen, tipo = 'website', jsonld = [], cuerpo = '', prioridad = 0.6, cambia = 'weekly', fecha, imagenes = [] }) {
-  const t = titulo ? `${titulo} · PATRIAM` : 'PATRIAM · Dios, Patria, Justicia'
+  const t = titulo ? `${titulo} · PATRIAM` : 'PATRIAM · Web oficial · Dios, Patria, Justicia'
   const d = recorta(desc)
   const url = ruta === '/' ? SITIO + '/' : SITIO + ruta
   const img = abs(imagen) || SITIO + '/og-patriam.jpg'
@@ -73,14 +73,14 @@ console.log(`Prerender: ${productos.length} productos, ${articulos.length} artí
 
 // ---------- Inicio ----------
 pagina('/', {
-  desc: 'PATRIAM es un movimiento de acción ciudadana, cultural y social en España: Dios, Patria, Justicia. Agenda de acciones, revista, campañas de firmas, boletín semanal y tienda.',
+  desc: 'Web oficial de PATRIAM. PATRIAM es un movimiento de acción ciudadana, cultural y social en España: Dios, Patria, Justicia. Agenda de acciones, revista, campañas de firmas, boletín semanal y tienda.',
   prioridad: 1, cambia: 'daily',
   jsonld: [
-    { '@context': 'https://schema.org', '@type': 'Organization', name: 'PATRIAM', alternateName: 'Asociación PATRIAM', url: SITIO + '/', logo: SITIO + '/og-patriam.jpg', slogan: 'Dios, Patria, Justicia',
+    { '@context': 'https://schema.org', '@type': 'Organization', name: 'PATRIAM', alternateName: ['Movimiento PATRIAM', 'Asociación PATRIAM', 'Patriam'], url: SITIO + '/', logo: SITIO + '/og-patriam.jpg', slogan: 'Dios, Patria, Justicia',
       email: 'movimientopatriam@gmail.com', address: { '@type': 'PostalAddress', streetAddress: 'C/ Tórtola, 21', addressLocality: 'Valladolid', addressCountry: 'ES' }, sameAs: ['https://x.com/patriam_es', BOLETIN + '/'] },
-    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'PATRIAM', url: SITIO + '/', inLanguage: 'es-ES' },
+    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'PATRIAM', alternateName: 'Movimiento PATRIAM', url: SITIO + '/', inLanguage: 'es-ES' },
   ],
-  cuerpo: `<h1>PATRIAM · Dios, Patria, Justicia</h1>${menu}<p>Movimiento de acción ciudadana, cultural y social en España.</p>` +
+  cuerpo: `<h1>PATRIAM · Dios, Patria, Justicia</h1>${menu}<p>Web oficial de PATRIAM (Movimiento PATRIAM), movimiento de acción ciudadana, cultural y social en España.</p>` +
     (articulos.length ? '<h2>Lo último</h2><ul>' + articulos.slice(0, 10).map((a) => `<li><a href="/articulo/${esc(a.slug)}">${esc(a.titulo)}</a></li>`).join('') + '</ul>' : '') +
     (productos.length ? '<h2>Tienda</h2><ul>' + productos.filter((p) => p.categoria !== 'libros').slice(0, 8).map((p) => `<li><a href="/tienda/${esc(p.slug)}">${esc(p.nombre)}</a> · ${euros(p.precio)}</li>`).join('') + '</ul>' : ''),
 })
