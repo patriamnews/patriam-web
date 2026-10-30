@@ -1523,3 +1523,25 @@ html, body, .sitio { background: var(--crema) !important; }
   .menu-principal::after { content: ""; position: absolute; top: 0; right: 0; bottom: 3px; width: 2.4rem; pointer-events: none; z-index: 1;
     background: linear-gradient(90deg, rgba(123,28,44,0), var(--acento) 80%); }
 }
+
+/* ---------- Publicar › Estadísticas del boletín ---------- */
+.est h3 { margin: 1.6rem 0 .6rem; font-size: 1.1rem; color: #7b1c2c; }
+.est h3 small { font-weight: 400; font-size: .8rem; color: #7a6d66; margin-left: .4rem; }
+.est-periodo { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+.est-periodo button { padding: .4rem .9rem; border: 1px solid #d9c9b0; border-radius: 999px; background: #fff; cursor: pointer; font: inherit; font-size: .85rem; }
+.est-periodo button.activo { background: #7b1c2c; border-color: #7b1c2c; color: #fff; }
+.est-cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: .7rem; }
+.est-cifras div { background: #fffdf8; border: 1px solid #e3d6c1; border-top: 3px solid #7b1c2c; padding: .8rem .9rem; }
+.est-cifras b { display: block; font-size: 1.8rem; line-height: 1; color: #2a211d; }
+.est-cifras span { font-size: .78rem; color: #6f6258; }
+.est-barras { display: flex; align-items: flex-end; gap: 2px; height: 120px; padding: .5rem; background: #fffdf8; border: 1px solid #e3d6c1; }
+.est-barras i { flex: 1; min-height: 2px; background: #7b1c2c; border-radius: 2px 2px 0 0; }
+.est-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.est-tabla { width: 100%; border-collapse: collapse; font-size: .9rem; background: #fffdf8; }
+.est-tabla th, .est-tabla td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid #ece2d2; vertical-align: top; }
+.est-tabla th { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: #6f6258; }
+.est-tabla .n { text-align: right; white-space: nowrap; }
+.est-tabla small { color: #7a6d66; }
+.est-scroll { overflow-x: auto; }
+.est-nota { font-size: .88rem; color: #6f6258; }
+@media (max-width: 700px) { .est-cols { grid-template-columns: 1fr; } }

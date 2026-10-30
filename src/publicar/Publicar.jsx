@@ -24,6 +24,7 @@ import Aprobaciones from '../admin/Aprobaciones'
 import Claves from './Claves'
 import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
+import Estadisticas from './Estadisticas'
 import InstalarApp from '../admin/InstalarApp'
 
 // Iconos de trazo (los mismos del menú de la web)
@@ -40,6 +41,7 @@ const ICONOS = {
   red: 'M18 8a3 3 0 100-6 3 3 0 000 6zM6 15a3 3 0 100-6 3 3 0 000 6zM18 22a3 3 0 100-6 3 3 0 000 6zM8.6 13.5l6.8 4M15.4 6.5l-6.8 4',
   check: 'M4 12l5 5L20 6',
   lista: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
+  grafica: 'M4 20V10M10 20V4M16 20v-7M22 20H2',
   llave: 'M15 7a4 4 0 11-3.9 4.9L4 19v-3h3v-3h3l1.1-1.1A4 4 0 0115 7z',
 }
 const Icono = ({ n }) => (
@@ -111,6 +113,7 @@ export default function Publicar() {
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
           <Route path="redes" element={<Paso titulo="RRSS" ayuda="Cree el diseño, descárguelo y súbalo a la red. En «Mis cuentas» apunte sus cuentas y los seguidores; en «Publicaciones», lo publicado y sus cifras."><Rrss /></Paso>} />
+          <Route path="estadisticas" element={<Paso titulo="Estadísticas del boletín" ayuda="Visitas, lectores, en qué pinchan, por dónde lo comparten y cuánta gente entra por cada reenvío. Las mismas que en el editor del boletín."><Estadisticas /></Paso>} />
           <Route path="claves" element={<Paso titulo="Cuentas y claves" ayuda="Cada aplicación que usan la web y el boletín: para qué sirve, dónde se entra, usuario, contraseña y claves. Pulse una para abrirla."><Claves /></Paso>} />
           <Route path="mis-publicaciones" element={<Paso titulo="Lo publicado y en revisión"><Articulos base="/publicar" /></Paso>} />
           <Route path="aprobar" element={puedeAprobar(perfil) ? <Paso titulo="Pendiente de aprobar"><Aprobaciones base="/publicar" /></Paso> : <Navigate to="/publicar" replace />} />
@@ -169,6 +172,7 @@ function Inicio() {
           <b>Boletín semanal ↗</b>
           <small>Editorial, noticias, colaboraciones… Se abre el editor del boletín con tu usuario del boletín.</small>
         </a>
+        <Baldosa c={{ ruta: 'estadisticas', titulo: 'Estadísticas del boletín', texto: 'Visitas, lectores, clics, reenvíos y quién pincha en las comunicaciones.', sale: 'Solo para el equipo', icono: 'grafica' }} />
         {COSAS.filter((c) => c.grupo !== 'web').map((c) => <Baldosa key={c.ruta} c={c} />)}
       </div>
 
