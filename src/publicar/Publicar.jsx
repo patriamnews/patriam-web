@@ -167,7 +167,7 @@ function Inicio() {
 
       <h2 className="pub-grupo">Boletín y tienda</h2>
       <div className="pub-rejilla">
-        <a className="pub-baldosa" href={`${boletin}editor.html`} target="_blank" rel="noopener noreferrer">
+        <a className="pub-baldosa" href={`${boletin}editor.html?v=${Date.now().toString(36)}`} target="_blank" rel="noopener noreferrer">
           <span className="pub-icono"><Icono n="sobre" /></span>
           <b>Boletín semanal ↗</b>
           <small>Editorial, noticias, colaboraciones… Se abre el editor del boletín con tu usuario del boletín.</small>
