@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Básicos PATRIAM: camiseta, taza y botella · PATRIAM</title>
+    <meta name="description" content="La camiseta básica con el logo de PATRIAM, la taza y la botella térmica. Fabricadas bajo pedido y enviadas a toda España." />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Básicos PATRIAM: camiseta, taza y botella · PATRIAM" />
+    <meta property="og:description" content="La camiseta básica con el logo de PATRIAM, la taza y la botella térmica. Fabricadas bajo pedido y enviadas a toda España." />
+    <meta property="og:url" content="https://movimientopatriam.es/tienda/categoria/basicos" />
+    <meta property="og:image" content="https://igrjdsfcecbwnawwgdop.supabase.co/storage/v1/object/public/imagenes/tienda/basica-marfil-pecho.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Básicos PATRIAM: camiseta, taza y botella · PATRIAM" />
+    <meta name="twitter:description" content="La camiseta básica con el logo de PATRIAM, la taza y la botella térmica. Fabricadas bajo pedido y enviadas a toda España." />
+    <meta name="twitter:image" content="https://igrjdsfcecbwnawwgdop.supabase.co/storage/v1/object/public/imagenes/tienda/basica-marfil-pecho.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/tienda/categoria/basicos" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <script type="application/ld+json" id="ld-pagina">[{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://movimientopatriam.es/"},{"@type":"ListItem","position":2,"name":"Tienda","item":"https://movimientopatriam.es/tienda"},{"@type":"ListItem","position":3,"name":"Básicos PATRIAM: camiseta, taza y botella","item":"https://movimientopatriam.es/tienda/categoria/basicos"}]},{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"url":"https://movimientopatriam.es/tienda/basica-patriam","name":"Básica PATRIAM"},{"@type":"ListItem","position":2,"url":"https://movimientopatriam.es/tienda/taza-patriam-blanca","name":"Taza PATRIAM blanca"},{"@type":"ListItem","position":3,"url":"https://movimientopatriam.es/tienda/taza-patriam-negra","name":"Taza PATRIAM negra"},{"@type":"ListItem","position":4,"url":"https://movimientopatriam.es/tienda/botella-patriam","name":"Botella PATRIAM"}]}]</script>
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Básicos PATRIAM: camiseta, taza y botella</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><p>La camiseta básica con el logo de PATRIAM, la taza y la botella térmica. Fabricadas bajo pedido y enviadas a toda España.</p><ul><li><a href="/tienda/basica-patriam"><img src="https://igrjdsfcecbwnawwgdop.supabase.co/storage/v1/object/public/imagenes/tienda/basica-marfil-pecho.jpg" alt="Básica PATRIAM" width="300" height="300" loading="lazy" /> Básica PATRIAM</a> · 17,95 €</li><li><a href="/tienda/taza-patriam-blanca"><img src="https://movimientopatriam.es/img/tienda/taza-patriam-blanca.jpg" alt="Taza PATRIAM blanca" width="300" height="300" loading="lazy" /> Taza PATRIAM blanca</a> · 8,95 €</li><li><a href="/tienda/taza-patriam-negra"><img src="https://movimientopatriam.es/img/tienda/taza-patriam-negra.jpg" alt="Taza PATRIAM negra" width="300" height="300" loading="lazy" /> Taza PATRIAM negra</a> · 10,95 €</li><li><a href="/tienda/botella-patriam"><img src="https://movimientopatriam.es/img/tienda/botella-patriam.jpg" alt="Botella PATRIAM" width="300" height="300" loading="lazy" /> Botella PATRIAM</a> · 18,95 €</li></ul></main></div>
+  </body>
+</html>

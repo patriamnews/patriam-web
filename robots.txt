@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /gestion
+Disallow: /publicar
+Disallow: /acceso
+Disallow: /mi-cuenta
+Disallow: /tienda/carrito
+Disallow: /pago-correcto
+Disallow: /pago-cancelado
+Disallow: /api/
+
+Sitemap: https://movimientopatriam.es/sitemap.xml
+Sitemap: https://boletin.movimientopatriam.es/sitemap.xml

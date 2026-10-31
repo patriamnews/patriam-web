@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustración de Álvaro">
+  <defs>
+    <radialGradient id="fondo" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#4a3a3c"/><stop offset="1" stop-color="#1e1a1b"/></radialGradient>
+    <linearGradient id="piel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3c7a8"/><stop offset="1" stop-color="#e9b08f"/></linearGradient>
+    <linearGradient id="pelo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3894a"/><stop offset="1" stop-color="#b85a22"/></linearGradient>
+    <linearGradient id="bigote" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8692c"/><stop offset="1" stop-color="#9a4719"/></linearGradient>
+    <linearGradient id="camiseta" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2c2c"/><stop offset="1" stop-color="#161616"/></linearGradient>
+    <clipPath id="marco"><rect width="600" height="600" rx="300"/></clipPath>
+    <clipPath id="cara"><path d="M204 250 C 200 170, 245 128, 300 128 C 355 128, 400 170, 396 250 L 394 320 C 392 352, 384 378, 368 398 C 350 420, 328 434, 300 436 C 272 434, 250 420, 232 398 C 216 378, 208 352, 206 320 Z"/></clipPath>
+  </defs>
+  <g clip-path="url(#marco)">
+    <rect width="600" height="600" fill="url(#fondo)"/>
+    <!-- hombros y trapecios: complexión fuerte -->
+    <path d="M10 600 C 20 498, 100 460, 200 444 C 230 438, 248 430, 256 418 L 344 418 C 352 430, 370 438, 400 444 C 500 460, 580 498, 590 600 Z" fill="url(#camiseta)"/>
+    <path d="M100 500 C 140 476, 180 462, 214 456" fill="none" stroke="#3a3a3a" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+    <path d="M500 500 C 460 476, 420 462, 386 456" fill="none" stroke="#3a3a3a" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+    <!-- cuello ancho -->
+    <path d="M236 380 L 230 448 C 262 476, 338 476, 370 448 L 364 380 Z" fill="#e2a585"/>
+    <path d="M238 400 C 262 440, 338 440, 362 400 L 362 380 L 238 380 Z" fill="#c98466" opacity=".75"/>
+    
+    <!-- cuello de la camiseta -->
+    <path d="M224 444 C 256 478, 344 478, 376 444" fill="none" stroke="#3b3b3b" stroke-width="10" stroke-linecap="round"/>
+    <!-- orejas -->
+    <path d="M206 262 C 186 250, 178 270, 182 292 C 186 316, 198 330, 212 326 Z" fill="#e7ab8b"/>
+    <path d="M394 262 C 414 250, 422 270, 418 292 C 414 316, 402 330, 388 326 Z" fill="#e7ab8b"/>
+    <path d="M196 276 C 192 290, 196 306, 204 314" fill="none" stroke="#c98466" stroke-width="3" stroke-linecap="round"/>
+    <path d="M404 276 C 408 290, 404 306, 396 314" fill="none" stroke="#c98466" stroke-width="3" stroke-linecap="round"/>
+    <!-- cara: mandíbula cuadrada -->
+    <path d="M204 250 C 200 170, 245 128, 300 128 C 355 128, 400 170, 396 250 L 394 320 C 392 352, 384 378, 368 398 C 350 420, 328 434, 300 436 C 272 434, 250 420, 232 398 C 216 378, 208 352, 206 320 Z" fill="url(#piel)"/>
+    <g clip-path="url(#cara)">
+      <!-- planos laterales en sombra -->
+      <path d="M196 200 C 214 260, 220 330, 250 410 L 190 430 Z" fill="#d6977a" opacity=".55"/>
+      <path d="M404 200 C 386 260, 380 330, 350 410 L 410 430 Z" fill="#d6977a" opacity=".55"/>
+      <ellipse cx="246" cy="330" rx="26" ry="14" fill="#d6977a" opacity=".22"/><ellipse cx="354" cy="330" rx="26" ry="14" fill="#d6977a" opacity=".22"/>
+      <!-- barba de pocos días -->
+      <path d="M214 330 C 222 380, 252 420, 300 428 C 348 420, 378 380, 386 330 C 380 370, 352 400, 300 404 C 248 400, 220 370, 214 330 Z" fill="#b8642e" opacity=".32"/>
+      <path d="M262 404 C 276 416, 324 416, 338 404 C 330 428, 270 428, 262 404 Z" fill="#b8642e" opacity=".22"/>
+    </g>
+    <!-- pelo: tupé corto con volumen, laterales degradados -->
+    <path d="M206 236 C 198 190, 204 150, 226 128 C 238 114, 254 104, 272 100 C 280 88, 298 84, 310 92 C 326 84, 346 88, 354 100 C 374 108, 390 126, 396 152 C 402 178, 400 208, 394 236 C 392 214, 388 198, 380 190 C 368 184, 356 176, 340 178 C 322 172, 278 172, 260 178 C 244 176, 232 184, 220 190 C 212 198, 208 214, 206 236 Z" fill="url(#pelo)"/>
+    <path d="M206 236 C 204 214, 208 196, 218 186 L 226 188 C 216 200, 212 216, 211 240 Z" fill="#8f4519" opacity=".55"/>
+    <path d="M394 236 C 396 214, 392 196, 382 186 L 374 188 C 384 200, 388 216, 389 240 Z" fill="#8f4519" opacity=".55"/>
+    <g fill="none" stroke-linecap="round">
+      <path d="M236 150 C 252 124, 276 110, 300 108" stroke="#f2ad73" stroke-width="6" opacity=".8"/>
+      <path d="M300 106 C 326 104, 352 116, 368 138" stroke="#f2ad73" stroke-width="5" opacity=".65"/>
+      <path d="M248 170 C 262 150, 280 140, 300 136" stroke="#9e4f1f" stroke-width="3" opacity=".45"/>
+      <path d="M306 134 C 328 134, 348 146, 362 164" stroke="#9e4f1f" stroke-width="3" opacity=".45"/>
+      <path d="M280 120 C 288 112, 298 108, 308 108" stroke="#f6c08f" stroke-width="3" opacity=".7"/>
+    </g>
+    
+    <g fill="none" stroke-linecap="round" stroke-width="2.5">
+      <path d="M240 150 l 8 -14 M262 140 l 6 -16 M286 134 l 4 -16 M312 132 l 0 -16 M336 138 l -4 -15 M356 148 l -7 -13" stroke="#f2ad73" opacity=".6"/>
+    </g>
+    <!-- cejas rectas y firmes -->
+    <path d="M232 250 C 246 240, 268 238, 286 244 L 284 252 C 268 248, 248 250, 234 256 Z" fill="#c0703a"/>
+    <path d="M368 250 C 354 240, 332 238, 314 244 L 316 252 C 332 248, 352 250, 366 256 Z" fill="#c0703a"/>
+    <!-- sombra bajo las cejas -->
+    <path d="M238 262 C 252 256, 272 256, 284 262" fill="none" stroke="#d6977a" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+    <path d="M362 262 C 348 256, 328 256, 316 262" fill="none" stroke="#d6977a" stroke-width="5" stroke-linecap="round" opacity=".6"/>
+    <!-- ojos: mirada segura -->
+    <path d="M242 276 C 252 268, 272 268, 282 275 C 272 281, 252 281, 242 276 Z" fill="#fbf4ef"/>
+    <path d="M318 275 C 328 268, 348 268, 358 276 C 348 281, 328 281, 318 275 Z" fill="#fbf4ef"/>
+    <circle cx="263" cy="275" r="6.5" fill="#6e93ad"/><circle cx="337" cy="275" r="6.5" fill="#6e93ad"/>
+    <circle cx="263" cy="275" r="3" fill="#1e2a33"/><circle cx="337" cy="275" r="3" fill="#1e2a33"/>
+    <circle cx="265" cy="273" r="1.4" fill="#fff"/><circle cx="339" cy="273" r="1.4" fill="#fff"/>
+    <path d="M240 276 C 250 264, 272 263, 284 274" fill="none" stroke="#7a4632" stroke-width="3" stroke-linecap="round"/>
+    <path d="M316 274 C 328 263, 350 264, 360 276" fill="none" stroke="#7a4632" stroke-width="3" stroke-linecap="round"/>
+    <path d="M246 286 C 256 290, 270 290, 278 286" fill="none" stroke="#d6977a" stroke-width="2" stroke-linecap="round"/>
+    <path d="M322 286 C 330 290, 344 290, 354 286" fill="none" stroke="#d6977a" stroke-width="2" stroke-linecap="round"/>
+    <!-- nariz recta y fuerte -->
+    <path d="M296 262 C 294 290, 290 312, 286 328" fill="none" stroke="#d6977a" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+    <path d="M280 330 C 284 342, 316 342, 320 330 C 318 322, 310 320, 300 324 C 290 320, 282 322, 280 330 Z" fill="#e3a283"/>
+    <path d="M282 334 C 286 340, 292 340, 294 336 M306 336 C 308 340, 314 340, 318 334" fill="none" stroke="#a86650" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- bigote cobrizo poblado -->
+    <g transform="translate(300 362) scale(1.18) translate(-300 -362)">
+    <path d="M254 372 C 256 352, 276 342, 300 350 C 324 342, 344 352, 346 372 C 340 376, 334 372, 326 366 C 316 362, 306 364, 300 366 C 294 364, 284 362, 274 366 C 266 372, 260 376, 254 372 Z" fill="url(#bigote)"/>
+    <g fill="none" stroke="#e08a4c" stroke-width="2" stroke-linecap="round" opacity=".85">
+      <path d="M270 356 C 278 352, 288 352, 296 356"/><path d="M304 356 C 312 352, 322 352, 330 356"/>
+      <path d="M262 366 C 268 360, 276 358, 284 360"/><path d="M316 360 C 324 358, 332 360, 338 366"/>
+    </g>
+    </g>
+    <!-- boca y labio inferior -->
+    <path d="M278 388 C 290 392, 310 392, 322 388" fill="none" stroke="#a8604c" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M284 397 C 294 402, 306 402, 316 397" fill="none" stroke="#d8957a" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+    <!-- hoyuelo en la barbilla -->
+    <path d="M300 414 L 300 424" stroke="#c98466" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+    <!-- luz de contorno -->
+    <path d="M396 240 C 398 290, 394 340, 378 386" fill="none" stroke="#ffd9c0" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+  </g>
+</svg>

@@ -1,0 +1,3 @@
+# Solo se publica la carpeta web/; el resto del repositorio no se sirve
+RewriteEngine On
+RewriteRule ^(?!web/) - [F]

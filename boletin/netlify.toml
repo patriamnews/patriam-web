@@ -1,0 +1,7 @@
+[build]
+  publish = "web"
+  command = "echo listo"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"

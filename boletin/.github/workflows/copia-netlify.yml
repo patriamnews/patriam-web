@@ -1,0 +1,40 @@
+# Copia en este repositorio todo lo PUBLICADO del boletín que está guardado en Netlify:
+# ajustes, boletines aprobados (datos/boletines.js) e imágenes subidas desde el editor (web/img/).
+# No copia suscriptores, bajas ni usuarios: son datos personales y este repositorio es público.
+name: Copia del boletín desde Netlify
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/copia-netlify.yml"]
+permissions:
+  contents: write
+jobs:
+  copiar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descargar boletines e imágenes
+        run: |
+          set -e
+          ORIGEN=https://boletinpatriam.netlify.app
+          mkdir -p datos web/img
+          curl -fsS -H "Cache-Control: no-cache" "$ORIGEN/boletines.js" -o datos/boletines.js
+          grep -q "window.BOLETINES" datos/boletines.js
+          # Imágenes del almacén (/img/<clave>)
+          grep -oE '/img/[0-9a-f]{32}' datos/boletines.js | sort -u > datos/imagenes.txt || true
+          while read -r ruta; do
+            clave=${ruta#/img/}
+            curl -fsS "$ORIGEN$ruta" -o "web/img/$clave" || echo "No se pudo bajar $ruta"
+          done < datos/imagenes.txt
+          # Páginas compartibles de cada boletín (por si se quieren comparar después)
+          echo "Copia hecha el $(date -u +%Y-%m-%dT%H:%MZ) desde $ORIGEN" > datos/LEEME-copia.txt
+          echo "Boletines: $(grep -o '"numero":[0-9]*' datos/boletines.js | wc -l)" >> datos/LEEME-copia.txt
+          echo "Imágenes: $(wc -l < datos/imagenes.txt)" >> datos/LEEME-copia.txt
+          cat datos/LEEME-copia.txt
+      - name: Guardar en el repositorio
+        run: |
+          git config user.name "patriamnews"
+          git config user.email "patriamnews@users.noreply.github.com"
+          git add datos web/img
+          git diff --cached --quiet || git commit -m "Copia de lo publicado en Netlify (boletines, ajustes e imágenes)"
+          git push

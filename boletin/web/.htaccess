@@ -1,0 +1,28 @@
+# Boletín PATRIAM en Hostinger
+Options -Indexes
+# Las páginas (editor, boletín) no se guardan en caché: así cada cambio se ve al momento.
+# Los .js y .css ya llevan versión (?v=…) en el enlace.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+# Piezas internas de PHP: no se abren desde fuera
+<FilesMatch "^_">
+  Require all denied
+</FilesMatch>
+RewriteEngine On
+# sitemap.xml para Google (se genera al pedirlo)
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+# Pasa la cabecera Authorization a PHP
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+# Comunicaciones personales: en Hostinger (com.php), sin pasar por Netlify
+RewriteRule ^api/com-(datos|guardar|claves|enviar)$ com.php?accion=$1 [QSA,L]
+RewriteRule ^img-com/([0-9a-f]{32}\.(png|jpg|gif|webp))$ com.php?img=$1 [L]
+# Funciones (provisionalmente en Netlify) a través del puente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(api/[A-Za-z0-9_-]+|img/[^/]+|a/[^/]+|boletin/[^/]+|boletines\.js)$ proxy.php?__r=$1 [QSA,L]
+# Todo lo demás: la página del boletín
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.html [L]

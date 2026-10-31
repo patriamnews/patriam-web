@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<base href="/">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lo que hay que saber · Boletín de PATRIAM</title>
+<meta name="description" content="Boletín de noticias: editorial, actualidad, historia, análisis e iniciativas.">
+<meta name="theme-color" content="#7b1c2c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PATRIAM">
+<meta property="og:locale" content="es_ES">
+<meta property="og:title" content="Lo que hay que saber, con criterio · Boletín de noticias de PATRIAM">
+<meta property="og:description" content="Boletín de noticias de PATRIAM. Ideas · Análisis · Actualidad · Acción.">
+<meta property="og:url" content="https://boletin.movimientopatriam.es/">
+<meta property="og:image" content="https://boletin.movimientopatriam.es/compartir.jpg?v=2">
+<meta property="og:image:width" content="800">
+<meta property="og:image:height" content="800">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lo que hay que saber, con criterio · Boletín de noticias de PATRIAM">
+<meta name="twitter:description" content="Ideas · Análisis · Actualidad · Acción.">
+<meta name="twitter:image" content="https://boletin.movimientopatriam.es/compartir.jpg?v=2">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lo que hay que saber, con criterio · Boletín de noticias de PATRIAM">
+<link rel="apple-touch-icon" href="icono-192.png">
+<link rel="icon" href="icono-192.png">
+<link rel="stylesheet" href="boletin.css?v=20261031a">
+</head>
+<body>
+<div id="app"></div>
+<script src="boletines.js"></script>
+<script src="importar.js?v=20261031a"></script>
+<script>
+/* Lo que se sube en importar.js se publica directamente en el boletín que todavía no ha salido (el nº 1 sale el 30 de octubre).
+   Si el editor ya lo ha metido, no se repite. El lema va siempre sin «Familia». */
+(function(){
+  var L = window.BOLETINES || [], hoy = new Date().toISOString().slice(0, 10);
+  L.forEach(function(b){ if (Number(b.numero) === 1 && b.fecha === "2026-10-21") b.fecha = "2026-10-30"; });
+  var orden = L.slice().sort(function(a, b){ return (a.numero || 0) - (b.numero || 0); });
+  var destino = orden.filter(function(b){ return b.fecha && b.fecha >= hoy; })[0] || orden[orden.length - 1];
+  if (destino) {
+    destino.colaboraciones = destino.colaboraciones || [];
+    (window.PATRIAM_IMPORTAR || []).forEach(function(it){
+      if (!it || !it.id) return;
+      // Si ya está en el boletín, se usa el texto corregido de importar.js
+      var ya = null; L.forEach(function(b){ (b.colaboraciones || []).forEach(function(c){ if (c.id === it.id) ya = c; }); });
+      if (ya) { var nuevo = JSON.parse(JSON.stringify(it)); delete nuevo.numero; Object.assign(ya, nuevo); return; }
+      var d = it.numero ? L.filter(function(b){ return Number(b.numero) === Number(it.numero); })[0] : destino;   // «numero»: para un boletín concreto
+      if (!d) return;
+      d.colaboraciones = d.colaboraciones || [];
+      d.colaboraciones.push(JSON.parse(JSON.stringify(it)));
+    });
+  }
+  (window.PATRIAM_AJUSTES || []).forEach(function(a){
+    L.forEach(function(b){ if (Number(b.numero) !== Number(a.numero)) return;
+      (b.noticias || []).forEach(function(n){ if (String(n.titular || "").indexOf(a.titular) === 0 && a.seccion) n.seccion = a.seccion; }); });
+  });
+  var C = window.PATRIAM_CONFIG;
+  if (C && destino) {
+    C.biblioteca = C.biblioteca || []; destino.recomendados = destino.recomendados || [];
+    (window.PATRIAM_RECOMENDAR || []).forEach(function(x){
+      if (!x || !x.id) return;
+      if (x.numero && !L.some(function(b){ return Number(b.numero) === Number(x.numero); })) return;   // no se ve hasta que salga su boletín
+      var ya = C.biblioteca.filter(function(y){ return y.id === x.id; })[0];
+      if (ya) Object.assign(ya, JSON.parse(JSON.stringify(x))); else C.biblioteca.push(JSON.parse(JSON.stringify(x)));
+      var dr = x.numero ? L.filter(function(b){ return Number(b.numero) === Number(x.numero); })[0] : destino;
+      if (dr && !L.some(function(b){ return (b.recomendados || []).indexOf(x.id) >= 0; })) { dr.recomendados = dr.recomendados || []; dr.recomendados.push(x.id); }
+    });
+  }
+  /* Direcciones buenas: la web en movimientopatriam.es y el boletín en boletin.movimientopatriam.es (no las antiguas de Netlify) */
+  if (C) { if (!C.web || /netlify\.app/i.test(C.web)) C.web = "https://movimientopatriam.es/";
+           if (!C.direccion || /netlify\.app/i.test(C.direccion)) C.direccion = "https://boletin.movimientopatriam.es/";
+           if (!C.tienda) C.tienda = "https://movimientopatriam.es/tienda"; }
+  if (C && C.lema && /familia/i.test(C.lema)) C.lema = "Dios · Patria · Justicia";
+})();
+/* Fuera las piezas de ejemplo de la plantilla (noticias a ejemplo.com, «Evento/Iniciativa de ejemplo»). */
+(function(){
+  var ej = function(t){ return /\bde ejemplo\b|ejemplo\.com/i.test(String(t||"")); };
+  (window.BOLETINES||[]).forEach(function(b){
+    if (Array.isArray(b.noticias)) b.noticias = b.noticias.filter(function(n){ return !(ej(n.url) || ej(n.medio) || /^Aquí va el resumen/.test(n.resumen||"")); });
+    if (Array.isArray(b.eventos)) b.eventos = b.eventos.filter(function(e){ return !ej(e.titulo) && !/^Breve descripción/.test(e.descripcion||""); });
+  });
+})();
+</script>
+<script src="legales.js?v=20261031a"></script>
+<script src="boletin.js?v=20261031a"></script>
+<script>prepararCriticas(window.BOLETINES || [], window.PATRIAM_CONFIG || {});</script>
+<script>
+  /* Navegación sin cambiar la dirección: la barra muestra siempre solo la dirección del boletín.
+     Los enlaces que llegan con #/... (por ejemplo, el de un colaborador) se abren y la dirección se limpia. */
+  const CFG = window.PATRIAM_CONFIG || {};
+  const TITULOS = { criterio: "Criterio", peliculas: "Películas", noticias: "Actualidad", historia: "Historia", sociedad: "Sociedad", podcasts: "Podcasts y vídeos", libros: "Libros", analisis: "Análisis", editoriales: "Editorial", editorial: "Editorial", colaboraciones: "Colaboraciones", colaboracion: "Colaboraciones", iniciativas: "Iniciativas", boletines: "Boletines anteriores", buscar: "Buscar", legal: "Textos legales", suscribirse: "Suscríbete", al: "Al momento", baja: "Darse de baja" };
+  /* Cada boletín tiene su dirección: /boletin/2. El resto de páginas se ven sin cambiar la dirección. */
+  const LISTA = (window.BOLETINES || []).filter(b => !b.estado || b.estado === "aprobado");
+  /* Páginas con dirección propia (boletin.movimientopatriam.es/historia, /colaboracion/…): se pueden compartir y Google las encuentra */
+  const CON_DIRECCION = /^(noticias|historia|sociedad|criterio|analisis|podcasts|libros|peliculas|colaboraciones|colaboracion\/[^/]+|editoriales|editorial\/[^/]+|iniciativas|boletines|ver\/[^/]+(\/[^/]+)?|suscribirse|legal\/[^/]+)$/;
+  const conDireccion = r => CON_DIRECCION.test(String(r || "").replace(/^#\//, ""));
+  function direccionDe(r) {
+    if (conDireccion(r)) return "/" + r.replace(/^#\//, "");
+    const m = r.match(/^#\/boletin\/([^/]+)/);
+    const b = m && LISTA.find(x => x.id === decodeURIComponent(m[1]) || String(x.numero) === decodeURIComponent(m[1]));
+    if (b) return "/boletin/" + encodeURIComponent(b.numero);
+    const a = r.match(/^#\/al\/([^/]+)/), am = a && ((CFG.alMomento) || []).find(x => x.id === decodeURIComponent(a[1]) || x.slug === decodeURIComponent(a[1]));
+    return am && am.slug ? "/a/" + encodeURIComponent(am.slug) : "/";
+  }
+  /* ---------- estadísticas (sin cookies): visitas, clics y compartidos ----------
+     Cada visita tiene un código; lo que comparte esta persona lo lleva (?c=…) y así se ve cuánta gente entra por cada reenvío. */
+  const PARAM = new URLSearchParams(location.search);
+  const CODIGO = Math.random().toString(36).slice(2, 10).padEnd(8, "0");
+  window.__codigoLector = CODIGO;
+  let primera = true;
+  function medir(ev) {
+    try {
+      const b = JSON.stringify(Object.assign({ cod: CODIGO }, ev));
+      if (navigator.sendBeacon) navigator.sendBeacon("/est.php", new Blob([b], { type: "text/plain" }));
+      else fetch("/est.php", { method: "POST", body: b, keepalive: true });
+    } catch (e) {}
+  }
+  let ruta = "#/";
+  const viejo = new URLSearchParams(location.search).get("n");
+  const porDireccion = location.pathname.match(/^\/boletin\/([^/]+)/), porMomento = location.pathname.match(/^\/a\/([^/.]+)/);
+  if (location.hash.startsWith("#/")) ruta = location.hash;
+  else if (porDireccion) ruta = "#/boletin/" + porDireccion[1];
+  else if (porMomento) {   // la editorial o la firma invitada compartidas desde «Al momento» se abren completas
+    const am = (CFG.alMomento || []).find(x => x.estado === "aprobado" && (x.slug === decodeURIComponent(porMomento[1]) || x.id === decodeURIComponent(porMomento[1])));
+    ruta = am && /^#\/(editorial|colaboracion)\//.test(am.destino || "") ? am.destino : "#/al/" + porMomento[1];
+  }
+  else if (viejo) ruta = "#/boletin/" + encodeURIComponent(viejo);
+  else if (location.pathname.length > 1 && conDireccion("#" + location.pathname.replace(/\/+$/, ""))) ruta = "#" + location.pathname.replace(/\/+$/, "");
+  history.replaceState({ ruta }, "", direccionDe(ruta));
+
+  function pintar(r, arriba) {
+    ruta = r || "#/";
+    medir(primera ? { t: "visita", r: ruta, e: 1, c: PARAM.get("c") || "", p: PARAM.get("p") || "", ref: document.referrer || "" } : { t: "visita", r: ruta });
+    primera = false;
+    document.getElementById("app").innerHTML = renderApp(ruta, LISTA, CFG);
+    // Los enlaces internos llevan su dirección real (Google los sigue); el clic lo sigue llevando esta página
+    document.querySelectorAll("#app a[href^='#/']").forEach(a => { const r = a.getAttribute("href"); if (conDireccion(r) || r === "#/") { a.dataset.r = r; a.setAttribute("href", direccionDe(r)); } });
+    const sec = ruta.slice(2).split("/")[0];
+    document.title = (CFG.cabecera || "Lo que hay que saber") + (TITULOS[sec] ? " · " + TITULOS[sec] : " · Boletín de PATRIAM");
+    ponerMeta(ruta);
+    const caja = document.querySelector(".bol-buscar input");
+    if (caja && sec === "buscar") caja.value = decodeURIComponent(ruta.split("/")[2] || "");
+    if (arriba !== false) {
+      const c = document.getElementById("centro"), menu = document.querySelector(".bol-menu");
+      const y = ruta === "#/" || !c ? 0 : Math.max(0, c.getBoundingClientRect().top + window.scrollY - (menu ? menu.offsetHeight : 0) - 16);
+      window.scrollTo(0, y);
+    }
+  }
+  /* Título, descripción, dirección canónica y datos estructurados de cada página */
+  const BASE = "https://boletin.movimientopatriam.es";
+  function meta(attr, k, v) { let el = document.head.querySelector('meta[' + attr + '="' + k + '"]'); if (!el) { el = document.createElement("meta"); el.setAttribute(attr, k); document.head.appendChild(el); } el.setAttribute("content", v); }
+  const plano = t => String(t || "").replace(/[#*_>`]/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/\s+/g, " ").trim();
+  const corto = (t, n) => { t = plano(t); return t.length > n ? t.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : t; };
+  function ponerMeta(r) {
+    const p = r.replace(/^#\//, "").split("/").map(decodeURIComponent);
+    let titulo = document.title, desc = "Lo que hay que saber, con criterio: el boletín semanal de PATRIAM. Actualidad, historia, sociedad y análisis con criterio.", img = BASE + "/compartir.jpg?v=2", ld = null, tipo = "website";
+    const todas = []; LISTA.forEach(b => (b.colaboraciones || []).forEach(c => todas.push({ c, b })));
+    if (p[0] === "colaboracion") {
+      const x = todas.find(y => y.c.id === p[1]);
+      if (x) { titulo = x.c.titulo + " · " + (x.c.autor || "PATRIAM") + " · Lo que hay que saber"; desc = corto(x.c.entradilla || x.c.texto, 158); if (x.c.imagen) img = x.c.imagen; tipo = "article";
+        ld = { "@context": "https://schema.org", "@type": "Article", headline: x.c.titulo, description: corto(x.c.entradilla || x.c.texto, 300), image: x.c.imagen ? [x.c.imagen] : undefined,
+          datePublished: x.b.fecha, author: { "@type": "Person", name: x.c.autor || "PATRIAM" }, articleSection: x.c.seccion || undefined,
+          publisher: { "@type": "Organization", name: "PATRIAM", logo: { "@type": "ImageObject", url: BASE + "/logo.png" } }, mainEntityOfPage: BASE + direccionDe(r), inLanguage: "es-ES" }; }
+    } else if (p[0] === "ver") {
+      const x = (CFG.biblioteca || []).find(y => y.id === p[1]);
+      if (x) { titulo = x.titulo + (x.tipo ? " (" + x.tipo.toLowerCase() + ")" : "") + " · Recomendación de PATRIAM · Lo que hay que saber"; desc = corto(x.comentario || x.descripcion, 158); if (x.imagen) img = x.imagen;
+        if (/pel[ií]cula/i.test(x.tipo || "")) ld = { "@context": "https://schema.org", "@type": "Review", itemReviewed: { "@type": "Movie", name: x.titulo, image: x.imagen || undefined }, reviewBody: corto(x.comentario, 1000), author: { "@type": "Person", name: x.comenta || "PATRIAM" }, publisher: { "@type": "Organization", name: "PATRIAM" } }; }
+    } else if (p[0] === "boletin" || r === "#/") {
+      const b = p[0] === "boletin" ? LISTA.find(x => x.id === p[1] || String(x.numero) === p[1]) : LISTA[0];
+      if (b) { desc = corto("Boletín nº " + b.numero + " de PATRIAM. " + ((b.editorial || {}).titulo ? "Editorial: " + b.editorial.titulo + ". " : "") + (b.colaboraciones || []).map(c => c.titulo).join(" · "), 158);
+        ld = { "@context": "https://schema.org", "@type": "NewsArticle", headline: "Lo que hay que saber · Boletín nº " + b.numero, datePublished: b.fecha, image: [img],
+          author: { "@type": "Organization", name: "PATRIAM" }, publisher: { "@type": "Organization", name: "PATRIAM", logo: { "@type": "ImageObject", url: BASE + "/logo.png" } }, inLanguage: "es-ES" }; }
+    } else if (TITULOS[p[0]]) desc = "Lo que hay que saber · " + TITULOS[p[0]] + ": " + desc;
+    const url = BASE + (r === "#/" ? "/" : direccionDe(r));
+    document.title = titulo;
+    meta("name", "description", desc); meta("property", "og:title", titulo); meta("property", "og:description", desc); meta("property", "og:url", url);
+    meta("property", "og:image", img); meta("property", "og:type", tipo); meta("name", "twitter:title", titulo); meta("name", "twitter:description", desc); meta("name", "twitter:image", img);
+    let can = document.head.querySelector('link[rel="canonical"]'); if (!can) { can = document.createElement("link"); can.rel = "canonical"; document.head.appendChild(can); } can.href = url;
+    let el = document.getElementById("ld-pagina"); if (el) el.remove();
+    if (ld) { el = document.createElement("script"); el.type = "application/ld+json"; el.id = "ld-pagina"; el.textContent = JSON.stringify(ld); document.head.appendChild(el); }
+  }
+  function ir(r) { if (r === ruta) { window.scrollTo({ top: 0, behavior: "smooth" }); return; } history.pushState({ ruta: r }, "", direccionDe(r)); pintar(r); }
+
+  // Lo que se abre va a una pestaña nueva, con «Volver al boletín semanal» arriba y abajo.
+  // «Boletín semanal» y «Volver al boletín» vuelven a la portada en la misma pestaña.
+  function abrirNueva(destino) {
+    const a = document.createElement("a");
+    a.href = location.origin + (conDireccion(destino) ? direccionDe(destino) : "/" + destino); a.target = "_blank"; a.rel = "noopener";
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+  // Clics en enlaces de fuera (noticias, vídeos, podcasts…) y en los botones de compartir
+  const RED = { wa: "whatsapp", xx: "x", fb: "facebook", ig: "instagram", en: "enlace" };
+  document.addEventListener("click", e => {
+    const comp = e.target.closest(".bol-comp");
+    if (comp) { const k = Object.keys(RED).find(c => comp.classList.contains(c)); medir({ t: "compartir", r: ruta, red: RED[k] || "otro" }); return; }
+    const a = e.target.closest("a[href]");
+    if (!a) return;
+    const h = a.getAttribute("href") || "";
+    if (/^https?:/i.test(h) && !h.startsWith(location.origin)) medir({ t: "clic", r: ruta, d: a.href, l: (a.getAttribute("aria-label") || a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 120) });
+  }, true);
+  document.addEventListener("click", e => {
+    const a = e.target.closest("a[data-r], a[href^='#/']");
+    if (!a || e.ctrlKey || e.metaKey || e.shiftKey) return;
+    e.preventDefault();
+    const destino = a.dataset.r || a.getAttribute("href");
+    // Portada y boletines: en la misma pestaña (cada boletín con su propia dirección para compartirla)
+    if (destino === "#/" || destino === "#/boletines" || destino.startsWith("#/boletin/")) ir(destino); else abrirNueva(destino);
+  });
+  window.buscarDesde = input => { const q = input.value.trim(); if (q) { abrirNueva("#/buscar/" + encodeURIComponent(q)); input.value = ""; } return false; };
+  // Botón "atrás" del móvil o del navegador
+  window.addEventListener("popstate", e => pintar((e.state && e.state.ruta) || "#/"));
+  pintar(ruta);
+</script>
+</body>
+</html>

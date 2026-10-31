@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Revista · PATRIAM</title>
+    <meta name="description" content="Artículos de opinión, análisis y formación para poder argumentar. Los artículos expresan el criterio de sus autores y se publican tras su revisión." />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Revista · PATRIAM" />
+    <meta property="og:description" content="Artículos de opinión, análisis y formación para poder argumentar. Los artículos expresan el criterio de sus autores y se publican tras su revisión." />
+    <meta property="og:url" content="https://movimientopatriam.es/revista" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Revista · PATRIAM" />
+    <meta name="twitter:description" content="Artículos de opinión, análisis y formación para poder argumentar. Los artículos expresan el criterio de sus autores y se publican tras su revisión." />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/revista" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Revista</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><ul><li><a href="/articulo/que-significa-dios-patria-justicia">Qué significa «Dios, Patria, Justicia»</a> — Tres palabras que hoy incomodan encierran una idea con más de dos mil años de historia: que el bien y el mal no se deciden por votación.</li><li><a href="/articulo/bien-comun-y-justicia-social-de-donde-vienen-y-quien-los-ha-hecho-realidad">Bien común y justicia social: de dónde vienen y quién los ha hecho realidad</a> — Dos expresiones que hoy usa todo el mundo, de la derecha a la izquierda, nacieron en una tradición muy concreta. Conviene recordar cuál, y comparar lo que…</li><li><a href="/articulo/equitativo-segun-quien-la-justicia-social-y-el-bien-comun-para-el-socialismo-y-el-comunismo">¿Equitativo según quién? La justicia social y el bien común para el socialismo y el comunismo</a> — Marx planteó en 1875 una pregunta que aún hoy deja al descubierto el fondo de la izquierda: si no existe una medida objetiva de lo justo, ¿quién decide qué es…</li><li><a href="/articulo/por-que-salimos-a-la-calle-por-ceuta">Por qué salimos a la calle por Ceuta</a> — Las razones de nuestra concentración: una ciudad española que necesita más medios y más atención del Estado.</li><li><a href="/articulo/por-que-acompanar-a-nuestros-mayores">Por qué acompañar a nuestros mayores</a> — La soledad no deseada de las personas mayores es uno de los grandes dramas silenciosos de nuestro tiempo.</li></ul></main></div>
+  </body>
+</html>

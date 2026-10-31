@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nosotros · PATRIAM</title>
+    <meta name="description" content="PATRIAM es una asociación sin ánimo de lucro inscrita en el Registro de Asociaciones. Aquí encontrarás quién forma su Junta Directiva y los documentos que…" />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Nosotros · PATRIAM" />
+    <meta property="og:description" content="PATRIAM es una asociación sin ánimo de lucro inscrita en el Registro de Asociaciones. Aquí encontrarás quién forma su Junta Directiva y los documentos que…" />
+    <meta property="og:url" content="https://movimientopatriam.es/nosotros" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nosotros · PATRIAM" />
+    <meta name="twitter:description" content="PATRIAM es una asociación sin ánimo de lucro inscrita en el Registro de Asociaciones. Aquí encontrarás quién forma su Junta Directiva y los documentos que…" />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/nosotros" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Nosotros</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><p>PATRIAM es una asociación sin ánimo de lucro inscrita en el Registro de Asociaciones. Aquí encontrarás quién forma su Junta Directiva y los documentos que la asociación hace públicos: estatutos, acta fundacional, inscripción registral y cuentas.</p><p>Si quieres conocer qué somos y qué defendemos, lee el apartado Sobre PATRIAM.</p></main></div>
+  </body>
+</html>

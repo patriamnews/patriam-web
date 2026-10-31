@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ceuta es España: más medios y más futuro para los ceutíes · PATRIAM</title>
+    <meta name="description" content="Pedimos al Gobierno un plan de Estado para Ceuta: seguridad en la frontera, garantía de defensa y medidas económicas y sociales para que sus vecinos tengan…" />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Ceuta es España: más medios y más futuro para los ceutíes · PATRIAM" />
+    <meta property="og:description" content="Pedimos al Gobierno un plan de Estado para Ceuta: seguridad en la frontera, garantía de defensa y medidas económicas y sociales para que sus vecinos tengan…" />
+    <meta property="og:url" content="https://movimientopatriam.es/campanas/ceuta-es-espana" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ceuta es España: más medios y más futuro para los ceutíes · PATRIAM" />
+    <meta name="twitter:description" content="Pedimos al Gobierno un plan de Estado para Ceuta: seguridad en la frontera, garantía de defensa y medidas económicas y sociales para que sus vecinos tengan…" />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/campanas/ceuta-es-espana" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Ceuta es España: más medios y más futuro para los ceutíes</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><p>Por qué esta campaña</p><p>Ceuta es España desde hace siglos y sus vecinos son tan españoles como los de cualquier otra ciudad. Sin embargo, viven con una sensación creciente de abandono: una frontera exigente para quienes la custodian, una economía con pocas salidas, un transporte caro que los aísla de la península y servicios públicos con plazas difíciles de cubrir.</p><p>Los ceutíes no piden privilegios. Piden que el Estado esté a la altura de una ciudad que es frontera de España y de Europa.</p><p>Qué pedimos</p><p>- Seguridad en la frontera: más efectivos de Guardia Civil y Policía Nacional en Ceuta, con medios materiales adecuados e incentivos para que los destinos se cubran y se mantengan. - Garantía de defensa: que el Gobierno trabaje en la OTAN y en la Unión Europea para que Ceuta y Melilla queden expresamente amparadas por los compromisos de defensa colectiva. - Un plan económico para Ceuta: incentivos a la inversión y al empleo estable, apoyo al comercio local y al emprendimiento de los jóvenes ceutíes. - Conexión con la península: rebaja real del coste del transporte marítimo y aéreo para residentes y mercancías, con frecuencias suficientes todo el año. - Sanidad y educación: incentivos para que médicos, enfermeros y docentes elijan Ceuta y se queden, y plazas cubiertas en todos los centros.</p><p>A quién nos dirigimos</p><p>Al Presidente del Gobierno y a los grupos parlamentarios del Congreso de los Diputados, para que aprueben un plan de Estado para Ceuta con dotación presupuestaria y calendario.</p><p>Ceuta no es un problema que gestionar, es una parte de España que defender y cuidar.</p></main></div>
+  </body>
+</html>

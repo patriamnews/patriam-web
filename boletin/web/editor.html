@@ -1,0 +1,1743 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Editor · Lo que hay que saber</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="boletin.css?v=20261031a">
+<style>
+  body { background: #efe8dc; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 15px; line-height: 1.5; }
+  .ed-barra { position: sticky; top: 0; z-index: 50; background: var(--acento); color: #fff; padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+  .ed-barra strong { margin-right: auto; letter-spacing: .06em; font-size: 15px; }
+  .ed-barra select, .ed-barra button { font: inherit; padding: 7px 12px; border-radius: 6px; border: 0; }
+  .ed-barra select { max-width: 280px; }
+  .ed-barra button { background: rgba(255,255,255,.95); color: var(--acento); font-weight: 600; cursor: pointer; }
+  .ed-barra .publicar { background: var(--gualda); color: #fff; font-weight: 700; padding: 8px 18px; }
+  .ed-cols { display: grid; grid-template-columns: minmax(380px, 520px) 1fr; }
+  .ed-form { padding: 18px; height: calc(100vh - 56px); overflow-y: auto; }
+  .ed-vista { height: calc(100vh - 56px); overflow-y: auto; background: var(--crema); border-left: 1px solid #d8ccb8; font-family: var(--serif); font-size: 17px; }
+  /* la vista previa se ve como en tablet */
+  .ed-vista .bol-cab-in { grid-template-columns: 220px 1fr; min-height: 360px; }
+  .ed-vista .bol-frase { font-size: .95rem; }
+  .ed-vista .bol-mancheta-nombre { font-size: 4.4rem; }
+  .ed-vista .bol-numero { top: auto; bottom: .8rem; right: .8rem; }
+  .ed-vista .bol-mancheta { padding: 1.4rem 1rem 0; } .ed-vista .bol-mancheta-nombre.largo { font-size: 2.8rem; }
+  .ed-vista .bol-menu { position: static; } .ed-vista .bol-buscar { display: none; }
+  .ed-vista .bol-menu a { padding: .8rem .7rem; font-size: .6rem; letter-spacing: .1em; gap: .4rem; }
+  .ed-vista .bol-fila1, .ed-vista .bol-fila2, .ed-vista .bol-fila3 { grid-template-columns: 1fr; }
+  .ed-vista .bol-destacados { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .ed-vista .bol-dest { grid-template-columns: 1fr; grid-template-rows: auto 110px; }
+  .ed-vista .bol-dest-img { order: 2; }
+  .ed-vista .bol-lado-fijo { position: static; }
+  .ed-vista .bol-marco { grid-template-columns: 280px minmax(0,1fr); gap: 1.2rem; }
+  .ed-vista .bol-lateral-in { position: static; height: auto; max-height: none; overflow: visible; }
+  .ed-vista .bol-firmas .bol-colab, .ed-vista .bol-noticias .bol-tarjeta { grid-template-columns: 1fr; }
+  .ed-vista .bol-noticias .bol-tarjeta { grid-template-columns: 40% 1fr; }
+  .ed-vista .bol-noticias .bol-foto { min-height: 210px; }
+  .ed-vista .bol-tarjeta { grid-template-columns: 180px 1fr; }
+
+  .paso { background: #fff; border: 1px solid #e0d5c3; border-radius: 10px; margin: 0 0 16px; overflow: hidden; }
+  .paso > h2 { display: flex; align-items: center; gap: 10px; margin: 0; padding: 12px 16px; font: 700 15px system-ui, sans-serif; color: var(--acento); background: #fbf7f0; border-bottom: 1px solid #eee3d2; }
+  .paso > h2 b { width: 26px; height: 26px; border-radius: 50%; background: var(--acento); color: #fff; display: grid; place-items: center; font-size: 13px; flex: none; }
+  .paso > h2 small { margin-left: auto; font-weight: 400; color: #8a7f74; font-size: 12px; }
+  .paso-in { padding: 6px 16px 16px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; color: #3b3335; }
+  label small { font-weight: 400; color: #8a7f74; }
+  input[type=text], input[type=url], input[type=date], input[type=email], input[type=password], textarea, select.campo {
+    width: 100%; font: inherit; padding: 8px 10px; border: 1px solid #d6cab7; border-radius: 6px; background: #fffdf9; color: #1d1719; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid rgba(123,28,44,.25); border-color: var(--acento); }
+  textarea { min-height: 80px; resize: vertical; }
+  textarea.largo { min-height: 220px; }
+  .fila { display: flex; gap: 10px; } .fila > div { flex: 1; min-width: 0; }
+  .numero-auto { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f6efe3; border-radius: 6px; font-weight: 700; color: var(--acento); }
+  .numero-auto small { font-weight: 400; color: #8a7f74; }
+  .img-caja { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .img-caja input[type=text] { flex: 1; min-width: 140px; }
+  .img-mini { width: 54px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: none; }
+  .btn { font: inherit; font-size: 13px; padding: 7px 11px; border-radius: 6px; border: 1px solid #cbbfab; background: #f7f2ea; cursor: pointer; }
+  .btn:hover { background: #ede4d5; }
+  .btn-add { width: 100%; padding: 11px; font-weight: 700; border: 2px dashed var(--gualda); background: #fffdf9; color: var(--acento); margin-top: 4px; }
+  .btn-rojo { color: #a11; }
+  .item { border: 1px solid #eadfcd; border-radius: 8px; padding: 4px 12px 12px; margin-top: 12px; background: #fffdf9; }
+  .item-cab { display: flex; gap: 6px; align-items: center; padding-top: 8px; }
+  .item-cab span { margin-right: auto; font-weight: 700; color: var(--acento); }
+  .herramientas { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; }
+  .herramientas button { font: 600 12px system-ui, sans-serif; padding: 5px 9px; border: 1px solid #d6cab7; background: #fff; border-radius: 5px; cursor: pointer; }
+  .herramientas button:hover { background: #f3ece1; }
+  .enlace-caja { display: flex; gap: 6px; align-items: center; margin-top: 10px; background: #f6efe3; padding: 8px 10px; border-radius: 6px; font-size: 13px; }
+  .enlace-caja code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--acento); }
+  .nota { font-size: 12px; color: #8a7f74; margin: 6px 0 0; }
+  details.paso > summary { list-style: none; cursor: pointer; }
+  details.paso > summary::-webkit-details-marker { display: none; }
+  .aviso { display: none; background: #fff3cd; color: #5a4300; padding: 10px 16px; border-bottom: 1px solid #e6cf85; }
+  .aviso button { margin-left: 8px; }
+  .modal { position: fixed; inset: 0; z-index: 100; background: rgba(29,23,25,.55); display: none; align-items: center; justify-content: center; padding: 16px; }
+  .modal.abierto { display: flex; }
+  .modal-caja { background: #fff; border-radius: 12px; max-width: 520px; width: 100%; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+  .modal-caja h3 { margin: 0 0 8px; color: var(--acento); font: 700 20px system-ui, sans-serif; }
+  .us-fila { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid #eee3d2; flex-wrap: wrap; }
+  .us-fila b { flex: 1; min-width: 160px; }
+  .us-fila small { color: #8a7f74; display: block; font-weight: 400; }
+  .us-rol { font-size: 12px; background: #f6efe3; color: var(--acento); border-radius: 999px; padding: 2px 9px; font-weight: 600; }
+  .us-reset { display: flex; gap: 6px; width: 100%; }
+  .us-reset input { flex: 1; }
+  .modal-caja { max-height: 92vh; overflow-y: auto; }
+  .modal-caja ol { padding-left: 20px; } .modal-caja li { margin: 6px 0; }
+  .acceso { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 16px;
+    background: linear-gradient(160deg, #7b1c2c, #4a0f19); }
+  .acceso[hidden] { display: none; }
+  .acceso-caja { background: #fffdf9; border-radius: 14px; width: 100%; max-width: 400px; padding: 30px 28px 26px; box-shadow: 0 24px 70px rgba(0,0,0,.35); text-align: center; }
+  .acceso-caja img { width: 170px; margin: 0 auto 6px; }
+  .acceso-caja h1 { font: 700 13px system-ui, sans-serif; letter-spacing: .2em; text-transform: uppercase; color: var(--acento); margin: 6px 0 2px; }
+  .acceso-caja p { color: #6b6163; margin: 6px 0 14px; font-size: 14px; }
+  .acceso-caja form { text-align: left; }
+  .acceso-caja .entrar { width: 100%; margin-top: 16px; padding: 11px; border: 0; border-radius: 8px; background: var(--acento); color: #fff; font: 700 15px system-ui, sans-serif; cursor: pointer; }
+  .acceso-caja .entrar:hover { background: var(--acento-osc); }
+  .acceso-error { color: #a3261b; font-size: 13px; min-height: 18px; margin: 8px 0 0; }
+  .acceso-ok { color: #2f6b3a; }
+  .ver-clave { font-size: 12px; color: #6b6163; display: flex; align-items: center; gap: 6px; margin-top: 8px; font-weight: 400; }
+  @media (max-width: 900px) { .ed-cols { grid-template-columns: 1fr; } .ed-form, .ed-vista { height: auto; } }
+  .paso-bib { border-color: var(--gualda); }
+  .recomendar { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 9px 11px; background: #fbf3dc; border: 1px solid #ecd9a8; border-radius: 6px; font-weight: 600; color: var(--acento); cursor: pointer; }
+  .recomendar input { width: 18px; height: 18px; accent-color: var(--acento); }
+  .pestanas-ed { position: sticky; top: -18px; z-index: 5; display: flex; gap: 4px; flex-wrap: wrap; margin: -18px -18px 16px; padding: 10px 18px 0; background: #efe8dc; border-bottom: 2px solid var(--acento); }
+  .pestanas-ed button { font: 600 14px system-ui, sans-serif; padding: 9px 14px; border: 1px solid #d6cab7; border-bottom: 0; border-radius: 8px 8px 0 0; background: #f7f2ea; color: #3b3335; cursor: pointer; }
+  .pestanas-ed button.activa { background: var(--acento); color: #fff; border-color: var(--acento); }
+  .arch-fila { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid #eee3d2; }
+  .arch-fila:first-child { border-top: 0; }
+  .arch-fila[hidden], .item[hidden] { display: none; }
+  .arch-fila div { flex: 1; min-width: 0; }
+  .arch-fila b { display: block; font-size: 14px; }
+  .arch-fila small { color: #8a7f74; }
+  #buscaSec { width: 100%; font: inherit; padding: 9px 12px; border: 1.5px solid #d6cab7; border-radius: 999px; background: #fffdf9; }
+  .estado-bol { font-size: 12px; font-weight: 700; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.18); color: #fff; }
+  .estado-bol.pendiente { background: #f0c75e; color: #4a3300; }
+  .estado-bol.aprobado { background: #cfe8c9; color: #1f4d1a; }
+  #modalAyuda .modal-caja { max-width: 760px; font-size: 15px; line-height: 1.55; }
+  #modalAyuda h3 { margin-top: 0; }
+  #modalAyuda details { border: 1px solid #e4d9c7; border-radius: 8px; margin: 8px 0; background: #fffdf9; }
+  #modalAyuda summary { cursor: pointer; padding: 11px 14px; font-weight: 700; color: var(--acento); list-style: none; }
+  #modalAyuda summary::-webkit-details-marker { display: none; }
+  #modalAyuda summary::before { content: "▸ "; } #modalAyuda details[open] summary::before { content: "▾ "; }
+  #modalAyuda details > div { padding: 0 16px 12px; }
+  #modalAyuda ol, #modalAyuda ul { padding-left: 22px; margin: 6px 0; } #modalAyuda li { margin: 4px 0; }
+  #modalAyuda .solo-admin { display: inline-block; font-size: 11px; font-weight: 700; background: #fbf0d0; color: #8a6a10; border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: middle; }
+  #modalAyuda .consejo { background: #f3f8ef; border: 1px solid #cfe0c3; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+  .am-acciones { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #d6cab7; }
+  .am-acciones .btn-pub { background: var(--acento); color: #fff; border-color: var(--acento); font-weight: 700; }
+  .am-enlace { display: flex; gap: 6px; align-items: center; margin-top: 10px; padding: 8px 10px; background: #f3f8ef; border: 1px solid #cfe0c3; border-radius: 6px; font-size: 13px; }
+  .am-enlace code { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .am-prev { display: block; width: 220px; margin-top: 10px; border-radius: 6px; box-shadow: 0 2px 10px rgba(0,0,0,.15); }
+  .am-estado { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #eee; color: #555; margin-left: 6px; }
+  .am-estado.aprobado { background: #e3f1da; color: #2f6b1f; } .am-estado.pendiente { background: #fbf0d0; color: #8a6a10; }
+  .arch-fila[hidden], .item[hidden] { display: none; }
+  .arch-fila div { flex: 1; min-width: 0; }
+  .arch-fila b { display: block; font-size: 14px; }
+  .arch-fila small { color: #8a7f74; }
+  #buscaSec { width: 100%; font: inherit; padding: 9px 12px; border: 1.5px solid #d6cab7; border-radius: 999px; background: #fffdf9; }
+  .estado-bol { font-size: 12px; font-weight: 700; letter-spacing: .04em; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.18); color: #fff; }
+  .estado-bol.pendiente { background: #f0c75e; color: #4a3300; }
+  .estado-bol.aprobado { background: #cfe8c9; color: #1f4d1a; }
+  .permisos { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0; }
+  .permisos th, .permisos td { border-bottom: 1px solid #eee3d2; padding: 6px 8px; text-align: left; }
+  .permisos th { background: #f7f2ea; color: var(--acento); font-weight: 700; }
+  .permisos td:not(:first-child), .permisos th:not(:first-child) { text-align: center; width: 70px; }
+  .com-check { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+  .com-check input { margin-top: 3px; }
+  .com-serv { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+  .com-serv span { font: 600 12px system-ui, sans-serif; padding: 4px 10px; border-radius: 999px; background: #fbf0d0; color: #8a6a10; }
+  .com-serv span.si { background: #e3f1da; color: #2f6b1f; }
+  .com-dest { border: 1px solid #eadfcd; border-radius: 6px; background: #fff; max-height: 260px; overflow: auto; margin-top: 6px; }
+  .com-dest label { display: flex; gap: 8px; align-items: center; margin: 0; padding: 6px 10px; border-top: 1px solid #f2ebe0; font-weight: 400; font-size: 13px; }
+  .com-dest label:first-child { border-top: 0; }
+  .com-dest small { color: #8a7f74; margin-left: auto; white-space: nowrap; }
+  .com-dest .ok { color: #2f6b1f; font-weight: 700; }
+  .com-botones { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .com-acciones { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #d6cab7; }
+  .com-acciones .btn-pub { background: var(--acento); color: #fff; border-color: var(--acento); font-weight: 700; }
+  .com-acciones .btn-wa { background: #25d366; color: #fff; border-color: #25d366; font-weight: 700; }
+  .com-acciones .btn[disabled] { opacity: .45; cursor: not-allowed; }
+  .com-vista { width: 100%; height: 520px; border: 1px solid #eadfcd; border-radius: 6px; margin-top: 10px; background: #f4ede2; }
+  .com-wa-lista a { display: flex; justify-content: space-between; gap: 10px; padding: 8px 10px; border-top: 1px solid #eee3d2; text-decoration: none; color: inherit; }
+  .com-wa-lista a span:last-child { color: #128c4b; font-weight: 700; white-space: nowrap; }
+  .com-wa-lista a.hecho span:last-child { color: #8a7f74; }
+  .com-log { font-size: 12px; color: #5b4f49; margin-top: 10px; }
+  .com-log li { margin: 2px 0; }
+  .com-contacto { display: grid; grid-template-columns: 1.3fr 1.5fr 1fr auto; gap: 6px; margin-top: 6px; }
+  .com-contacto input { margin: 0; }
+  @media (max-width: 700px) { .com-contacto { grid-template-columns: 1fr 1fr; } }
+  #panelCom .am-estado.enviado { background: #e3f1da; color: #2f6b1f; }
+  .est-cifras { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin: 14px 0; }
+  .est-cifras div { background: #faf6ef; border: 1px solid #eadfcd; border-radius: 8px; padding: 10px 12px; }
+  .est-cifras b { display: block; font: 700 26px Georgia, serif; color: var(--acento); }
+  .est-cifras span { font-size: 12px; color: #6b5f58; }
+  .est-barras { display: flex; align-items: flex-end; gap: 2px; height: 90px; padding: 6px; background: #faf6ef; border-radius: 6px; }
+  .est-barras i { flex: 1; background: var(--acento); min-height: 1px; border-radius: 2px 2px 0 0; }
+  .est-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } @media (max-width: 700px) { .est-cols { grid-template-columns: 1fr; } }
+  #modalEst h4 { margin: 18px 0 6px; color: var(--acento); font: 700 15px system-ui, sans-serif; } #modalEst h4 small { font-weight: 400; color: #8a7f74; }
+  #modalEst table { width: 100%; border-collapse: collapse; font-size: 13px; } #modalEst td, #modalEst th { padding: 5px 6px; border-bottom: 1px solid #eee3d2; text-align: left; vertical-align: top; }
+  #modalEst .n { text-align: right; white-space: nowrap; } #modalEst td small { color: #8a7f74; }
+  #modalEst td a { color: var(--acento); word-break: break-word; }
+  #estCuerpo { max-height: 72vh; overflow: auto; }
+</style>
+</head>
+<body>
+
+<div class="acceso" id="acceso">
+  <div class="acceso-caja">
+    <img src="logo.png" alt="PATRIAM">
+    <h1>Editor del boletín</h1>
+    <div id="pantallaEntrar">
+      <p>Entra con tu correo y tu contraseña.</p>
+      <form id="formEntrar" autocomplete="on">
+        <label for="accCorreo">Correo</label><input type="email" id="accCorreo" autocomplete="username" required>
+        <label for="accClave">Contraseña</label><input type="password" id="accClave" autocomplete="current-password" required>
+        <label class="ver-clave"><input type="checkbox" id="verClave"> Mostrar contraseña</label>
+        <button class="entrar" type="submit">Entrar</button>
+        <p class="acceso-error" id="errEntrar"></p>
+      </form>
+    </div>
+    <div id="pantallaCambiar" hidden>
+      <p id="txtCambiar">Es tu primer acceso. Elige una contraseña nueva para seguir.</p>
+      <form id="formCambiar">
+        <label for="claveNueva">Contraseña nueva <small>(mínimo 8 caracteres)</small></label><input type="password" id="claveNueva" autocomplete="new-password" required>
+        <label for="claveRepite">Repite la contraseña</label><input type="password" id="claveRepite" autocomplete="new-password" required>
+        <button class="entrar" type="submit">Guardar contraseña</button>
+        <p class="acceso-error" id="errCambiar"></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="ed-barra">
+  <strong>Editor · Lo que hay que saber</strong>
+  <select id="selBoletin" title="Elegir boletín"></select>
+  <button id="btnNuevo">+ Nuevo boletín</button>
+  <button id="btnBorrar">Eliminar</button>
+  <a href='/' rel='noopener' style='color:#fff;font-weight:600;text-decoration:none;padding:7px 6px' target='_blank'>Ver boletín ↗</a>
+  <button id="btnCompleta" title="Ver el boletín tal como quedará en la web, antes de publicarlo">Vista previa</button>
+  <button id="btnMovil" title="Ver cómo quedará en un móvil">Vista móvil</button>
+  <button id="btnCorreo" title="Ver cómo llegará el boletín por correo electrónico">Vista correo</button>
+  <button id="btnUsuarios" hidden>Usuarios</button>
+  <button id="btnSuscriptores" hidden title="Personas apuntadas al boletín (solo administradores)">Suscriptores</button>
+  <button id="btnEst" hidden title="Visitas, clics y reenvíos del boletín">Estadísticas</button>
+  <button id="btnClave">Mi contraseña</button>
+  <button id="btnAyuda" title="Cómo se usa el editor">? Instrucciones</button>
+  <button id="btnSalir">Salir</button>
+  <span id="estadoBol" class="estado-bol"></span>
+  <span id="guardado" style="color:#fff;font:600 12px system-ui,sans-serif;opacity:.85"></span>
+  <button id="btnEnviar" class="publicar" hidden>Enviar a aprobación ✉</button>
+  <button id="btnPublicar" class="publicar" hidden>Aprobar y publicar ✓</button>
+  <button id="btnIg" hidden title="Preparar la publicación de este boletín para Instagram">Instagram</button>
+  <button id="btnX" hidden title="Preparar la publicación de este boletín para X">X</button>
+  <button id="btnEnlace" hidden title="Copiar la dirección de este boletín para mandarla">Copiar enlace 🔗</button>
+</div>
+<div class="aviso" id="aviso"></div>
+
+<div class="ed-cols">
+  <div class="ed-form">
+    <nav class="pestanas-ed" role="tablist">
+      <button class="activa" data-panel="boletin">Boletín de esta semana</button>
+      <button data-panel="seccion" data-sec="Historia">Historia</button>
+      <button data-panel="seccion" data-sec="Sociedad">Sociedad</button>
+      <button data-panel="seccion" data-sec="Análisis">Análisis</button>
+      <button data-panel="seccion" data-sec="Actualidad">Actualidad</button>
+      <button data-panel="momento">Al momento · WhatsApp</button>
+      <button data-panel="com" id="pestCom" hidden>Comunicaciones</button>
+    </nav>
+    <div id="panelMomento" hidden>
+      <section class="paso paso-bib"><h2><b>⚡</b>Al momento <small>una noticia o un post suelto, con su propio enlace para WhatsApp</small></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Para compartir algo entre boletín y boletín: una noticia, un post de Instagram o de X, un vídeo… Cada uno tiene su <b>propio enlace</b>, y al mandarlo por WhatsApp sale con una imagen de PATRIAM con el título. Lo de Instagram, X y YouTube se ve dentro de nuestra web.</p>
+        <button class="btn btn-add" id="btnMomento">+ Nuevo envío al momento</button>
+        <button class="btn" id="btnMomentoBoletin" hidden style="width:100%;margin-top:6px">Crear la editorial y la firma invitada del último boletín publicado</button>
+        <p class="nota" style="margin-top:6px">Al aprobar cada boletín, la editorial y los textos de la firma invitada se crean solos aquí, ya publicados, con su enlace y su imagen para compartir.</p>
+        <div id="momento"></div>
+      </div></section>
+    </div>
+    <div id="panelCom" hidden>
+      <section class="paso paso-bib"><h2><b>✉</b>Comunicaciones <small>un mensaje personal a cada uno, por correo y por WhatsApp</small></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Cada persona lo recibe a su nombre: <b>«Buenos días, Nombre:»</b>, después el texto que escribas y al final la firma. Solo lo ven y lo mandan los administradores. Se guarda solo, como el boletín, y nunca sale en la web.</p>
+        <div id="comServicios"></div>
+        <button class="btn btn-add" id="btnComNueva">+ Nueva comunicación</button>
+        <div id="comLista"></div>
+      </div></section>
+      <section class="paso"><h2><b>✒</b>Firma y remitente <small>vale para todas las comunicaciones</small></h2><div class="paso-in" id="comAjustes">
+        <div class="fila"><div><label>Nombre del remitente</label><input type="text" data-aj="remitenteNombre" placeholder="PATRIAM"></div>
+          <div><label>Correo que envía</label><input type="email" data-aj="remitente" placeholder="comunicacion@movimientopatriam.es"></div></div>
+        <p class="nota">Tiene que ser una dirección de movimientopatriam.es dada de alta como remitente en Brevo.</p>
+        <div class="fila"><div><label>Las respuestas llegan a</label><input type="email" data-aj="responderA" placeholder="hola@movimientopatriam.com"></div>
+          <div><label>Saludo por defecto</label><input type="text" data-aj="saludo" placeholder="Buenos días"></div></div>
+        <label class="com-check"><input type="checkbox" data-aj-check="soloNombre"> Saludar solo con el nombre de pila (la primera palabra: «Buenos días, Juan:» en vez de «Buenos días, Juan Pérez:»)</label>
+        <label>Firma del correo <small>(imagen: súbela tal cual la tienes)</small></label>
+        <div class="img-caja caja-firma"><input type="text" placeholder="Elige el archivo de la firma o pega su dirección"><img class="img-mini"><input type="file" accept="image/*" hidden>
+          <button class="btn" data-accion="elegir">Elegir…</button><button class="btn" data-accion="quitar">Quitar</button></div>
+        <label>Texto de la firma <small>(opcional: va encima de la imagen y es lo que se usa en WhatsApp)</small></label>
+        <textarea data-aj="firmaTexto" style="min-height:70px" placeholder="Un saludo,&#10;Isabel Olivares&#10;PATRIAM"></textarea>
+      </div></section>
+      <section class="paso"><h2><b>🔑</b>Claves de envío <small>Brevo y WhatsApp</small></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Todas las claves (Brevo, WhatsApp, Stripe, Gelato…) se ponen en un solo sitio: <a href="https://publicar.movimientopatriam.es/#/publicar/claves" target="_blank" rel="noopener">publicar.movimientopatriam.es › Claves secretas</a>. Se guardan solo en el servidor y el boletín las usa desde allí.</p>
+        <p class="nota" id="clEstado"></p>
+      </div></section>
+      <section class="paso"><h2><b>☎</b>Otros destinatarios <small>personas que no están apuntadas al boletín</small></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Los suscriptores del boletín ya salen solos. Aquí puedes añadir a otras personas (socios, colaboradores, contactos…).</p>
+        <div id="comContactos"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="btnComContacto">+ Añadir una persona</button><button class="btn" id="btnComPegar">Pegar una lista</button></div>
+        <div id="comPegar" hidden style="margin-top:8px">
+          <p class="nota">Una persona por línea: <b>Nombre; correo; móvil</b> (se puede copiar de Excel). Lo que falte se deja vacío.</p>
+          <textarea id="comPegarTxt" style="min-height:90px" placeholder="Juan Pérez; juan@correo.es; 600111222&#10;María López; ; 611222333"></textarea>
+          <button class="btn" id="btnComPegarOk" style="margin-top:6px">Añadir a la lista</button>
+        </div>
+      </div></section>
+    </div>
+    <div id="panelSeccion" hidden>
+      <section class="paso paso-bib"><h2><b>★</b><span id="secTitulo">Historia</span> <small>se queda guardado aunque no salga en el boletín</small></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Aquí se añade y se cambia todo lo que hay en esta sección: podcasts, series, libros, vídeos… Marca <b>«Añadir al boletín de esta semana»</b> en lo que quieras sacar en el boletín; lo demás sigue guardado en la sección.</p>
+        <input type="search" id="buscaSec" placeholder="Buscar en esta sección…" style="margin:4px 0 10px">
+        <datalist id="temasLista"></datalist>
+        <button class="btn btn-add" id="btnBib">+ Añadir a <span class="secNombre">Historia</span></button>
+        <div id="biblioteca"></div>
+      </div></section>
+      <section class="paso"><h2><b>☰</b>Noticias de los boletines que están en <span class="secNombre">Historia</span></h2><div class="paso-in">
+        <p class="nota" style="margin-top:8px">Son las noticias que salieron en boletines anteriores y se guardaron en esta sección. Pulsa «Cambiar» para editarlas en su boletín.</p>
+        <div id="archivoSec"></div>
+      </div></section>
+    </div>
+    <div id="panelBoletin">
+
+    <section class="paso"><h2><b>1</b>Boletín de la semana</h2><div class="paso-in">
+      <div class="fila">
+        <div><label>Número</label><div class="numero-auto" id="numeroAuto">Nº —</div></div>
+        <div><label>Fecha</label><input type="date" id="fecha"></div>
+      </div>
+      <p class="nota">El número se pone solo al crear cada boletín nuevo.</p>
+    </div></section>
+
+    <section class="paso"><h2><b>2</b>Editorial <small>se archiva en Editorial</small></h2><div class="paso-in">
+      <label>Título</label><input type="text" id="editorial_titulo" placeholder="Una historia que sigue viva">
+      <label>Texto <small>(deja una línea en blanco entre párrafos)</small></label>
+      <div id="barraEditorial"><div class="herramientas">
+        <button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button>
+        <button type="button" data-f="a">Enlace</button><button type="button" data-f="h2">Subtítulo</button><button type="button" data-f="cita">Cita destacada</button><button type="button" data-f="li">Lista</button></div></div>
+      <textarea id="editorial_texto" class="largo"></textarea>
+      <label>Imagen</label>
+      <div class="img-caja" id="cajaEditorialImg">
+        <input type="text" placeholder="Elige un archivo o pega la dirección de una imagen">
+        <img class="img-mini"><input type="file" accept="image/*" hidden>
+        <button class="btn" data-accion="elegir">Elegir…</button><button class="btn" data-accion="quitar">Quitar</button>
+      </div>
+      <label>Firma</label><input type="text" id="editorial_firma">
+    </div></section>
+
+    <section class="paso"><h2><b>3</b>Noticias, podcasts y vídeos <small>cada una elige dónde se archiva</small></h2><div class="paso-in">
+      <div id="noticias"></div>
+      <button class="btn btn-add" id="btnNoticia">+ Añadir noticia</button>
+      <p class="nota">La primera noticia de cada sección sale destacada al lado de la editorial.</p>
+    </div></section>
+
+    <section class="paso"><h2><b>4</b>Textos de colaboradores <small>se archivan en Colaboraciones</small></h2><div class="paso-in">
+      <div id="colaboraciones"></div>
+      <button class="btn btn-add" id="btnColab">+ Añadir texto de colaborador</button>
+      <p class="nota">Cada texto tiene su propia página y su enlace, para ponerlo donde queráis.</p>
+    </div></section>
+
+    <section class="paso"><h2><b>5</b>Iniciativas y eventos <small>van al Calendario e Iniciativas</small></h2><div class="paso-in">
+      <div id="eventos"></div>
+      <button class="btn btn-add" id="btnEvento">+ Añadir iniciativa o evento</button>
+      <p class="nota">Al crear un boletín nuevo se copian solas las que aún no han pasado.</p>
+    </div></section>
+
+    <section class="paso"><h2><b>❝</b>Frase del mes <small>sale arriba, debajo de «con criterio»</small></h2><div class="paso-in">
+      <label>Frase <small>(sin comillas: se ponen solas)</small></label><textarea data-cfg="fraseMes" style="min-height:70px" placeholder="Escribe aquí la frase inspiradora de este mes"></textarea>
+      <label>Autor</label><input type="text" data-cfg="fraseMesAutor" placeholder="Nombre del autor">
+      <p class="nota">Cuando la cambia un administrador sale en la web al momento. Cada boletín guarda la frase que tenía al publicarse, así los boletines anteriores siguen mostrando la suya.</p>
+    </div></section>
+
+    <details class="paso"><summary><h2 style="margin:0"><b>⚙</b>Ajustes del boletín <small>se cambian pocas veces</small></h2></summary><div class="paso-in">
+      <label>Nombre del boletín <small>(lo grande de la cabecera)</small></label><input type="text" data-cfg="cabecera">
+      <label>Texto sobre el nombre</label><input type="text" data-cfg="subtitulo">
+      <label>Frase bajo el nombre</label><input type="text" data-cfg="claim">
+      <label>Lema</label><input type="text" data-cfg="lema">
+      <label>Frase bajo el logo</label><textarea data-cfg="frase" style="min-height:60px"></textarea>
+      <label>Línea bajo «con criterio» <small>(solo sale si no hay frase del mes)</small></label><input type="text" data-cfg="secciones">
+      <label>Nombre del editor</label><input type="text" data-cfg="editor">
+      <label>Quién puede comentar las noticias <small>(separados por comas)</small></label><input type="text" id="cfgComentaristas">
+      <label>Nota sobre los colaboradores</label><textarea data-cfg="notaColaboradores" style="min-height:60px"></textarea>
+      <label>Enlace para hacerse socio <small>(web de PATRIAM, con cuota; el boletín es gratis)</small></label><input type="url" data-cfg="suscripcion">
+      <label>Texto de «Únete»</label><input type="text" data-cfg="uneteTexto">
+      <p class="nota" style="margin-top:14px"><b>PATRIAM en las redes</b>: pega el enlace al perfil. Solo salen las redes que tengan enlace.</p>
+      <div class="fila"><div><label>Cuenta de X <small>(@usuario o enlace)</small></label><input type="text" data-cfg="x" placeholder="@patriam_es"></div>
+        <div><label>Cuenta de Instagram <small>(@usuario o enlace)</small></label><input type="text" data-cfg="instagram" placeholder="@patriam"></div></div>
+      <label>Etiquetas para compartir en redes <small>(separadas por espacios, p. ej. #PATRIAM #España)</small></label><input type="text" data-cfg="etiquetas" placeholder="#PATRIAM">
+      <p class="nota">Las cuentas de X e Instagram se usan al compartir cada boletín: en X sale «vía @cuenta» y en Instagram la imagen y el texto llevan vuestra cuenta.</p>
+      <div class="fila"><div><label>Facebook</label><input type="url" data-cfg="facebook" placeholder="https://facebook.com/…"></div>
+        <div><label>TikTok</label><input type="url" data-cfg="tiktok" placeholder="https://tiktok.com/@…"></div></div>
+      <div class="fila"><div><label>YouTube</label><input type="url" data-cfg="youtube" placeholder="https://youtube.com/@…"></div>
+        <div><label>Telegram</label><input type="url" data-cfg="telegram" placeholder="https://t.me/…"></div></div>
+      <label>Canal de WhatsApp</label><input type="url" data-cfg="whatsapp" placeholder="https://whatsapp.com/channel/…">
+      <label>Correo de contacto</label><input type="email" data-cfg="email">
+      <label>Dirección de la web de PATRIAM</label><input type="url" data-cfg="web">
+      <label>Dirección pública del boletín <small>(para los enlaces de los colaboradores)</small></label><input type="url" data-cfg="direccion" placeholder="https://…/boletin/">
+    </div></details>
+    </div>
+  </div>
+
+  <div class="ed-vista" id="vista"></div>
+</div>
+
+<div class="modal" id="modalAyuda"><div class="modal-caja">
+  <h3>Instrucciones del editor</h3>
+  <p><b>Quién hace qué:</b> los <b>usuarios</b> preparan el boletín y lo envían para aprobar. Los de <b>redes</b> hacen lo mismo y además preparan las publicaciones de Instagram y X. Los <b>administradores</b> (Carlos y PATRIAM) lo revisan, lo aprueban y se publica. Sin la aprobación de uno de los dos no se publica nada.</p>
+  <div class="consejo">Todo se <b>guarda solo</b> mientras escribes (arriba pone «Guardado ✓») y se ve igual desde cualquier ordenador o móvil. Lo que escribes <b>no sale en la web hasta que se aprueba</b>. A la derecha ves cómo va quedando; «Vista previa» lo enseña tal como quedará en la web y «Vista móvil», en tamaño de teléfono.</div>
+
+  <details><summary>Quién puede hacer qué (permisos)</summary><div>
+  <table class="permisos">
+    <tr><th></th><th>Usuario</th><th>Redes</th><th>Admin.</th></tr>
+    <tr><td>Preparar el boletín (editorial, noticias, colaboradores, eventos, recomendados)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Añadir y cambiar la biblioteca (Historia, Análisis, Noticias)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Preparar envíos de «Al momento»</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Vista previa (web, móvil y correo)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Enviar a aprobación</td><td>✔</td><td>✔</td><td>—</td></tr>
+    <tr><td>Preparar las publicaciones de Instagram y X</td><td>✘</td><td>✔</td><td>✔</td></tr>
+    <tr><td><b>Aprobar y publicar</b> en la web</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Ver los suscriptores</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Mandar comunicaciones personales (correo y WhatsApp)</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Dar de alta y de baja usuarios, cambiar su tipo y restablecer contraseñas</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Cambiar su propia contraseña</td><td>✔</td><td>✔</td><td>✔</td></tr>
+  </table>
+  <p>Las contraseñas se guardan cifradas y nadie puede verlas, ni los administradores: si alguien la olvida, un administrador le pone una provisional nueva desde «Usuarios».</p>
+  </div></details>
+
+  <details open><summary>1. Empezar el boletín de la semana</summary><div><ol>
+    <li>Pulsa <b>«+ Nuevo boletín»</b>. El número se pone solo; revisa la fecha.</li>
+    <li><b>Editorial:</b> título, texto, imagen y firma. Para negritas, cursivas o enlaces, selecciona el texto y pulsa el botón. Un párrafo nuevo es una línea en blanco.</li>
+    <li>Cuando se publique el boletín nuevo, el anterior pasa solo a sus secciones y a «Boletines».</li>
+  </ol></div></details>
+
+  <details><summary>2. Añadir noticias, podcasts y vídeos</summary><div><ol>
+    <li>Pulsa <b>«+ Añadir noticia»</b>.</li>
+    <li><b>¿Dónde se archiva?</b> Noticias (actualidad), Historia o Análisis. <b>Tipo:</b> noticia, podcast o vídeo.</li>
+    <li><b>Título</b> y <b>Tema</b> (sirve para agruparlas dentro de la sección; escribe uno que ya exista para que vayan juntas).</li>
+    <li><b>Enlace</b> a la noticia. Si es de YouTube, el vídeo se verá dentro de nuestra web.</li>
+    <li><b>Medio</b> y su <b>logo</b>: el logo se recuerda y sale solo la próxima vez que pongas el mismo medio.</li>
+    <li><b>Resumen</b>: dos o tres frases con lo esencial.</li>
+    <li><b>Imagen</b>: «Elegir…» para subirla, o pega la dirección de una imagen. En YouTube, si no pones ninguna, se usa la del vídeo.</li>
+    <li><b>¿Quién comenta?</b> y el <b>comentario</b>.</li>
+    <li>Con las flechas ↑ ↓ cambias el orden; con ✕ la borras.</li>
+  </ol></div></details>
+
+  <details><summary>3. Textos de colaboradores, eventos y recomendados</summary><div><ul>
+    <li><b>Colaboradores:</b> «+ Añadir texto de colaborador». Autor (pueden ser siglas), una línea debajo (por ejemplo «Mujer, 49 años»), título, entradilla y texto. Cada texto tiene su propio enlace para compartirlo.</li>
+    <li><b>Iniciativas y eventos:</b> «+ Añadir iniciativa o evento»: tipo, fecha, hora, lugar, descripción y enlace. Van al calendario; los que ya han pasado se quitan solos del boletín nuevo.</li>
+    <li><b>Recomendados</b> (podcast, libro, serie…): en las pestañas <b>Historia</b> o <b>Análisis</b>, marca <b>«Añadir al boletín de esta semana»</b>. Salen abajo, como «Podcast recomendado esta semana», «Libro recomendado esta semana»…</li>
+  </ul></div></details>
+
+  <details><summary>4. Pestañas Historia, Análisis y Noticias (la biblioteca)</summary><div><ul>
+    <li>Aquí se guarda todo lo que queremos tener siempre en la web: podcasts, series, libros, vídeos, documentales… aunque no salgan en el boletín.</li>
+    <li><b>«+ Añadir a…»</b> crea una ficha. Las series pueden llevar capítulos (cada uno con su enlace). El <b>tema</b> sirve para agrupar.</li>
+    <li>Abajo están las noticias que salieron en boletines anteriores; «Cambiar» te lleva a editarlas.</li>
+  </ul></div></details>
+
+  <details><summary>5. Frase del mes</summary><div><ul>
+    <li>En el apartado <b>«Frase del mes»</b> se escribe la frase (sin comillas) y su autor. Sale arriba, debajo de «con criterio».</li>
+    <li>Cuando la cambia un administrador, sale en la web al momento. Cada boletín guarda la frase que tenía al publicarse.</li>
+  </ul></div></details>
+
+  <details><summary>6. Enviar el boletín para aprobar (usuarios)</summary><div><ol>
+    <li>Míralo antes con <b>«Vista previa»</b> y <b>«Vista móvil»</b>. Cuando esté listo, pulsa <b>«Enviar a aprobación»</b>.</li>
+    <li>Ya está: Carlos y PATRIAM lo verán en cuanto entren en el editor. No hay que mandar ningún archivo.</li>
+    <li>Si después cambias algo, se guarda solo; vuelve a pulsar «Enviar a aprobación».</li>
+  </ol></div></details>
+
+  <details><summary>7. Aprobar y publicar <span class="solo-admin">administradores</span></summary><div><ol>
+    <li>Al entrar, un aviso te dice si hay boletines pendientes. Elígelo en el desplegable de arriba.</li>
+    <li>Revísalo con <b>«Vista previa»</b> y <b>«Vista móvil»</b>. Corrige lo que haga falta.</li>
+    <li>Pulsa <b>«Aprobar y publicar»</b>. Sale en la web <b>en ese momento</b> y te da su enlace para copiarlo o mandarlo por WhatsApp.</li>
+  </ol></div></details>
+
+  <details><summary>8. «Al momento»: una noticia o un post suelto para WhatsApp</summary><div><ol>
+    <li>Pestaña <b>«Al momento · WhatsApp»</b> → <b>«+ Nuevo envío al momento»</b>.</li>
+    <li><b>Título</b> (es lo que se lee en WhatsApp) y <b>enlace</b>: una noticia, un post de Instagram o de X, un vídeo de YouTube… Los de Instagram, X y YouTube se ven dentro de nuestra web.</li>
+    <li>Si quieres: medio, resumen, imagen y comentario. Si no pones imagen, se usa la de PATRIAM (o la del vídeo).</li>
+    <li><b>«Ver la imagen de WhatsApp»</b> te enseña la imagen que saldrá al compartirlo.</li>
+    <li><b>Usuarios:</b> «Enviar para aprobar». Carlos o PATRIAM lo verán al entrar.</li>
+    <li><b>Administradores:</b> «Publicar y sacar el enlace». Se publica al momento y sale el enlace, listo para copiar o mandar por WhatsApp.</li>
+  </ol></div></details>
+
+  <details><summary>9. Instagram y X <span class="solo-admin">redes y administradores</span></summary><div><ul>
+    <li>Con un boletín publicado, pulsa <b>«Instagram»</b> o <b>«X»</b> en la barra de arriba.</li>
+    <li>Sale la imagen y el texto ya preparados. En el móvil, «Compartir» y eliges la red; en el ordenador, «Descargar imagen» y «Copiar texto» (en X, «Publicar en X» pone el texto solo).</li>
+    <li>Las cuentas y las etiquetas se ponen en <b>Ajustes del boletín</b>.</li>
+  </ul></div></details>
+
+  <details><summary>9b. Comunicaciones: un mensaje personal por correo y WhatsApp <span class="solo-admin">administradores</span></summary><div><ol>
+    <li>Pestaña <b>«Comunicaciones»</b> → <b>«+ Nueva comunicación»</b>.</li>
+    <li>Escribe el <b>asunto</b> y el <b>texto</b>. Cada persona lo recibe empezando por <b>«Buenos días, su nombre:»</b> y con la firma al final. El saludo se puede cambiar (p. ej. «Buenas tardes»).</li>
+    <li>Elige <b>a quién</b>: todos los suscriptores, los demás destinatarios o uno a uno. Los que se han dado de baja no salen.</li>
+    <li><b>«Vista previa del correo»</b> enseña cómo le llega a la primera persona elegida.</li>
+    <li><b>«Enviar por correo»</b> lo manda a cada uno por separado. Los suscriptores llevan al pie su enlace para darse de baja.</li>
+    <li><b>«Enviar por WhatsApp»</b> lo manda con la API de WhatsApp. Mientras no esté conectada, <b>«WhatsApp uno a uno»</b> abre cada conversación con el mensaje ya escrito a su nombre.</li>
+    <li>Queda anotado a quién se ha mandado (✔ correo, ✔ WhatsApp): si se corta, al volver a pulsar solo se manda a los que faltan.</li>
+    <li>La <b>firma</b>, el remitente y las <b>personas que no están en el boletín</b> se ponen abajo, en la misma pestaña.</li>
+  </ol></div></details>
+  <details><summary>10. Suscriptores, usuarios y contraseñas <span class="solo-admin">administradores</span></summary><div><ul>
+    <li><b>Suscriptores</b>: la lista de personas apuntadas al boletín (solo la ven los administradores). Se puede descargar en Excel.</li>
+    <li><b>Usuarios</b>: dar de alta o quitar personas del editor y cambiar su nivel (Usuario, Redes o Administrador). Los nuevos entran con la contraseña provisional y la cambian la primera vez.</li>
+    <li><b>Mi contraseña</b>: cada uno puede cambiar la suya cuando quiera.</li>
+  </ul></div></details>
+
+  <p style="text-align:right;margin-bottom:0"><button class="btn btn-pub" onclick="this.closest('.modal').classList.remove('abierto')">Entendido</button></p>
+</div></div>
+<div class="modal" id="modalMomento"><div class="modal-caja">
+  <h3>Enlace listo</h3>
+  <p>Este es el enlace para compartir:</p>
+  <div class="am-enlace"><code id="amEnlace"></code><button class="btn" id="amCopiar">Copiar</button></div>
+  <div id="amPasos"></div>
+  <p style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn btn-pub" id="amWhatsapp" target="_blank" rel="noopener" style="background:#25d366;color:#fff;border-color:#25d366;text-decoration:none">Mandar por WhatsApp</a>
+  <button class="btn" onclick="this.closest('.modal').classList.remove('abierto')">Cerrar</button></p>
+</div></div>
+<div class="modal" id="modalUsuarios"><div class="modal-caja" style="max-width:620px">
+  <h3>Usuarios del editor</h3>
+  <p class="nota" style="margin:0 0 10px">Los cambios valen al momento en cualquier ordenador o móvil.</p>
+  <details style="margin:0 0 12px"><summary style="cursor:pointer;font-weight:700;color:var(--acento)">Qué puede hacer cada uno</summary>
+  <table class="permisos">
+    <tr><th></th><th>Usuario</th><th>Redes</th><th>Admin.</th></tr>
+    <tr><td>Preparar el boletín (editorial, noticias, colaboradores, eventos, recomendados)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Añadir y cambiar la biblioteca (Historia, Análisis, Noticias)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Preparar envíos de «Al momento»</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Vista previa (web, móvil y correo)</td><td>✔</td><td>✔</td><td>✔</td></tr>
+    <tr><td>Enviar a aprobación</td><td>✔</td><td>✔</td><td>—</td></tr>
+    <tr><td>Preparar las publicaciones de Instagram y X</td><td>✘</td><td>✔</td><td>✔</td></tr>
+    <tr><td><b>Aprobar y publicar</b> en la web</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Ver los suscriptores</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Mandar comunicaciones personales (correo y WhatsApp)</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Dar de alta y de baja usuarios, cambiar su tipo y restablecer contraseñas</td><td>✘</td><td>✘</td><td>✔</td></tr>
+    <tr><td>Cambiar su propia contraseña</td><td>✔</td><td>✔</td><td>✔</td></tr>
+  </table>
+  </details>
+  <div id="listaUsuarios"></div>
+  <h4 style="margin:18px 0 4px;color:var(--acento);font:700 14px system-ui,sans-serif">Añadir usuario</h4>
+  <form id="formUsuario">
+    <div class="fila"><div><label for="nuCorreo">Correo</label><input type="email" id="nuCorreo" required></div>
+      <div><label for="nuClave">Contraseña provisional</label><input type="text" id="nuClave" required minlength="8"></div></div>
+    <label for="nuRol">Permisos</label>
+    <select class="campo" id="nuRol"><option value="editor">Usuario: prepara el boletín y lo envía a aprobación</option><option value="redes">Redes: como Usuario y además publica en Instagram y X</option><option value="admin">Administrador: aprueba, publica y gestiona usuarios (solo Carlos y patriam-merc)</option></select>
+    <p class="nota">Al entrar por primera vez tendrá que cambiar la contraseña provisional. Díselas tú por un canal privado.</p>
+    <button class="btn" type="submit" style="background:var(--acento);color:#fff;border-color:var(--acento);font-weight:700;margin-top:8px">Añadir usuario</button>
+    <p class="acceso-error" id="errUsuario"></p>
+  </form>
+  <div style="text-align:right;margin-top:10px"><button class="btn" type="button" onclick="document.getElementById('modalUsuarios').classList.remove('abierto')">Cerrar</button></div>
+</div></div>
+
+<div class="modal" id="modalEnviar"><div class="modal-caja">
+  <h3>Enviado a aprobación</h3>
+  <p>El boletín Nº <b id="numEnviado"></b> queda <b>pendiente de aprobación</b>. Ya está guardado: Carlos o patriam-merc lo verán en cuanto entren en el editor.</p>
+  <p>Hasta que no lo apruebe un administrador, este boletín no sale en la web.</p>
+  <button class="btn" onclick="document.getElementById('modalEnviar').classList.remove('abierto')">Entendido</button>
+</div></div>
+
+<div class="modal" id="modal"><div class="modal-caja">
+  <h3>Boletín publicado</h3>
+  <p>Has aprobado el boletín Nº <b id="numAprobado"></b> y <b>ya está publicado en la web</b>. No hay que subir nada.</p>
+  <p>Su dirección, para mandarla:<br><code id="urlAprobado" style="user-select:all;font-size:15px"></code></p>
+  <p><button class="btn" type="button" id="btnCopiarAprobado">Copiar enlace</button> <a class="btn" id="waAprobado" target="_blank" rel="noopener" style="text-decoration:none">Enviar por WhatsApp</a></p>
+  <p>El boletín nuevo pasa a la portada y el anterior queda guardado en sus secciones (Editorial, Noticias, Historia, Análisis…).</p>
+  <button class="btn" onclick="document.getElementById('modal').classList.remove('abierto')">Entendido</button>
+</div></div>
+
+<div class="modal" id="modalEst"><div class="modal-caja" style="max-width:900px">
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h3 style="margin:0;flex:1">Estadísticas del boletín</h3>
+    <select class="campo" id="estDias" style="width:auto;margin:0"><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="90">Últimos 3 meses</option><option value="365">Último año</option></select> <label style="margin:0;display:flex;gap:6px;align-items:center;font-size:13px">o un día: <input type="date" id="estDia" class="campo" style="width:auto;margin:0"></label>
+    <button class="btn" type="button" onclick="document.getElementById('modalEst').classList.remove('abierto')">Cerrar</button></div>
+  <div id="estCuerpo"></div>
+</div></div>
+<div class="modal" id="modalSus"><div class="modal-caja" style="max-width:760px">
+  <h3>Suscriptores del boletín</h3>
+  <div id="susPestanas" style="margin-bottom:8px"></div>
+  <p class="nota" id="susResumen"></p>
+  <div id="listaSus" style="max-height:55vh;overflow:auto"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+    <button class="btn" type="button" id="btnCsv">Descargar lista (Excel)</button>
+    <button class="btn" type="button" onclick="document.getElementById('modalSus').classList.remove('abierto')">Cerrar</button>
+  </div>
+</div></div>
+
+<script src="boletines.js"></script>
+<script>
+/* Fuera las piezas de ejemplo de la plantilla (noticias a ejemplo.com, «Evento/Iniciativa de ejemplo»). */
+(function(){
+  var ej = function(t){ return /\bde ejemplo\b|ejemplo\.com/i.test(String(t||"")); };
+  (window.BOLETINES||[]).forEach(function(b){
+    if (Array.isArray(b.noticias)) b.noticias = b.noticias.filter(function(n){ return !(ej(n.url) || ej(n.medio) || /^Aquí va el resumen/.test(n.resumen||"")); });
+    if (Array.isArray(b.eventos)) b.eventos = b.eventos.filter(function(e){ return !ej(e.titulo) && !/^Breve descripción/.test(e.descripcion||""); });
+  });
+})();
+</script>
+<script src="boletin.js?v=20261031a"></script>
+<script src="importar.js?v=20261031a"></script>
+<script>
+const CFG = JSON.parse(JSON.stringify(window.PATRIAM_CONFIG || {}));
+let datos = JSON.parse(JSON.stringify(window.BOLETINES || []));
+let actual = null;
+const $ = id => document.getElementById(id);
+
+
+/* ---------- acceso: las cuentas y los boletines se guardan en Netlify ---------- */
+const CLAVE_SES = "patriam_editor_token";
+let TOKEN = ""; try { TOKEN = sessionStorage.getItem(CLAVE_SES) || ""; } catch (e) {}
+let usuario = null, correoActual = "", listo = false;
+const etags = {}, guardados = {};
+let cfgEtag = null, cfgGuardado = "";
+const huella = o => JSON.stringify(o, (k, v) => (k.startsWith("_") ? undefined : v));
+
+async function api(accion, cuerpo) {
+  const r = await fetch("/api/" + accion, {
+    method: cuerpo === undefined ? "GET" : "POST",
+    headers: Object.assign({ "Content-Type": "application/json" }, TOKEN ? { Authorization: "Bearer " + TOKEN } : {}),
+    body: cuerpo === undefined ? undefined : JSON.stringify(cuerpo)
+  });
+  let d = {}; try { d = await r.json(); } catch (e) {}
+  if (r.status === 401 && accion !== "entrar") { caducada(); throw Object.assign(new Error("sesion"), { status: 401 }); }
+  if (!r.ok) throw Object.assign(new Error(d.error || "Error " + r.status), { status: r.status, datos: d });
+  return d;
+}
+function ponerToken(t) { TOKEN = t || ""; try { if (t) sessionStorage.setItem(CLAVE_SES, t); else sessionStorage.removeItem(CLAVE_SES); } catch (e) {} }
+function caducada() { ponerToken(""); usuario = null; listo = false; $("errEntrar").textContent = "Tu sesión ha caducado. Vuelve a entrar."; mostrarAcceso("entrar"); }
+function avisar(html) { $("aviso").innerHTML = html; $("aviso").style.display = "block"; }
+function ocultarAviso() { $("aviso").style.display = "none"; }
+
+function mostrarAcceso(pantalla) {
+  $("acceso").hidden = false;
+  $("pantallaEntrar").hidden = pantalla !== "entrar";
+  $("pantallaCambiar").hidden = pantalla !== "cambiar";
+  setTimeout(() => (pantalla === "entrar" ? $("accCorreo") : $("claveNueva")).focus(), 50);
+}
+$("verClave").onchange = e => $("accClave").type = e.target.checked ? "text" : "password";
+$("formEntrar").onsubmit = async e => {
+  e.preventDefault();
+  const correo = $("accCorreo").value.trim(), clave = $("accClave").value;
+  $("errEntrar").textContent = "Comprobando…";
+  try {
+    const d = await api("entrar", { correo, clave });
+    ponerToken(d.token); usuario = d.usuario; correoActual = correo;
+    $("errEntrar").textContent = ""; $("accClave").value = "";
+    if (usuario.cambiar) { $("txtCambiar").textContent = "Es tu primer acceso. Elige una contraseña nueva para seguir."; mostrarAcceso("cambiar"); }
+    else await cargar();
+  } catch (err) { $("errEntrar").textContent = err.message === "sesion" ? "" : err.message; }
+};
+$("formCambiar").onsubmit = async e => {
+  e.preventDefault();
+  const a = $("claveNueva").value, b = $("claveRepite").value;
+  if (a.length < 8) { $("errCambiar").textContent = "Usa al menos 8 caracteres."; return; }
+  if (a !== b) { $("errCambiar").textContent = "Las dos contraseñas no coinciden."; return; }
+  $("errCambiar").textContent = "Guardando…";
+  try {
+    const d = await api("clave", { nueva: a, correo: correoActual });
+    ponerToken(d.token); usuario = d.usuario;
+    $("claveNueva").value = $("claveRepite").value = ""; $("errCambiar").textContent = "";
+    $("acceso").hidden = true;
+    if (!listo) await cargar(); else avisar("Contraseña cambiada. Ya vale en cualquier ordenador o móvil.");
+  } catch (err) { $("errCambiar").textContent = err.message === "sesion" ? "" : err.message; }
+};
+
+/* ---------- gestión de usuarios (solo administradores) ---------- */
+function esAdmin() { return usuario && usuario.rol === "admin"; }
+let listaUsuarios = [], miId = "";
+function pintarDe(d) { listaUsuarios = d.usuarios || []; miId = d.yo; pintarUsuarios(); }
+function pintarUsuarios() {
+  const lista = $("listaUsuarios"); lista.innerHTML = "";
+  listaUsuarios.forEach(u => {
+    const yo = u.id === miId;
+    const f = document.createElement("div"); f.className = "us-fila";
+    f.innerHTML = "<b>" + esc(u.nombre || "Usuario") + (yo ? " (tú)" : "") + "<small>" + (u.cambiar ? "Pendiente de cambiar la contraseña provisional" : "Contraseña propia") + "</small></b>" +
+      (yo ? '<span class="us-rol">Aprueba y publica</span>' : '<select class="us-rol-sel" data-rol>' + [["editor", "Usuario"], ["redes", "Redes (Instagram y X)"], ["admin", "Administrador"]].map(([v, t]) => '<option value="' + v + '"' + (u.rol === v ? " selected" : "") + ">" + t + "</option>").join("") + "</select>") +
+      (yo ? "" : '<button class="btn" data-r>Restablecer contraseña</button><button class="btn btn-rojo" data-b>Dar de baja</button>');
+    if (!yo) {
+      f.querySelector("[data-rol]").onchange = async e => {
+        const rol = e.target.value;
+        if (rol === "admin" && !confirm("Un administrador puede aprobar y publicar boletines y gestionar usuarios. ¿Seguro?")) { e.target.value = u.rol; return; }
+        try { pintarDe(await api("usuario-rol", { id: u.id, rol })); } catch (err) { if (err.status !== 401) alert(err.message); e.target.value = u.rol; }
+      };
+      f.querySelector("[data-b]").onclick = async () => {
+        if (!confirm("¿Dar de baja a " + (u.nombre || "este usuario") + "?")) return;
+        try { pintarDe(await api("usuario-baja", { id: u.id })); } catch (err) { if (err.status !== 401) alert(err.message); }
+      };
+      f.querySelector("[data-r]").onclick = () => {
+        if (f.querySelector(".us-reset")) return;
+        const r = document.createElement("div"); r.className = "us-reset";
+        r.innerHTML = '<input type="text" placeholder="Correo de este usuario"><input type="text" placeholder="Contraseña provisional"><button class="btn">Guardar</button>';
+        r.querySelector("button").onclick = async () => {
+          const [c, k] = [...r.querySelectorAll("input")].map(x => x.value.trim());
+          try { pintarDe(await api("usuario-reset", { id: u.id, correo: c, clave: k })); alert("Hecho. Dile la contraseña provisional por un canal privado; al entrar tendrá que cambiarla."); }
+          catch (err) { if (err.status !== 401) alert(err.message); }
+        };
+        f.appendChild(r);
+      };
+    }
+    lista.appendChild(f);
+  });
+}
+$("btnUsuarios").onclick = async () => {
+  $("modalUsuarios").classList.add("abierto"); $("listaUsuarios").innerHTML = '<p class="nota">Cargando…</p>';
+  try { pintarDe(await api("usuarios")); } catch (err) { $("listaUsuarios").innerHTML = '<p class="nota">' + esc(err.message) + "</p>"; }
+};
+$("formUsuario").onsubmit = async e => {
+  e.preventDefault();
+  const c = $("nuCorreo").value.trim(), k = $("nuClave").value.trim();
+  $("errUsuario").textContent = "Guardando…";
+  try {
+    pintarDe(await api("usuario-nuevo", { correo: c, clave: k, rol: $("nuRol").value }));
+    $("nuCorreo").value = $("nuClave").value = ""; $("errUsuario").textContent = "Añadido. Ya puede entrar desde cualquier ordenador.";
+  } catch (err) { $("errUsuario").textContent = err.message === "sesion" ? "" : err.message; }
+};
+
+/* ---------- suscriptores (solo administradores) ---------- */
+let suscriptores = [], bajas = [], verBajas = false;
+const fechaHora = f => String(f || "").slice(0, 16).replace("T", " ");
+function pintarSus() {
+  const T = '<table style="width:100%;border-collapse:collapse;font:14px system-ui,sans-serif">';
+  $("susPestanas").innerHTML = '<button class="btn' + (verBajas ? "" : " btn-pub") + '" data-v="0">Apuntados (' + suscriptores.length + ')</button> <button class="btn' + (verBajas ? " btn-pub" : "") + '" data-v="1">Bajas (' + bajas.length + ")</button>";
+  $("susPestanas").querySelectorAll("[data-v]").forEach(b => b.onclick = () => { verBajas = b.dataset.v === "1"; pintarSus(); });
+  if (verBajas) {
+    $("susResumen").textContent = bajas.length ? "Personas que se han dado de baja. Quedan guardadas con la fecha y el registro de cada movimiento." : "Nadie se ha dado de baja.";
+    $("listaSus").innerHTML = bajas.length ? T + '<tr style="text-align:left;border-bottom:2px solid #ddd"><th>Nombre</th><th>Correo</th><th>Alta</th><th>Baja</th><th>Cómo</th></tr>' +
+      bajas.map((x, i) => '<tr style="border-bottom:1px solid #eee;cursor:pointer" data-h="' + i + '" title="Ver el registro"><td>' + esc(x.nombre) + "</td><td>" + esc(x.email) + "</td><td>" + esc(fechaHora(x.alta)) + "</td><td>" + esc(fechaHora(x.baja)) + "</td><td>" + esc(x.via || "") + "</td></tr>" +
+        '<tr hidden data-hist="' + i + '"><td colspan="5" style="font-size:12px;color:#555;padding:4px 8px 10px">' + (x.historial || []).map(h => esc(fechaHora(h.fecha)) + " · " + esc(h.que) + (h.via ? " (" + esc(h.via) + ")" : "")).join("<br>") + "</td></tr>").join("") + "</table>" : "";
+    $("listaSus").querySelectorAll("[data-h]").forEach(r => r.onclick = () => { const h = $("listaSus").querySelector('[data-hist="' + r.dataset.h + '"]'); h.hidden = !h.hidden; });
+    return;
+  }
+  $("susResumen").textContent = suscriptores.length ? suscriptores.length + " personas apuntadas. «Enlace de baja» es el que va al pie de los correos: al abrirlo, la persona confirma y pasa a Bajas." : "Todavía no se ha apuntado nadie.";
+  $("listaSus").innerHTML = suscriptores.length ? T + '<tr style="text-align:left;border-bottom:2px solid #ddd"><th>Nombre</th><th>Correo</th><th>Móvil</th><th>Fecha</th><th></th></tr>' +
+    suscriptores.map((x, i) => '<tr style="border-bottom:1px solid #eee"><td>' + esc(x.nombre) + "</td><td>" + esc(x.email) + "</td><td>" + esc(x.movil || "") + "</td><td>" + esc(String(x.fecha || "").slice(0, 10)) +
+      '</td><td style="white-space:nowrap"><button class="btn" data-l="' + i + '">Enlace de baja</button> <button class="btn btn-rojo" data-i="' + i + '">Baja</button></td></tr>').join("") + "</table>" : "";
+  $("listaSus").querySelectorAll("[data-l]").forEach(b => b.onclick = () => copiar(suscriptores[b.dataset.l].enlaceBaja, b));
+  $("listaSus").querySelectorAll("[data-i]").forEach(b => b.onclick = async () => {
+    const x = suscriptores[b.dataset.i];
+    if (!confirm("¿Dar de baja a " + x.email + " del boletín? Pasará a la lista de Bajas.")) return;
+    try { await api("suscriptor-baja", { clave: x.clave }); await cargarSus(); } catch (err) { if (err.status !== 401) alert(err.message); }
+  });
+}
+async function cargarSus() { const d = await api("suscriptores"); suscriptores = d.suscriptores || []; bajas = d.bajas || []; pintarSus(); }
+$("btnSuscriptores").onclick = async () => {
+  $("modalSus").classList.add("abierto"); $("susResumen").textContent = "Cargando…"; $("listaSus").innerHTML = "";
+  try { await cargarSus(); } catch (err) { $("susResumen").textContent = err.message; }
+};
+$("btnCsv").onclick = () => {
+  const c = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+  const filas = verBajas ? ["Nombre;Correo;Móvil;Alta;Baja;Cómo"].concat(bajas.map(x => [x.nombre, x.email, x.movil, fechaHora(x.alta), fechaHora(x.baja), x.via].map(c).join(";")))
+                         : ["Nombre;Correo;Móvil;Fecha"].concat(suscriptores.map(x => [x.nombre, x.email, x.movil, String(x.fecha || "").slice(0, 10)].map(c).join(";")));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + filas.join("\r\n")], { type: "text/csv;charset=utf-8" })); a.download = verBajas ? "bajas-boletin.csv" : "suscriptores-boletin.csv"; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+
+$("btnClave").onclick = () => { $("txtCambiar").textContent = "Elige tu contraseña nueva."; mostrarAcceso("cambiar"); };
+$("btnSalir").onclick = async () => { if (listo) await guardarAhora(); ponerToken(""); usuario = null; listo = false; $("accCorreo").value = ""; mostrarAcceso("entrar"); };
+
+/* ---------- utilidades ---------- */
+function hoy() { return new Date().toISOString().slice(0, 10); }
+function nuevoId(p) { return (p || "b") + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+/* Guardado automático en Netlify mientras se escribe */
+let temporizador = null, cola = Promise.resolve(true);
+function estadoGuardado(t) { const g = $("guardado"); if (g) g.textContent = t; }
+function guardarBorrador() { if (!listo) return; clearTimeout(temporizador); estadoGuardado("Sin guardar…"); temporizador = setTimeout(guardarAhora, 1200); }
+function cambiarImagenes(o, mapa) {
+  if (!mapa || !Object.keys(mapa).length || !o || typeof o !== "object") return;
+  Object.keys(o).forEach(k => {
+    const v = o[k];
+    if (typeof v === "string" && v.startsWith("data:image/")) { const u = mapa[v.length + ":" + v.slice(-64)]; if (u) o[k] = u; }
+    else if (v && typeof v === "object") cambiarImagenes(v, mapa);
+  });
+}
+function conflicto() {
+  estadoGuardado("⚠ Conflicto");
+  avisar("Otra persona ha cambiado este boletín a la vez que tú. Para no pisaros, recarga y vuelve a hacer tu último cambio. " +
+    '<button class="btn" onclick="location.reload()">Recargar</button>');
+}
+async function hacerGuardado() {
+  if (!listo) return false;
+  try {
+    let t = huella(CFG);
+    if (t !== cfgGuardado) {
+      estadoGuardado("Guardando…");
+      const d = await api("guardar", { cfg: CFG, cfgEtag });
+      const env = JSON.parse(t); cambiarImagenes(env, d.mapa); cambiarImagenes(CFG, d.mapa);
+      cfgEtag = d.cfgEtag; cfgGuardado = huella(env);
+    }
+    for (const b of datos.slice()) {
+      t = huella(b);
+      if (t === guardados[b.id]) continue;
+      estadoGuardado("Guardando…");
+      const d = await api("guardar", { boletin: JSON.parse(t), etag: etags[b.id] || null });
+      const env = JSON.parse(t); cambiarImagenes(env, d.mapa); cambiarImagenes(b, d.mapa);
+      env.estado = b.estado = d.estado;
+      if (d.estado !== "aprobado") { delete env.aprobadoPor; delete env.aprobadoEl; delete b.aprobadoPor; delete b.aprobadoEl; }
+      etags[b.id] = d.etag; b._sinPublicar = d.sinPublicar;
+      guardados[b.id] = huella(env);
+      if (b === actual) pintarEstado();
+    }
+    estadoGuardado("Guardado ✓");
+    return true;
+  } catch (err) {
+    if (err.status === 409) conflicto();
+    else if (err.status !== 401) estadoGuardado("⚠ No se ha podido guardar");
+    return false;
+  }
+}
+function guardarAhora() { clearTimeout(temporizador); cola = cola.then(hacerGuardado, hacerGuardado); return cola; }
+function direccionPublica() {
+  let d = (CFG.direccion || "").trim();
+  if (!d) d = location.href.replace(/[#?].*$/, "").replace(/editor\.html$/, "");
+  return d.replace(/index\.html$/, "");
+}
+function leerImagen(file) {
+  return new Promise((ok, mal) => {
+    const lector = new FileReader();
+    lector.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const r = Math.min(1, 1400 / img.width), c = document.createElement("canvas");
+        c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        ok(c.toDataURL("image/jpeg", 0.82));
+      };
+      img.onerror = mal; img.src = lector.result;
+    };
+    lector.onerror = mal; lector.readAsDataURL(file);
+  });
+}
+function miniatura(caja, src) {
+  const m = caja.querySelector(".img-mini");
+  if (src) { m.src = src; m.style.display = "block"; } else { m.removeAttribute("src"); m.style.display = "none"; }
+}
+function cajaImagen(caja, leer, fijar) {
+  const archivo = caja.querySelector("input[type=file]"), texto = caja.querySelector("input[type=text]");
+  const v = leer() || "";
+  texto.value = v.startsWith("data:") ? "(imagen subida)" : v;
+  miniatura(caja, v);
+  texto.oninput = () => { if (texto.value === "(imagen subida)") return; fijar(texto.value); miniatura(caja, texto.value); cambio(); };
+  caja.querySelector('[data-accion="elegir"]').onclick = () => archivo.click();
+  caja.querySelector('[data-accion="quitar"]').onclick = () => { fijar(""); texto.value = ""; miniatura(caja, ""); cambio(); };
+  archivo.onchange = async () => {
+    if (!archivo.files[0]) return;
+    try { const d = await leerImagen(archivo.files[0]); fijar(d); texto.value = "(imagen subida)"; miniatura(caja, d); cambio(); }
+    catch (e) { alert("No se ha podido leer la imagen."); }
+    archivo.value = "";
+  };
+}
+const HTML_IMG = '<div class="img-caja"><input type="text" placeholder="Elige un archivo o pega la dirección de una imagen"><img class="img-mini"><input type="file" accept="image/*" hidden>' +
+                 '<button class="btn" data-accion="elegir">Elegir…</button><button class="btn" data-accion="quitar">Quitar</button></div>';
+
+/* ---------- lista genérica (noticias, colaboraciones, eventos) ---------- */
+function pintarLista(cont, arr, titulo, plantilla, alPintar) {
+  cont.innerHTML = "";
+  arr.forEach((obj, i) => {
+    const f = document.createElement("div");
+    f.className = "item";
+    f.innerHTML = '<div class="item-cab"><span>' + titulo(obj, i) + '</span><button class="btn" data-mover="-1" title="Subir">↑</button>' +
+                  '<button class="btn" data-mover="1" title="Bajar">↓</button><button class="btn btn-rojo" data-borrar title="Eliminar">✕</button></div>' + plantilla;
+    f.querySelectorAll("[data-k]").forEach(inp => {
+      const k = inp.dataset.k;
+      inp.value = obj[k] || (inp.tagName === "SELECT" ? inp.options[0].value : "");
+      inp.addEventListener("input", () => { obj[k] = inp.value; f.querySelector(".item-cab span").textContent = titulo(obj, i); cambio(); });
+    });
+    const ci = f.querySelector(".img-caja:not(.caja-logo)");
+    if (ci) cajaImagen(ci, () => obj.imagen, v => obj.imagen = v);
+    f.querySelector("[data-borrar]").onclick = () => { if (confirm("¿Eliminar?")) { arr.splice(i, 1); pintarTodo(); cambio(); } };
+    f.querySelectorAll("[data-mover]").forEach(btn => btn.onclick = () => {
+      const j = i + Number(btn.dataset.mover);
+      if (j < 0 || j >= arr.length) return;
+      [arr[i], arr[j]] = [arr[j], arr[i]]; pintarTodo(); cambio();
+    });
+    if (alPintar) alPintar(f, obj);
+    cont.appendChild(f);
+  });
+}
+
+function pintarNoticias() {
+  const quien = (CFG.comentaristas && CFG.comentaristas.length ? CFG.comentaristas : [CFG.editor || "LODLC"]).map(x => "<option>" + esc(x) + "</option>").join("");
+  const BAR = '<div class="herramientas"><button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button><button type="button" data-f="a">Enlace</button></div>';
+  pintarLista($("noticias"), actual.noticias = actual.noticias || [], (n, i) => "Noticia " + (i + 1) + " · se archiva en " + ({ Actualidad: "Actualidad", Historia: "Historia", Sociedad: "Sociedad", "Análisis": "Análisis" }[n.seccion || "Actualidad"] || "Actualidad") + (n.formato && n.formato !== "Noticia" ? " · " + n.formato : ""),
+    '<div class="fila"><div><label>¿Dónde se archiva?</label><select class="campo" data-k="seccion"><option value="Actualidad">Actualidad</option><option value="Historia">Historia</option><option value="Sociedad">Sociedad (cómo vivimos y cómo vivíamos)</option><option value="Análisis">Análisis</option></select></div>' +
+    '<div><label>Tipo</label><select class="campo" data-k="formato"><option>Noticia</option><option>Podcast</option><option>Vídeo</option></select></div></div>' +
+    '<label>Título</label><input type="text" data-k="titular">' +
+    '<label>Tema <small>(para agrupar dentro de la sección)</small></label><input type="text" data-k="tema" list="temasLista">' +
+    '<label>Enlace <small>(si es de YouTube, el vídeo se verá dentro de nuestra web)</small></label><input type="url" data-k="url" placeholder="https://…">' +
+    '<label>Medio</label><input type="text" data-k="medio" placeholder="ABC, Libertad Digital…">' +
+    '<label>Logo del medio <small>(se guarda y sale solo la próxima vez que pongas el mismo medio)</small></label>' +
+    '<div class="img-caja caja-logo"><input type="text" placeholder="Elige el logo o pega su dirección"><img class="img-mini" style="object-fit:contain;background:#fff"><input type="file" accept="image/*" hidden>' +
+    '<button class="btn" data-accion="elegir">Elegir…</button><button class="btn" data-accion="quitar">Quitar</button></div>' +
+    '<label>Resumen <small>(2 o 3 frases con lo esencial)</small></label>' + BAR + '<textarea data-k="resumen" style="min-height:70px"></textarea>' +
+    '<label>Imagen <small>(si es de YouTube y no pones ninguna, se usa la del vídeo)</small></label>' + HTML_IMG.replace('class="img-caja"', 'class="img-caja caja-foto"') +
+    '<label>¿Quién comenta?</label><select class="campo" data-k="comenta">' + quien + '</select>' +
+    '<label>Comentario</label>' + BAR + '<textarea data-k="comentario"></textarea>',
+    (f, n) => {
+      f.querySelectorAll(".herramientas").forEach(bar => { const ta = bar.nextElementSibling; bar.querySelectorAll("[data-f]").forEach(b => b.onclick = () => darFormato(ta, b.dataset.f, null)); });
+      const clave = () => String(n.medio || "").trim().toLowerCase();
+      const caja = f.querySelector(".caja-logo");
+      cajaImagen(caja, () => n.logoMedio || (CFG.logos || {})[clave()] || "", v => { n.logoMedio = v; if (clave()) { CFG.logos = CFG.logos || {}; if (v) CFG.logos[clave()] = v; else delete CFG.logos[clave()]; } });
+      f.querySelector('[data-k="medio"]').addEventListener("change", () => { const l = (CFG.logos || {})[clave()]; if (l && !n.logoMedio) { cajaImagen(caja, () => l, v => { n.logoMedio = v; if (clave()) CFG.logos[clave()] = v; }); cambio(); } });
+    });
+}
+
+
+function pintarBiblioteca() {
+  CFG.biblioteca = CFG.biblioteca || [];
+  const quien = (CFG.comentaristas && CFG.comentaristas.length ? CFG.comentaristas : [CFG.editor || "LODLC"]).map(x => "<option>" + esc(x) + "</option>").join("");
+  const tipos = ["Podcast", "Serie de podcast", "Vídeo", "Documental", "Libro", "Película", "Artículo"].map(x => "<option>" + x + "</option>").join("");
+  const BAR = '<div class="herramientas"><button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button><button type="button" data-f="a">Enlace</button></div>';
+  pintarLista($("biblioteca"), CFG.biblioteca, (x, i) => (x.tipo || "Recurso") + " · " + (x.titulo || "sin título") + " · en " + (x.seccion || "Historia") + ((actual.recomendados || []).includes(x.id) ? " · ★ esta semana" : ""),
+    '<label class="recomendar"><input type="checkbox" class="chk-rec"> Elegir para el boletín de esta semana (una de cada tipo) (Nº ' + String(actual.numero).padStart(2, "0") + ')</label>' +
+    '<div class="fila"><div><label>¿Dónde se guarda?</label><select class="campo" data-k="seccion"><option>Historia</option><option>Sociedad</option><option>Análisis</option><option value="Actualidad">Actualidad</option></select></div>' +
+    '<div><label>Tipo</label><select class="campo" data-k="tipo">' + tipos + '</select></div></div>' +
+    '<label>Título</label><input type="text" data-k="titulo">' +
+    '<label>Tema <small>(para agrupar: «Segunda República y Guerra Civil», «Reconquista»…)</small></label><input type="text" data-k="tema" list="temasLista">' +
+    '<label>Autor o medio</label><input type="text" data-k="medio" placeholder="Libertad Digital, José Carlos Gracia, autor del libro…">' +
+    '<label>Enlace <small>(si es de YouTube se ve dentro de nuestra web; si es un libro, a la tienda o la editorial)</small></label><input type="url" data-k="url" placeholder="https://…">' +
+    '<label>Imagen <small>(portada del libro; en vídeos de YouTube se usa la del vídeo)</small></label>' + HTML_IMG +
+    '<label>Descripción</label>' + BAR + '<textarea data-k="descripcion" style="min-height:70px"></textarea>' +
+    '<label>¿Quién comenta?</label><select class="campo" data-k="comenta">' + quien + '</select>' +
+    '<label>Comentario <small>(sale en el boletín de esta semana: sin destripar el final)</small></label>' + BAR + '<textarea data-k="comentario"></textarea>' +
+    '<label>Título de la crítica completa <small>(opcional)</small></label><input type="text" data-k="tituloCritica" placeholder="Lucy: la tentación de saberlo todo">' +
+    '<label>Crítica completa, con el final <small>(sale sola en el boletín siguiente, como firma; no hay que acordarse)</small></label>' + BAR + '<textarea data-k="critica" style="min-height:120px"></textarea>' +
+    '<label>Capítulos <small>(solo para series: uno por línea → año o número | título | enlace)</small></label>' +
+    '<textarea class="caps" style="min-height:90px;font-family:ui-monospace,monospace;font-size:12px" placeholder="1930 | El primer golpe de Estado republicano | https://www.youtube.com/watch?v=…"></textarea>',
+    (f, x) => {
+      f.dataset.seccion = x.seccion || "Historia";
+      f.dataset.texto = [x.titulo, x.medio, x.tema, x.descripcion].join(" ").toLowerCase();
+      if (!x.id) x.id = nuevoId("r");
+      if (!x.alta) x.alta = hoy();
+      f.querySelectorAll(".herramientas").forEach(bar => { const ta = bar.nextElementSibling; bar.querySelectorAll("[data-f]").forEach(b => b.onclick = () => darFormato(ta, b.dataset.f, null)); });
+      const chk = f.querySelector(".chk-rec");
+      chk.checked = (actual.recomendados || []).includes(x.id);
+      chk.onchange = () => {
+        // Una sola por tipo en cada boletín: al marcar esta, se quita la otra del mismo tipo
+        const grupo = y => /pel[ií]cula|cine|serie de tv/i.test(y.tipo || "") ? "peli" : /libro/i.test(y.tipo || "") ? "libro" : /podcast|v[ií]deo|documental/i.test(y.tipo || "") ? "pod" : "otro";
+        const quitadas = [];
+        actual.recomendados = (actual.recomendados || []).filter(id => {
+          if (id === x.id) return false;
+          const y = CFG.biblioteca.find(z => z.id === id);
+          if (chk.checked && y && grupo(y) === grupo(x)) { quitadas.push(y.titulo || "sin título"); return false; }
+          return true;
+        });
+        if (chk.checked) actual.recomendados.push(x.id);
+        if (quitadas.length) { avisar("En el boletín va una sola recomendación de cada tipo: he quitado «" + quitadas.map(esc).join("», «") + "»."); setTimeout(pintarBiblioteca, 0); }
+        f.querySelector(".item-cab span").textContent = (x.tipo || "Recurso") + " · " + (x.titulo || "sin título") + " · en " + (x.seccion || "Historia") + (chk.checked ? " · ★ esta semana" : "");
+        cambio();
+      };
+      const caps = f.querySelector(".caps");
+      caps.value = (x.capitulos || []).map(c => [c.etiqueta || "", c.titulo || "", c.url || ""].join(" | ")).join("\n");
+      caps.addEventListener("input", () => {
+        x.capitulos = caps.value.split("\n").map(l => l.split("|").map(t => t.trim())).filter(p => p.some(Boolean)).map(([etiqueta, titulo, url]) => {
+          const c = { etiqueta: etiqueta || "", titulo: titulo || "", url: url || "" };
+          if (url && !/youtu/.test(url)) c.donde = /spotify/.test(url) ? "Spotify" : /ivoox/.test(url) ? "iVoox" : /esradio/.test(url) ? "esRadio" : /apple/.test(url) ? "Apple Podcasts" : "su web";
+          return c;
+        });
+        cambio();
+      });
+    });
+}
+
+function pintarColaboraciones() {
+  pintarLista($("colaboraciones"), actual.colaboraciones = actual.colaboraciones || [], (c, i) => "Texto " + (i + 1) + (c.autor ? " · " + c.autor : ""),
+    '<div class="fila"><div><label>Autor</label><input type="text" data-k="autor"></div><div><label>Cargo o profesión</label><input type="text" data-k="cargo"></div></div>' +
+    '<label>Título</label><input type="text" data-k="titulo">' +
+    '<label>Entradilla <small>(una frase que resuma el texto)</small></label><input type="text" data-k="entradilla">' +
+    '<div class="fila"><div><label>¿Sale también en una sección? <small>(además de Colaboraciones)</small></label><select class="campo" data-k="seccion"><option value="">No, solo en Colaboraciones</option>' +
+      SECCIONES.map(s => '<option value="' + esc(s.nombre) + '">' + esc(s.menu) + "</option>").join("") + '</select></div>' +
+      '<div><label>Tema <small>(opcional)</small></label><input type="text" data-k="tema" list="temasLista" placeholder="Educación, Familia…"></div></div>' +
+    "<label>Imagen</label>" + HTML_IMG +
+    '<label>Texto</label><div class="herramientas">' +
+      '<button type="button" data-f="h2">Subtítulo</button><button type="button" data-f="cita">Cita destacada</button>' +
+      '<button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button>' +
+      '<button type="button" data-f="a">Enlace</button><button type="button" data-f="li">Lista</button></div>' +
+    '<textarea data-k="texto" class="largo" placeholder="Escribe o pega aquí el texto. Deja una línea en blanco entre párrafos."></textarea>' +
+    '<label>Sobre el autor <small>(opcional)</small></label><textarea data-k="bio" style="min-height:60px"></textarea>' +
+    '<div class="enlace-caja">Enlace: <code></code><button type="button" class="btn" data-copiar>Copiar</button></div>',
+    (f, c) => {
+      if (!c.id) c.id = nuevoId("c");
+      const enlace = () => direccionPublica() + "#/colaboracion/" + encodeURIComponent(c.id);
+      f.querySelector(".enlace-caja code").textContent = enlace();
+      f.querySelector("[data-copiar]").onclick = e => {
+        const t = enlace();
+        (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => { e.target.textContent = "¡Copiado!"; setTimeout(() => e.target.textContent = "Copiar", 1500); })
+          .catch(() => prompt("Copia el enlace:", t));
+      };
+      const ta = f.querySelector('[data-k="texto"]');
+      f.querySelectorAll("[data-f]").forEach(b => b.onclick = () => darFormato(ta, b.dataset.f, c));
+    });
+}
+
+function darFormato(ta, tipo, obj) {
+  const ini = ta.selectionStart, fin = ta.selectionEnd, sel = ta.value.slice(ini, fin);
+  let nuevo;
+  if (tipo === "b") nuevo = "**" + (sel || "texto en negrita") + "**";
+  else if (tipo === "i") nuevo = "*" + (sel || "texto en cursiva") + "*";
+  else if (tipo === "a") { const u = prompt("Dirección del enlace (https://…)"); if (!u) return; nuevo = "[" + (sel || "texto del enlace") + "](" + u + ")"; }
+  else if (tipo === "h2") nuevo = "\n\n## " + (sel || "Subtítulo") + "\n\n";
+  else if (tipo === "cita") nuevo = "\n\n> " + (sel || "Cita destacada") + "\n\n";
+  else if (tipo === "li") nuevo = "\n\n" + (sel ? sel.split(/\n/).map(l => "- " + l).join("\n") : "- Primer punto\n- Segundo punto") + "\n\n";
+  ta.value = ta.value.slice(0, ini) + nuevo + ta.value.slice(fin);
+  ta.value = ta.value.replace(/\n{3,}/g, "\n\n");
+  if (obj) obj.texto = ta.value;
+  ta.dispatchEvent(new Event("input")); ta.focus();
+}
+
+function pintarEventos() {
+  pintarLista($("eventos"), actual.eventos = actual.eventos || [], (e, i) => (i + 1) + ". " + (e.tipo || "Evento") + (e.titulo ? " · " + e.titulo : ""),
+    '<div class="fila"><div><label>Tipo</label><select class="campo" data-k="tipo"><option>Evento</option><option>Iniciativa</option><option>Campaña</option><option>Conferencia</option><option>Acto</option></select></div>' +
+    '<div><label>Fecha <small>(si la hay)</small></label><input type="date" data-k="fecha"></div><div><label>Hora</label><input type="text" data-k="hora" placeholder="19:00"></div></div>' +
+    '<label>Título</label><input type="text" data-k="titulo"><label>Lugar</label><input type="text" data-k="lugar">' +
+    '<label>Descripción breve</label><textarea data-k="descripcion" style="min-height:60px"></textarea>' +
+    '<label>Enlace para más información <small>(opcional)</small></label><input type="url" data-k="url" placeholder="https://…">');
+}
+
+/* ---------- formulario ---------- */
+function pintarTodo() { if (typeof pintarMomento === "function" && $("momento")) pintarMomento(); pintarNoticias(); pintarColaboraciones(); pintarEventos(); pintarBiblioteca(); if (typeof filtrarEditorSec === "function" && $("buscaSec")) filtrarEditorSec(); actualizarVista(); }
+function cargarFormulario() {
+  const b = actual;
+  if (typeof pintarEstado === "function") pintarEstado();
+  $("numeroAuto").innerHTML = "Nº " + String(b.numero).padStart(2, "0") + " <small>automático</small>";
+  $("fecha").value = b.fecha || "";
+  b.editorial = b.editorial || {};
+  $("editorial_titulo").value = b.editorial.titulo || "";
+  $("editorial_texto").value = b.editorial.texto || "";
+  $("editorial_firma").value = b.editorial.firma || CFG.editor || "LODLC";
+  cajaImagen($("cajaEditorialImg"), () => actual.editorial.imagen, v => actual.editorial.imagen = v);
+  pintarTodo();
+}
+function pintarSelector() {
+  const sel = $("selBoletin"); sel.innerHTML = "";
+  ordenar(datos).forEach(b => {
+    const o = document.createElement("option");
+    o.value = b.id; o.textContent = "Nº " + String(b.numero).padStart(2, "0") + " · " + (b.fecha || "") + ((b.editorial || {}).titulo ? " — " + b.editorial.titulo : "");
+    sel.appendChild(o);
+  });
+  if (actual) sel.value = actual.id;
+}
+function cambio() {
+  if (actual && usuario && !esAdmin() && actual.estado === "aprobado") { actual.estado = "borrador"; delete actual.aprobadoPor; delete actual.aprobadoEl; pintarEstado(); }
+  else if (actual && actual.estado === "aprobado" && !actual._sinPublicar) { actual._sinPublicar = true; pintarEstado(); }
+  guardarBorrador(); actualizarVista();
+}
+function actualizarVista() {
+  $("vista").innerHTML = renderBoletin(actual, CFG, datos);
+  $("vista").querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => e.preventDefault()));
+}
+
+document.querySelectorAll("#barraEditorial [data-f]").forEach(b => b.onclick = () => darFormato($("editorial_texto"), b.dataset.f, null));
+[["fecha", v => actual.fecha = v], ["editorial_titulo", v => actual.editorial.titulo = v],
+ ["editorial_texto", v => actual.editorial.texto = v], ["editorial_firma", v => actual.editorial.firma = v]].forEach(([id, fn]) => {
+  $(id).addEventListener("input", e => { fn(e.target.value); if (id === "fecha" || id === "editorial_titulo") pintarSelector(); cambio(); });
+});
+document.querySelectorAll("[data-cfg]").forEach(inp => {
+  inp.value = CFG[inp.dataset.cfg] || "";
+  inp.addEventListener("input", () => { CFG[inp.dataset.cfg] = inp.value; if (inp.dataset.cfg === "direccion" || inp.dataset.cfg === "editor") pintarTodo(); cambio(); });
+});
+
+$("cfgComentaristas").value = (CFG.comentaristas || []).join(", ");
+$("cfgComentaristas").addEventListener("change", e => { CFG.comentaristas = e.target.value.split(",").map(x => x.trim()).filter(Boolean); pintarNoticias(); cambio(); });
+
+/* ---------- botones ---------- */
+$("selBoletin").onchange = e => { actual = datos.find(b => b.id === e.target.value); cargarFormulario(); };
+$("btnNuevo").onclick = () => {
+  const max = datos.reduce((m, b) => Math.max(m, Number(b.numero) || 0), 0);
+  const ult = ordenar(datos)[0];
+  actual = { id: nuevoId("b"), numero: max + 1, fecha: hoy(), titulo: "", portada: "",
+    editorial: { titulo: "", texto: "", firma: CFG.editor || "LODLC", imagen: "" },
+    noticias: [{ seccion: "Actualidad", formato: "Noticia", titular: "", medio: "", url: "", imagen: "", resumen: "", comenta: "", comentario: "" }],
+    colaboraciones: [], recomendados: [], estado: "borrador",
+    eventos: ult ? JSON.parse(JSON.stringify((ult.eventos || []).filter(e => !e.fecha || e.fecha >= hoy()))) : [] };
+  datos.push(actual); prepararCriticas(datos, CFG); pintarSelector(); cargarFormulario(); guardarBorrador();
+};
+$("btnBorrar").onclick = async () => {
+  if (!actual || !confirm("¿Eliminar el boletín Nº " + actual.numero + "?" + (actual.estado === "aprobado" ? " Desaparecerá también de la web." : ""))) return;
+  if (etags[actual.id]) { try { await api("borrar", { id: actual.id }); } catch (err) { if (err.status !== 401) alert(err.message); return; } }
+  delete etags[actual.id]; delete guardados[actual.id];
+  datos = datos.filter(b => b !== actual);
+  if (!datos.length) { $("btnNuevo").click(); return; }
+  actual = ordenar(datos)[0]; pintarSelector(); cargarFormulario();
+};
+$("btnNoticia").onclick = () => { actual.noticias.push({ seccion: "Actualidad", formato: "Noticia", titular: "", medio: "", url: "", imagen: "", resumen: "", comenta: "", comentario: "" }); pintarNoticias(); cambio(); $("noticias").lastElementChild.scrollIntoView({ behavior: "smooth" }); };
+$("btnColab").onclick = () => { actual.colaboraciones.push({ id: nuevoId("c"), autor: "", cargo: "", titulo: "", entradilla: "", imagen: "", texto: "", bio: "" }); pintarColaboraciones(); cambio(); $("colaboraciones").lastElementChild.scrollIntoView({ behavior: "smooth" }); };
+let seccionActual = "Historia";
+const NOMBRE_SEC = { Historia: "Historia", Sociedad: "Sociedad", "Análisis": "Análisis", Actualidad: "Actualidad" };
+function verPanel(panel, sec) {
+  document.querySelectorAll(".pestanas-ed button").forEach(b => b.classList.toggle("activa", b.dataset.panel === panel && (panel !== "seccion" || b.dataset.sec === sec)));
+  $("panelMomento").hidden = panel !== "momento";
+  if (panel === "momento") pintarMomento();
+  $("panelCom").hidden = panel !== "com";
+  if (panel === "com") abrirComunicaciones();
+  $("panelBoletin").hidden = panel !== "boletin";
+  $("panelSeccion").hidden = panel !== "seccion";
+  if (panel === "seccion") {
+    seccionActual = sec;
+    $("secTitulo").textContent = NOMBRE_SEC[sec];
+    document.querySelectorAll(".secNombre").forEach(e => e.textContent = NOMBRE_SEC[sec]);
+    pintarBiblioteca(); pintarArchivo(); filtrarEditorSec();
+  }
+  document.querySelector(".ed-form").scrollTop = 0;
+}
+function filtrarEditorSec() {
+  const q = ($("buscaSec").value || "").trim().toLowerCase();
+  [...$("biblioteca").children].forEach(f => f.hidden = f.dataset.seccion !== seccionActual || (q && !f.dataset.texto.includes(q) && !f.querySelector(".item-cab span").textContent.toLowerCase().includes(q)));
+  [...$("archivoSec").children].forEach(f => { if (f.classList.contains("arch-fila")) f.hidden = !!q && !f.textContent.toLowerCase().includes(q); });
+  const temas = new Set();
+  (CFG.biblioteca || []).forEach(x => x.tema && temas.add(x.tema)); datos.forEach(b => (b.noticias || []).forEach(n => n.tema && temas.add(n.tema)));
+  $("temasLista").innerHTML = [...temas].map(t => '<option value="' + esc(t) + '">').join("");
+}
+function pintarArchivo() {
+  const cont = $("archivoSec"); cont.innerHTML = "";
+  let n = 0;
+  ordenar(datos).forEach(b => (b.noticias || []).forEach((no, k) => {
+    if ((no.seccion || "Actualidad") !== seccionActual || !(no.titular || no.url)) return;
+    n++;
+    const f = document.createElement("div"); f.className = "arch-fila";
+    f.innerHTML = "<div><b>" + esc(no.titular || no.url) + "</b><small>Boletín Nº " + String(b.numero).padStart(2, "0") + " · " + esc(b.fecha || "") + (no.formato && no.formato !== "Noticia" ? " · " + esc(no.formato) : "") + '</small></div><button class="btn">Cambiar</button>';
+    f.querySelector("button").onclick = () => {
+      actual = b; pintarSelector(); cargarFormulario(); verPanel("boletin");
+      setTimeout(() => { const it = $("noticias").children[k]; if (it) { it.scrollIntoView({ behavior: "smooth", block: "start" }); it.style.outline = "3px solid var(--gualda)"; setTimeout(() => it.style.outline = "", 2500); } }, 60);
+    };
+    cont.appendChild(f);
+  }));
+  if (!n) cont.innerHTML = '<p class="nota">Todavía no hay noticias de boletines en esta sección.</p>';
+}
+document.querySelectorAll(".pestanas-ed button").forEach(b => b.onclick = () => verPanel(b.dataset.panel, b.dataset.sec));
+$("buscaSec").addEventListener("input", filtrarEditorSec);
+
+$("btnBib").onclick = () => { CFG.biblioteca = CFG.biblioteca || []; CFG.biblioteca.unshift({ id: nuevoId("r"), seccion: seccionActual, tipo: "Podcast", titulo: "", medio: "", url: "", imagen: "", descripcion: "", comenta: "", comentario: "", capitulos: [], alta: hoy() }); pintarBiblioteca(); filtrarEditorSec(); cambio(); $("biblioteca").firstElementChild.scrollIntoView({ behavior: "smooth" }); };
+$("btnEvento").onclick = () => { actual.eventos.push({ tipo: "Evento", fecha: "", hora: "", titulo: "", lugar: "", descripcion: "", url: "" }); pintarEventos(); cambio(); $("eventos").lastElementChild.scrollIntoView({ behavior: "smooth" }); };
+function abrirVista(movil) {
+  const w = movil ? window.open("", "vistaMovil", "width=400,height=820") : window.open("", "_blank");
+  if (!w) { alert("El navegador ha bloqueado la ventana. Permite las ventanas emergentes para esta página."); return; }
+  const base = location.href.replace(/[^/]*$/, "");
+  w.document.open();
+  w.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><base href="' + base + '">' +
+    '<title>Vista previa · Boletín PATRIAM</title><link rel="stylesheet" href="boletin.css?v=20261031a">' +
+    '<style>.vp-aviso{position:sticky;top:0;z-index:999;background:#a8873a;color:#fff;font:600 13px system-ui,sans-serif;text-align:center;padding:6px 10px;letter-spacing:.04em}</style></head><body>' +
+    '<div class="vp-aviso">VISTA PREVIA · Boletín Nº ' + String(actual.numero).padStart(2, "0") + ' · todavía no está publicado</div>' + renderBoletin(actual, CFG, datos) +
+    '<script>document.addEventListener("click",function(e){var a=e.target.closest("a");if(a&&a.getAttribute("href")&&a.getAttribute("href").charAt(0)==="#"){e.preventDefault();}});<\/script></body></html>');
+  w.document.close();
+}
+$("btnCompleta").onclick = () => abrirVista(false);
+$("btnMovil").onclick = () => abrirVista(true);
+$("btnCorreo").onclick = () => {
+  const w = window.open("", "_blank");
+  if (!w) { alert("El navegador ha bloqueado la ventana. Permite las ventanas emergentes para esta página."); return; }
+  w.document.open(); w.document.write(renderCorreo(actual, CFG, { base: location.origin + "/" })); w.document.close();
+};
+
+/* ---------- aprobación: los usuarios envían, los administradores aprueban y se publica al momento ---------- */
+function urlDe(b) { return "https://boletin.movimientopatriam.es/boletin/" + encodeURIComponent(b.numero); }
+function copiar(t, boton) {
+  const ok = () => { const v = boton.textContent; boton.textContent = "¡Copiado!"; setTimeout(() => boton.textContent = v, 1500); };
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(ok).catch(() => prompt("Copia el enlace:", t));
+}
+$("btnEnlace").onclick = () => copiar(urlDe(actual), $("btnEnlace"));
+function paraRedes(red) { window.__compartir = { b: Object.assign({}, actual, { _frasePropia: true }), cfg: CFG }; abrirRed(red); }
+$("btnIg").onclick = () => paraRedes("instagram");
+$("btnX").onclick = () => paraRedes("x");
+$("btnCopiarAprobado").onclick = () => copiar(urlDe(actual), $("btnCopiarAprobado"));
+function pintarEstado() {
+  const pub = !!actual && actual.estado === "aprobado", redes = usuario && (usuario.rol === "redes" || usuario.rol === "admin");
+  const e = $("estadoBol"); $("btnEnlace").hidden = !pub; $("btnIg").hidden = $("btnX").hidden = !(pub && redes);
+  if (!actual) { e.textContent = ""; return; }
+  const est = actual.estado || "borrador";
+  e.className = "estado-bol " + est;
+  e.textContent = est === "aprobado" ? (actual._sinPublicar ? "Publicado · tiene cambios sin publicar" : "Publicado" + (actual.aprobadoPor ? " · aprobado por " + actual.aprobadoPor : "")) :
+                  est === "pendiente" ? "Pendiente de aprobación" : "Borrador";
+}
+function trasEntrar() {
+  const adm = esAdmin();
+  $("btnUsuarios").hidden = !adm;
+  $("btnMomentoBoletin").hidden = !adm;
+  $("btnSuscriptores").hidden = !adm;
+  $("btnEst").hidden = false;   // las estadísticas las ven todos los usuarios
+  $("pestCom").hidden = !adm;
+  $("btnPublicar").hidden = !adm;
+  $("btnEnviar").hidden = adm;
+  pintarEstado();
+}
+/* Tarjeta para X y WhatsApp (1200×630), con el diseño de la cabecera. Se genera al aprobar. */
+async function hacerTarjeta(b) {
+  if (!esAdmin() || typeof imagenX !== "function") return;
+  try {
+    const blob = await imagenX(Object.assign({}, b, { _frasePropia: true }), CFG);
+    const imagen = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob); });
+    const d = await api("tarjeta", { id: b.id, imagen });
+    b.tarjeta = d.tarjeta; etags[b.id] = d.etag; guardados[b.id] = huella(b);
+  } catch (e) { console.warn("No se ha podido hacer la tarjeta", e); }
+}
+function aplicar(b, d) {
+  ["estado", "aprobadoPor", "aprobadoEl", "enviadoPor", "enviadoEl"].forEach(k => { if (d.boletin[k] === undefined) delete b[k]; else b[k] = d.boletin[k]; });
+  etags[b.id] = d.etag; b._sinPublicar = false; guardados[b.id] = huella(b);
+  pintarSelector(); pintarEstado();
+}
+$("btnEnviar").onclick = async () => {
+  if (!(actual.editorial || {}).titulo && !confirm("Falta el título de la editorial. ¿Enviar de todas formas?")) return;
+  if (!(await guardarAhora())) { alert("No se ha podido guardar el boletín. Revisa la conexión e inténtalo de nuevo."); return; }
+  try {
+    aplicar(actual, await api("enviar", { id: actual.id }));
+    $("numEnviado").textContent = String(actual.numero).padStart(2, "0");
+    $("modalEnviar").classList.add("abierto");
+  } catch (err) { if (err.status === 409) conflicto(); else if (err.status !== 401) alert(err.message); }
+};
+$("btnPublicar").onclick = async () => {
+  if (!esAdmin()) return;
+  const vacios = [];
+  if (!(actual.editorial || {}).titulo) vacios.push("el título de la editorial");
+  if (!(actual.noticias || []).some(n => n.titular)) vacios.push("alguna noticia");
+  if (vacios.length && !confirm("Falta " + vacios.join(" y ") + ". ¿Aprobar de todas formas?")) return;
+  if (!confirm("¿Apruebas el boletín Nº " + String(actual.numero).padStart(2, "0") + "? Se publicará en la web en este momento.")) return;
+  if (!(await guardarAhora())) { alert("No se ha podido guardar el boletín. Revisa la conexión e inténtalo de nuevo."); return; }
+  try {
+    aplicar(actual, await api("aprobar", { id: actual.id }));
+    await hacerTarjeta(actual);
+    await crearMomentosDe(actual);
+    $("numAprobado").textContent = String(actual.numero).padStart(2, "0");
+    $("urlAprobado").textContent = urlDe(actual);
+    $("waAprobado").href = "https://wa.me/?text=" + encodeURIComponent("Boletín Nº " + String(actual.numero).padStart(2, "0") + " de PATRIAM · " + ((actual.editorial || {}).titulo || "Lo que hay que saber") + "\n" + urlDe(actual));
+    $("modal").classList.add("abierto");
+  } catch (err) { if (err.status === 409) conflicto(); else if (err.status !== 401) alert(err.message); }
+};
+
+/* ---------- Al momento: envíos sueltos con su propio enlace para WhatsApp ---------- */
+const NOMBRE_ESTADO = { aprobado: "Publicado", pendiente: "Pendiente de aprobar", borrador: "Borrador" };
+function slugDe(t) {
+  const todo = sinAcentos(t || "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""), base = (todo.length > 45 ? todo.slice(0, 45).replace(/-[^-]*$/, "") : todo) || "al-momento";
+  const usados = new Set((CFG.alMomento || []).map(x => x.slug).filter(Boolean));
+  let s = base, n = 2; while (usados.has(s)) s = base + "-" + n++;
+  return s;
+}
+function baseWeb() { return "https://boletin.movimientopatriam.es/"; }
+function enlaceMomento(x) { return baseWeb() + "a/" + x.slug; }
+function pintarMomento() {
+  CFG.alMomento = CFG.alMomento || [];
+  const quien = (CFG.comentaristas && CFG.comentaristas.length ? CFG.comentaristas : [CFG.editor || "LODLC"]).map(x => "<option>" + esc(x) + "</option>").join("");
+  const BAR = '<div class="herramientas"><button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button><button type="button" data-f="a">Enlace</button></div>';
+  pintarLista($("momento"), CFG.alMomento, x => (x.titulo || "Sin título") + " · " + (NOMBRE_ESTADO[x.estado] || "Borrador"),
+    '<label>Título <small>(es lo que se lee en WhatsApp)</small></label><input type="text" data-k="titulo">' +
+    '<label>Enlace <small>(noticia, post de Instagram o de X, vídeo de YouTube…)</small></label><input type="url" data-k="url" placeholder="https://…">' +
+    '<label>Medio <small>(opcional)</small></label><input type="text" data-k="medio" placeholder="ABC, Instagram de…">' +
+    '<label>Resumen <small>(opcional)</small></label>' + BAR + '<textarea data-k="resumen" style="min-height:70px"></textarea>' +
+    '<label>Imagen <small>(opcional: si no pones ninguna, se usa la de PATRIAM o la del vídeo)</small></label>' + HTML_IMG +
+    '<label>¿Quién comenta?</label><select class="campo" data-k="comenta">' + quien + '</select>' +
+    '<label>Comentario <small>(opcional)</small></label>' + BAR + '<textarea data-k="comentario"></textarea>' +
+    '<div class="am-acciones"><button class="btn" data-am="prev">Ver la imagen de WhatsApp</button><button class="btn btn-pub" data-am="pub"></button></div>',
+    (f, x) => {
+      f.querySelectorAll(".herramientas").forEach(bar => { const ta = bar.nextElementSibling; bar.querySelectorAll("[data-f]").forEach(b => b.onclick = () => darFormato(ta, b.dataset.f, null)); });
+      f.addEventListener("input", () => { if (!esAdmin() && x.estado === "aprobado") x.estado = "borrador"; });
+      const cab = f.querySelector(".item-cab span");
+      cab.insertAdjacentHTML("afterend", '<span class="am-estado ' + esc(x.estado || "borrador") + '">' + (NOMBRE_ESTADO[x.estado] || "Borrador") + "</span>");
+      const pub = f.querySelector('[data-am="pub"]');
+      pub.textContent = esAdmin() ? (x.estado === "aprobado" ? "Volver a publicar" : "Publicar y sacar el enlace") : "Enviar para aprobar";
+      pub.onclick = () => esAdmin() ? publicarMomento(x) : enviarMomento(x);
+      f.querySelector('[data-am="prev"]').onclick = async () => {
+        const blob = await imagenCompartir(x);
+        f.querySelectorAll(".am-prev, .am-aviso").forEach(e => e.remove());
+        if (blob) f.querySelector(".am-acciones").insertAdjacentHTML("afterend", '<img class="am-prev" src="' + URL.createObjectURL(blob) + '" alt="">');
+        else f.querySelector(".am-acciones").insertAdjacentHTML("afterend", '<p class="nota am-aviso">La imagen se prepara cuando el editor está abierto desde la web (Acceso editor). Si la imagen es de otra web, descárgala y súbela con «Elegir…».</p>');
+      };
+      if (x.estado === "aprobado" && x.slug) {
+        f.insertAdjacentHTML("beforeend", '<div class="am-enlace">Enlace: <code>' + esc(enlaceMomento(x)) + '</code><button class="btn" data-am="copiar">Copiar</button><a class="btn" target="_blank" rel="noopener" href="https://wa.me/?text=' + encodeURIComponent((x.titulo || "") + "\n" + enlaceMomento(x)) + '">WhatsApp</a></div>');
+        f.querySelector('[data-am="copiar"]').onclick = e => copiar(enlaceMomento(x), e.target);
+      }
+    });
+}
+$("btnMomento").onclick = () => {
+  CFG.alMomento = CFG.alMomento || [];
+  CFG.alMomento.unshift({ id: nuevoId("m"), slug: "", fecha: hoy(), titulo: "", url: "", medio: "", resumen: "", imagen: "", comenta: "", comentario: "", estado: "borrador" });
+  pintarMomento(); cambio(); $("momento").firstElementChild.scrollIntoView({ behavior: "smooth" });
+};
+
+function cargarImgAM(src) {
+  return new Promise((ok, mal) => {
+    const i = new Image();
+    if (/^https?:/i.test(src) && !src.startsWith(location.origin)) i.crossOrigin = "anonymous";
+    i.onload = () => ok(i); i.onerror = mal; i.src = src;
+  });
+}
+let fuenteLista = null;
+function cargarFuente() {
+  if (!fuenteLista) fuenteLista = Promise.all([["700", "spectral-latin-700-normal"], ["600", "spectral-latin-600-normal"]].map(([w, f]) =>
+    new FontFace("Spectral", "url(fuentes/" + f + ".woff2)", { weight: w }).load().then(ff => document.fonts.add(ff)).catch(() => {})));
+  return fuenteLista;
+}
+function lineasAM(g, texto, ancho, max) {
+  const pal = String(texto || "").split(/\s+/).filter(Boolean), res = [];
+  let l = "";
+  pal.forEach(p => { const t = l ? l + " " + p : p; if (g.measureText(t).width > ancho && l) { res.push(l); l = p; } else l = t; });
+  if (l) res.push(l);
+  if (res.length > max) { res.length = max; let u = res[max - 1]; while (u && g.measureText(u + "…").width > ancho) u = u.replace(/\s*\S+$/, ""); res[max - 1] = u + "…"; }
+  return res;
+}
+// Imagen cuadrada de 800 × 800 (WhatsApp la recorta en cuadrado): foto arriba, banda granate con el logo y el título
+async function imagenCompartir(x) {
+  try {
+    await cargarFuente();
+    const W = 800, H = 800, FH = 470, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d");
+    g.fillStyle = "#7b1c2c"; g.fillRect(0, 0, W, H);
+    const yt = idYoutube(x.url);
+    let foto = null;
+    for (const src of [x.imagen, yt ? "https://i.ytimg.com/vi/" + yt + "/hqdefault.jpg" : "", CFG.banner || "banner-portada.jpg"].filter(Boolean)) {
+      try { foto = await cargarImgAM(src); break; } catch (e) {}
+    }
+    if (foto) {
+      const r = Math.max(W / foto.width, FH / foto.height), w = foto.width * r, h = foto.height * r;
+      g.drawImage(foto, (W - w) / 2, (FH - h) / 2, w, h);
+      const gr = g.createLinearGradient(0, FH - 120, 0, FH); gr.addColorStop(0, "rgba(123,28,44,0)"); gr.addColorStop(1, "rgba(123,28,44,.55)");
+      g.fillStyle = gr; g.fillRect(0, FH - 120, W, 120);
+    }
+    g.fillStyle = "#a8873a"; g.fillRect(0, FH, W, 6);
+    try { const logo = await cargarImgAM(CFG.logoClaro || "logo-claro.png"); const lh = 74, lw = logo.width * lh / logo.height; g.drawImage(logo, W - lw - 36, H - lh - 30, lw, lh); } catch (e) {}
+    g.fillStyle = "#d9bd7a"; g.font = "600 20px Spectral, Georgia, serif";
+    if ("letterSpacing" in g) g.letterSpacing = "4px";
+    g.fillText(((CFG.cabecera || "Lo que hay que saber") + " · " + ({ editorial: "editorial", colaboracion: "firma invitada" }[x.origen] || "al momento")).toUpperCase(), 40, FH + 52);
+    if ("letterSpacing" in g) g.letterSpacing = "0px";
+    g.fillStyle = "#fff"; g.font = "700 40px Spectral, Georgia, serif";
+    let tam = 40, ls = lineasAM(g, x.titulo || "PATRIAM", W - 80, 3);
+    if (ls.length === 3) { tam = 34; g.font = "700 34px Spectral, Georgia, serif"; ls = lineasAM(g, x.titulo, W - 80, 3); }
+    ls.forEach((l, i) => g.fillText(l, 40, FH + 106 + i * (tam + 8)));
+    // WhatsApp no enseña imágenes que pesen mucho (más de unos 300 KB): se baja la calidad hasta quedar por debajo de 250 KB
+    let blob = null;
+    for (const q of [0.86, 0.78, 0.7, 0.6, 0.5]) { blob = await new Promise(ok => c.toBlob(ok, "image/jpeg", q)); if (blob && blob.size < 250000) break; }
+    return blob;
+  } catch (e) { return null; }   // p. ej. editor abierto como archivo local: el navegador no deja exportar la imagen
+}
+async function publicarMomento(x) {
+  if (!esAdmin()) return;
+  if (!x.titulo) { alert("Pon un título: es lo que se verá en WhatsApp."); return; }
+  if (!x.slug) x.slug = slugDe(x.titulo);
+  if (!x.fecha) x.fecha = hoy();
+  x.estado = "aprobado"; x.aprobadoPor = usuario.nombre || ""; x.aprobadoEl = hoy();
+  const blob = await imagenCompartir(x);
+  if (blob) x.tarjeta = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob); });
+  if (!(await guardarAhora())) { alert("No se ha podido publicar. Revisa la conexión e inténtalo de nuevo."); return; }
+  pintarMomento();
+  const url = enlaceMomento(x);
+  $("amEnlace").textContent = url;
+  $("amCopiar").onclick = e => copiar(url, e.target);
+  $("amWhatsapp").href = "https://wa.me/?text=" + encodeURIComponent(x.titulo + "\n" + url);
+  $("amPasos").innerHTML = "<p><b>Ya está publicado.</b> Puedes mandarlo ahora mismo: al pegarlo en WhatsApp sale con su imagen.</p>";
+  $("modalMomento").classList.add("abierto");
+}
+/* La editorial y la firma invitada de cada boletín pasan solas a «Al momento» para poder compartirlas una a una */
+async function crearMomentosDe(b) {
+  if (!b || !esAdmin()) return 0;
+  CFG.alMomento = CFG.alMomento || [];
+  const num = String(b.numero).padStart(2, "0"), ed = b.editorial || {};
+  const piezas = [];
+  if (ed.titulo) piezas.push({ id: "m-ed-" + b.id, origen: "editorial", destino: "#/editorial/" + encodeURIComponent(b.id), titulo: ed.titulo,
+    medio: "Editorial · Boletín nº " + num, resumen: recortar(textoPlano(primerParrafo(ed.texto)), 280), comenta: ed.firma || "", imagen: ed.imagen || "" });
+  (b.colaboraciones || []).filter(c => c.titulo).forEach(c => piezas.push({ id: "m-col-" + c.id, origen: "colaboracion", destino: "#/colaboracion/" + encodeURIComponent(c.id), titulo: c.titulo,
+    medio: "Firma invitada · " + (c.autor || "") + (c.cargo ? " (" + c.cargo + ")" : ""), resumen: c.entradilla || recortar(textoPlano(primerParrafo(c.texto)), 280), comenta: c.autor || "", imagen: c.imagen || "" }));
+  for (const p of piezas) {
+    let x = CFG.alMomento.find(y => y.id === p.id);
+    if (!x) { x = { id: p.id, slug: slugDe(p.titulo), comentario: "" }; CFG.alMomento.unshift(x); }
+    Object.assign(x, p, { url: baseWeb() + p.destino, fecha: b.fecha || hoy(), estado: "aprobado", aprobadoPor: usuario.nombre || "", aprobadoEl: hoy() });
+    const blob = await imagenCompartir(x);
+    if (blob) x.tarjeta = await new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob); });
+  }
+  if (piezas.length) { await guardarAhora(); if (typeof pintarMomento === "function") pintarMomento(); }
+  return piezas.length;
+}
+$("btnMomentoBoletin").onclick = async () => {
+  const b = ordenar(datos.filter(x => x.estado === "aprobado"))[0];
+  if (!b) { alert("Todavía no hay ningún boletín publicado."); return; }
+  const n = await crearMomentosDe(b);
+  alert(n ? "Hecho: " + n + " envío(s) del boletín Nº " + String(b.numero).padStart(2, "0") + " listos en «Al momento», con su enlace para compartir." : "Ese boletín no tiene editorial ni firma invitada.");
+};
+async function enviarMomento(x) {
+  if (!x.titulo) { alert("Pon un título: es lo que se verá en WhatsApp."); return; }
+  x.estado = "pendiente"; x.enviadoPor = usuario.nombre || ""; x.enviadoEl = hoy();
+  pintarMomento();
+  if (await guardarAhora()) alert("Enviado para aprobar. Carlos o PATRIAM lo verán en «Al momento» en cuanto entren en el editor.");
+}
+
+/* ---------- Comunicaciones personalizadas (solo administradores): correo y WhatsApp ---------- */
+let COM = null, comEtag = null, comGuardado = "", comTemp = null, comCola = Promise.resolve(true), comServ = {}, comSus = [];
+const ESTADO_COM = { borrador: "Borrador", enviado: "Enviada" };
+function nombreSaludo(p) {
+  const n = String(p.saludoNombre || p.nombre || "").trim();
+  return COM.ajustes.soloNombre && !p.saludoNombre ? n.split(/\s+/)[0] || "" : n;
+}
+/* Todas las personas a las que se puede escribir: suscriptores del boletín + otros destinatarios */
+function comPersonas() {
+  const vistos = new Set(), res = [];
+  comSus.forEach(x => { vistos.add(String(x.email).toLowerCase()); res.push({ id: "s:" + x.clave, tipo: "Suscriptor", nombre: x.nombre || "", email: x.email || "", movil: x.movil || "" }); });
+  (COM.contactos || []).forEach(c => {
+    if (!c.nombre && !c.email && !c.movil) return;
+    if (c.email && vistos.has(c.email.toLowerCase())) return;   // ya está como suscriptor
+    res.push({ id: "o:" + c.id, tipo: c.nota || "Otro", nombre: c.nombre || "", email: c.email || "", movil: c.movil || "", saludoNombre: c.saludoNombre || "" });
+  });
+  return res;
+}
+function comGuardarLuego() { clearTimeout(comTemp); estadoGuardado("Sin guardar…"); comTemp = setTimeout(comGuardarYa, 1000); }
+function comGuardarYa() { clearTimeout(comTemp); comCola = comCola.then(comHacerGuardado, comHacerGuardado); return comCola; }
+async function comHacerGuardado() {
+  if (!COM) return false;
+  const t = huella(COM);
+  if (t === comGuardado) return true;
+  try {
+    estadoGuardado("Guardando…");
+    const d = await api("com-guardar", { com: JSON.parse(t), etag: comEtag });
+    const env = JSON.parse(t); cambiarImagenes(env, d.mapa); cambiarImagenes(COM, d.mapa);
+    comEtag = d.etag; comGuardado = huella(env);
+    estadoGuardado("Guardado ✓");
+    return true;
+  } catch (err) {
+    if (err.status === 409) avisar('Otra persona ha cambiado las comunicaciones a la vez que tú. <button class="btn" onclick="recargarCom()">Recargar</button>');
+    else if (err.status !== 401) estadoGuardado("⚠ No se ha podido guardar");
+    return false;
+  }
+}
+async function recargarCom() { COM = null; ocultarAviso(); await abrirComunicaciones(); }
+async function abrirComunicaciones() {
+  if (!esAdmin()) return;
+  if (!COM) {
+    $("comLista").innerHTML = '<p class="nota">Cargando…</p>';
+    try {
+      const [d, s] = await Promise.all([api("com-datos"), api("suscriptores")]);
+      COM = d.com; comEtag = d.etag; comGuardado = huella(COM); comServ = d.servicios || {};
+      comSus = s.suscriptores || [];
+    } catch (err) { if (err.status !== 401) $("comLista").innerHTML = '<p class="acceso-error">No se ha podido cargar: ' + esc(err.message) + "</p>"; return; }
+    pintarComAjustes();
+  }
+  pintarComServicios(); pintarComContactos(); pintarComLista();
+}
+function pintarComServicios() {
+  $("clEstado").textContent = "Guardado: Brevo " + (comServ.brevo || "—") + " · token WhatsApp " + (comServ.waToken || "—") + " · número " + (comServ.waPhone || "—") + " · plantilla " + (comServ.plantilla || "comunicacion_patriam");
+  const pl = $("clWaPlantilla"); if (pl) pl.value = comServ.plantilla || "";
+  $("comServicios").innerHTML = '<div class="com-serv"><span class="' + (comServ.correo ? "si" : "") + '">' + (comServ.correo ? "✔ Correo conectado (Brevo)" : "Correo: falta la clave de Brevo") + "</span>" +
+    '<span class="' + (comServ.whatsapp ? "si" : "") + '">' + (comServ.whatsapp ? "✔ WhatsApp conectado (API)" : "WhatsApp API: falta conectar · mientras, se manda uno a uno") + "</span></div>";
+}
+function pintarComAjustes() {
+  const aj = COM.ajustes, caja = $("comAjustes");
+  caja.querySelectorAll("[data-aj]").forEach(i => { i.value = aj[i.dataset.aj] || ""; i.oninput = () => { aj[i.dataset.aj] = i.value; comGuardarLuego(); }; });
+  caja.querySelectorAll("[data-aj-check]").forEach(i => { i.checked = !!aj[i.dataset.ajCheck]; i.onchange = () => { aj[i.dataset.ajCheck] = i.checked; comGuardarLuego(); pintarComLista(); }; });
+  const ci = caja.querySelector(".caja-firma"), archivo = ci.querySelector("input[type=file]"), texto = ci.querySelector("input[type=text]");
+  const poner = v => { aj.firmaImagen = v; texto.value = String(v).startsWith("data:") ? "(imagen subida)" : v; miniatura(ci, v); comGuardarLuego(); };
+  texto.value = String(aj.firmaImagen || "").startsWith("data:") ? "(imagen subida)" : (aj.firmaImagen || ""); miniatura(ci, aj.firmaImagen);
+  texto.oninput = () => { if (texto.value !== "(imagen subida)") poner(texto.value); };
+  ci.querySelector('[data-accion="elegir"]').onclick = () => archivo.click();
+  ci.querySelector('[data-accion="quitar"]').onclick = () => poner("");
+  // La firma se guarda como PNG (respeta el fondo transparente) y como mucho a 600 px de ancho
+  archivo.onchange = () => {
+    const f = archivo.files[0]; if (!f) return;
+    const lector = new FileReader();
+    lector.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const r = Math.min(1, 600 / img.width), c = document.createElement("canvas");
+        c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        poner(c.toDataURL("image/png"));
+      };
+      img.onerror = () => alert("No se ha podido leer la imagen.");
+      img.src = lector.result;
+    };
+    lector.readAsDataURL(f); archivo.value = "";
+  };
+}
+function pintarComContactos() {
+  const cont = $("comContactos"); cont.innerHTML = "";
+  (COM.contactos || []).forEach((c, i) => {
+    const f = document.createElement("div"); f.className = "com-contacto";
+    f.innerHTML = '<input type="text" data-k="nombre" placeholder="Nombre"><input type="email" data-k="email" placeholder="Correo"><input type="text" data-k="movil" placeholder="Móvil"><button class="btn btn-rojo" title="Quitar">✕</button>';
+    f.querySelectorAll("[data-k]").forEach(inp => { inp.value = c[inp.dataset.k] || ""; inp.oninput = () => { c[inp.dataset.k] = inp.value.trim(); comGuardarLuego(); }; inp.onchange = pintarComLista; });
+    f.querySelector("button").onclick = () => { if (confirm("¿Quitar a " + (c.nombre || c.email || "esta persona") + "?")) { COM.contactos.splice(i, 1); comGuardarLuego(); pintarComContactos(); pintarComLista(); } };
+    cont.appendChild(f);
+  });
+  if (!(COM.contactos || []).length) cont.innerHTML = '<p class="nota">Todavía no hay nadie más.</p>';
+}
+$("btnComContacto").onclick = () => { COM.contactos.push({ id: nuevoId("p"), nombre: "", email: "", movil: "" }); pintarComContactos(); const u = $("comContactos").lastElementChild; if (u) u.querySelector("input").focus(); };
+$("btnComPegar").onclick = () => { $("comPegar").hidden = !$("comPegar").hidden; };
+$("btnComPegarOk").onclick = () => {
+  let n = 0;
+  $("comPegarTxt").value.split(/\r?\n/).forEach(l => {
+    const p = l.split(/[;\t]/).map(x => x.trim());
+    if (!p.join("")) return;
+    let [nombre, email, movil] = p;
+    if (nombre && /@/.test(nombre) && !email) { email = nombre; nombre = ""; }
+    COM.contactos.push({ id: nuevoId("p"), nombre: nombre || "", email: (email || "").toLowerCase(), movil: movil || "" }); n++;
+  });
+  $("comPegarTxt").value = ""; $("comPegar").hidden = true;
+  comGuardarLuego(); pintarComContactos(); pintarComLista();
+  alert(n ? "Añadidas " + n + " personas." : "No había nada que añadir.");
+};
+
+const BAR_COM = '<div class="herramientas"><button type="button" data-f="b"><b>Negrita</b></button><button type="button" data-f="i"><i>Cursiva</i></button><button type="button" data-f="a">Enlace</button><button type="button" data-f="li">Lista</button></div>';
+function pintarComLista() {
+  const cont = $("comLista"), personas = comPersonas();
+  cont.innerHTML = "";
+  if (!COM.lista.length) cont.innerHTML = '<p class="nota" style="margin-top:10px">Todavía no hay ninguna. Pulsa «+ Nueva comunicación».</p>';
+  COM.lista.forEach((c, i) => {
+    c.sel = c.sel || []; c.enviados = c.enviados || { correo: [], whatsapp: [] };
+    const f = document.createElement("div"); f.className = "item";
+    f.innerHTML = '<div class="item-cab"><span></span><span class="am-estado ' + esc(c.estado || "borrador") + '">' + (ESTADO_COM[c.estado] || "Borrador") + '</span><button class="btn btn-rojo" data-borrar title="Eliminar">✕</button></div>' +
+      '<label>Asunto <small>(lo que se ve en el correo)</small></label><input type="text" data-k="asunto">' +
+      '<label>Saludo</label><div class="fila"><div><input type="text" data-k="saludo" placeholder="' + esc(COM.ajustes.saludo || "Buenos días") + '"></div><div class="nota" style="align-self:center">sale: «<b data-ej></b>»</div></div>' +
+      '<label>Texto</label>' + BAR_COM + '<textarea data-k="texto" style="min-height:160px" placeholder="Escribe aquí el mensaje. Deja una línea en blanco entre párrafos."></textarea>' +
+      '<p class="nota">Debajo va la firma (se cambia en «Firma y remitente»).</p>' +
+      '<label>¿A quién? <small data-cuenta></small></label>' +
+      '<div class="com-botones"><button class="btn" data-m="sus">Todos los suscriptores</button><button class="btn" data-m="otros">Todos los demás</button><button class="btn" data-m="nada">Ninguno</button>' +
+      '<input type="search" data-buscar placeholder="Buscar…" style="flex:1;min-width:120px;margin:0"></div>' +
+      '<div class="com-dest"></div>' +
+      '<div class="com-acciones"><button class="btn" data-a="vista">Vista previa del correo</button><button class="btn btn-pub" data-a="correo">Enviar por correo</button>' +
+      '<button class="btn btn-wa" data-a="wa">Enviar por WhatsApp</button><button class="btn" data-a="wa1">WhatsApp uno a uno</button></div>' +
+      '<div data-zona></div><div class="com-log"></div>';
+    const cab = f.querySelector(".item-cab span"), titulo = () => cab.textContent = (c.asunto || "Sin asunto") + (c.fecha ? " · " + c.fecha : "");
+    titulo();
+    const ej = f.querySelector("[data-ej]"), verEj = () => {
+      const p = personas.find(x => c.sel.includes(x.id)) || { nombre: "Juan Pérez" };
+      ej.textContent = saludoComunicacion(c, COM.ajustes, nombreSaludo(p));
+    };
+    verEj();
+    f.querySelectorAll("[data-k]").forEach(inp => { inp.value = c[inp.dataset.k] || ""; inp.oninput = () => { c[inp.dataset.k] = inp.value; titulo(); verEj(); comGuardarLuego(); }; });
+    const ta = f.querySelector("textarea[data-k=texto]");
+    f.querySelectorAll(".herramientas [data-f]").forEach(b => b.onclick = () => darFormato(ta, b.dataset.f, null));
+    f.querySelector("[data-borrar]").onclick = () => { if (confirm("¿Eliminar esta comunicación?" + (c.estado === "enviado" ? " Ya se ha enviado: solo se borra de esta lista." : ""))) { COM.lista.splice(i, 1); comGuardarLuego(); pintarComLista(); } };
+    // destinatarios
+    const dest = f.querySelector(".com-dest"), cuenta = f.querySelector("[data-cuenta]"), buscar = f.querySelector("[data-buscar]");
+    const pintarDest = () => {
+      const q = sinAcentos(buscar.value.trim());
+      const ec = new Set(c.enviados.correo || []), ew = new Set(c.enviados.whatsapp || []);
+      dest.innerHTML = personas.length ? personas.filter(p => !q || sinAcentos(p.nombre + " " + p.email + " " + p.movil).includes(q)).map(p => {
+        const wa = movilWa(p.movil);
+        return '<label><input type="checkbox" data-id="' + esc(p.id) + '"' + (c.sel.includes(p.id) ? " checked" : "") + "> <span><b>" + esc(p.nombre || "(sin nombre)") + "</b> " +
+          esc(p.email || "") + (p.movil ? " · " + esc(p.movil) : "") + "</span><small>" + esc(p.tipo) +
+          (p.email && ec.has(p.email.toLowerCase()) ? ' · <span class="ok">✔ correo</span>' : "") + (wa && ew.has(wa) ? ' · <span class="ok">✔ WhatsApp</span>' : "") + "</small></label>";
+      }).join("") : '<p class="nota" style="padding:8px">No hay suscriptores ni otros destinatarios todavía.</p>';
+      dest.querySelectorAll("[data-id]").forEach(ch => ch.onchange = () => {
+        c.sel = ch.checked ? c.sel.concat(ch.dataset.id) : c.sel.filter(x => x !== ch.dataset.id); contar(); verEj(); comGuardarLuego();
+      });
+    };
+    const contar = () => {
+      const elegidos = personas.filter(p => c.sel.includes(p.id));
+      const nc = elegidos.filter(p => p.email).length, nw = elegidos.filter(p => movilWa(p.movil)).length;
+      cuenta.textContent = "(" + elegidos.length + " elegidos · " + nc + " con correo · " + nw + " con móvil)";
+    };
+    buscar.oninput = pintarDest;
+    f.querySelectorAll("[data-m]").forEach(b => b.onclick = () => {
+      const m = b.dataset.m;
+      if (m === "nada") c.sel = [];
+      else { const ids = personas.filter(p => (m === "sus") === p.id.startsWith("s:")).map(p => p.id); c.sel = [...new Set(c.sel.concat(ids))]; }
+      pintarDest(); contar(); verEj(); comGuardarLuego();
+    });
+    pintarDest(); contar();
+    // acciones
+    const zona = f.querySelector("[data-zona]");
+    f.querySelector('[data-a="vista"]').onclick = () => {
+      const p = personas.find(x => c.sel.includes(x.id)) || { nombre: "Juan Pérez" };
+      zona.innerHTML = '<p class="nota">Así le llega a <b>' + esc(p.nombre || "—") + '</b>:</p><iframe class="com-vista"></iframe>';
+      zona.querySelector("iframe").srcdoc = renderComunicacion(c, COM.ajustes, CFG, { base: location.origin + "/", nombre: nombreSaludo(p) })
+        .replace("%%BAJA%%", "#");
+    };
+    f.querySelector('[data-a="correo"]').onclick = e => enviarCom(c, "correo", e.target, f);
+    f.querySelector('[data-a="wa"]').onclick = e => {
+      if (!comServ.whatsapp) { alert("Falta poner el token y el identificador del número de WhatsApp en «Claves de envío» (abajo). Mientras tanto usa «WhatsApp uno a uno»: abre cada conversación con el mensaje ya escrito a su nombre."); return; }
+      enviarCom(c, "whatsapp", e.target, f);
+    };
+    f.querySelector('[data-a="wa1"]').onclick = () => {
+      const lista = personas.filter(p => c.sel.includes(p.id) && movilWa(p.movil));
+      if (!lista.length) { zona.innerHTML = '<p class="nota">Ninguna de las personas elegidas tiene móvil.</p>'; return; }
+      zona.innerHTML = '<p class="nota">Pulsa en cada uno: se abre WhatsApp con el mensaje ya escrito a su nombre y solo tienes que darle a enviar.</p><div class="com-wa-lista">' +
+        lista.map(p => '<a target="_blank" rel="noopener" href="https://wa.me/' + movilWa(p.movil) + "?text=" + encodeURIComponent(textoComunicacion(c, COM.ajustes, nombreSaludo(p))) +
+          '"><span>' + esc(p.nombre || p.movil) + " · " + esc(p.movil) + "</span><span>Abrir WhatsApp ↗</span></a>").join("") + "</div>";
+      zona.querySelectorAll("a").forEach(a => a.addEventListener("click", () => a.classList.add("hecho")));
+    };
+    pintarComLog(c, f);
+    cont.appendChild(f);
+  });
+}
+function pintarComLog(c, f) {
+  const log = f.querySelector(".com-log"), env = (c.envios || []).slice().reverse();
+  log.innerHTML = env.length ? "<b>Envíos</b><ul>" + env.map(e => "<li>" + esc(new Date(e.fecha).toLocaleString("es-ES", { dateStyle: "short", timeStyle: "short" })) + " · " +
+    (e.canal === "correo" ? "correo" : "WhatsApp") + " · " + e.ok + " enviados" + (e.errores && e.errores.length ? ", " + e.errores.length + " con error" : "") + (e.por ? " · " + esc(e.por) : "") + "</li>").join("") + "</ul>" : "";
+}
+/* Móvil para WhatsApp: los de 9 cifras se entienden españoles (34…) */
+function movilWa(m) {
+  let d = String(m || "").trim(); const mas = d.startsWith("+");
+  d = d.replace(/\D/g, ""); if (!mas && d.startsWith("00")) d = d.slice(2);
+  if (!mas && d.length === 9 && /^[67]/.test(d)) d = "34" + d;
+  return d.length >= 10 && d.length <= 15 ? d : "";
+}
+async function enviarCom(c, canal, boton, f) {
+  const personas = comPersonas().filter(p => c.sel.includes(p.id));
+  const clave = p => canal === "correo" ? String(p.email || "").toLowerCase() : movilWa(p.movil);
+  const validos = personas.filter(clave), ya = new Set((c.enviados && c.enviados[canal]) || []);
+  if (canal === "correo" && !comServ.correo) { alert("Falta poner la clave de Brevo en «Claves de envío» (abajo)."); return; }
+  if (canal === "correo" && !c.asunto) { alert("Pon el asunto del correo."); return; }
+  if (!String(c.texto || "").trim()) { alert("Escribe el texto."); return; }
+  if (!validos.length) { alert("Ninguna de las personas elegidas tiene " + (canal === "correo" ? "correo." : "móvil.")); return; }
+  let pendientes = validos.filter(p => !ya.has(clave(p)));
+  if (!pendientes.length) {
+    if (!confirm("Ya se le ha mandado a todas estas personas por " + (canal === "correo" ? "correo" : "WhatsApp") + ". ¿Mandarlo otra vez a las " + validos.length + "?")) return;
+    pendientes = validos;
+  } else if (!confirm("Vas a mandar «" + (c.asunto || "esta comunicación") + "» por " + (canal === "correo" ? "correo" : "WhatsApp") + " a " + pendientes.length + (pendientes.length === 1 ? " persona" : " personas") +
+    (validos.length > pendientes.length ? " (las otras " + (validos.length - pendientes.length) + " ya lo tienen)" : "") + ". No se puede deshacer. ¿Lo mando?")) return;
+  if (!(await comGuardarYa())) { alert("No se ha podido guardar. Revisa la conexión e inténtalo de nuevo."); return; }
+  const html = renderComunicacion(c, COM.ajustes, CFG, { base: baseWeb() }), texto = textoComunicacion(c, COM.ajustes, "%%NOMBRE%%");
+  const textoWa = String(c.texto || "").replace(/^##\s+|^>\s?|^-\s+/gm, "").replace(/\*\*|\*/g, "").replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1 ($2)").trim();
+  const txt0 = boton.textContent; boton.disabled = true;
+  let bien = 0; const fallos = [];
+  try {
+    for (let i = 0; i < pendientes.length; i += 20) {
+      boton.textContent = "Enviando " + Math.min(i + 20, pendientes.length) + " de " + pendientes.length + "…";
+      const lote = pendientes.slice(i, i + 20).map(p => ({ id: p.id, nombre: nombreSaludo(p), completo: p.nombre, email: p.email, movil: p.movil }));
+      const d = await api("com-enviar", { id: c.id, canal, para: lote, html, texto, textoWa, por: usuario.nombre || "" });
+      d.resultados.forEach(r => { if (r.ok) bien++; else fallos.push((pendientes.find(p => p.id === r.id) || {}).nombre + ": " + r.motivo); });
+      c.enviados = d.enviados; c.envios = d.envios; c.estado = "enviado"; comEtag = d.etag; comGuardado = huella(COM);
+    }
+  } catch (err) {
+    if (err.status !== 401) fallos.push(err.message);
+  }
+  boton.disabled = false; boton.textContent = txt0;
+  pintarComLista();
+  alert((bien ? "Enviado a " + bien + (bien === 1 ? " persona." : " personas.") : "No se ha enviado a nadie.") + (fallos.length ? "\n\nNo ha podido ser:\n" + fallos.slice(0, 15).join("\n") + (fallos.length > 15 ? "\n…" : "") : ""));
+}
+$("btnComNueva").onclick = () => {
+  COM.lista.unshift({ id: nuevoId("k"), fecha: hoy(), asunto: "", saludo: "", texto: "", sel: [], estado: "borrador", enviados: { correo: [], whatsapp: [] }, envios: [] });
+  comGuardarLuego(); pintarComLista(); $("comLista").firstElementChild.scrollIntoView({ behavior: "smooth" });
+};
+
+/* ---------- textos preparados (importar.js): entran solos como firma invitada del próximo boletín ---------- */
+async function importarPendientes() {
+  if (!esAdmin()) return;
+  const lista = window.PATRIAM_IMPORTAR || [], hechos = [];
+  CFG.importados = CFG.importados || [];
+  for (const it of lista) {
+    if (!it || !it.id) continue;
+    { let ya = null; datos.forEach(b => (b.colaboraciones || []).forEach(c => { if (c.id === it.id) ya = c; }));
+      if (ya) { const n = JSON.parse(JSON.stringify(it)); delete n.numero; if (JSON.stringify(Object.assign({}, ya, n)) !== JSON.stringify(ya)) { Object.assign(ya, n); hechos.push({ it, b: datos.find(b => (b.colaboraciones || []).includes(ya)) }); } CFG.importados.includes(it.id) || CFG.importados.push(it.id); continue; } }
+    if (CFG.importados.includes(it.id)) continue;
+    // Va al boletín que todavía no ha salido (su fecha es hoy o futura), aunque ya esté aprobado; si no hay, al primero sin aprobar
+    let b;
+    if (it.numero) { b = datos.find(x => Number(x.numero) === Number(it.numero)); if (!b) continue; }   // para un boletín concreto: espera a que exista
+    else {
+      b = ordenar(datos).find(x => x.fecha && x.fecha >= hoy()) || ordenar(datos).find(x => x.estado !== "aprobado");
+      if (!b) { $("btnNuevo").click(); b = actual; }
+    }
+    b.colaboraciones = b.colaboraciones || [];
+    b.colaboraciones.push(JSON.parse(JSON.stringify(it)));
+    CFG.importados.push(it.id); hechos.push({ it, b });
+  }
+  CFG.biblioteca = CFG.biblioteca || [];
+  for (const x of (window.PATRIAM_RECOMENDAR || [])) {
+    if (!x || !x.id || CFG.importados.includes("rec:" + x.id)) continue;
+    const b = x.numero ? datos.find(y => Number(y.numero) === Number(x.numero)) : (ordenar(datos).find(y => y.fecha && y.fecha >= hoy()) || ordenar(datos).find(y => y.estado !== "aprobado"));
+    if (!b) continue;   // espera a que exista su boletín
+    const it = JSON.parse(JSON.stringify(x)); delete it.numero;
+    const ya = CFG.biblioteca.find(y => y.id === x.id);
+    if (ya) Object.assign(ya, it); else CFG.biblioteca.push(it);
+    if (!datos.some(y => (y.recomendados || []).includes(x.id))) { b.recomendados = b.recomendados || []; b.recomendados.push(x.id); }
+    CFG.importados.push("rec:" + x.id); hechos.push({ it: { titulo: x.titulo, autor: (x.tipo || "recomendación") }, b });
+  }
+  if (!hechos.length) return;
+  await guardarAhora();
+  const b = hechos[hechos.length - 1].b;
+  actual = b; pintarSelector(); cargarFormulario();
+  avisar("He añadido " + hechos.map(h => "«" + esc(h.it.titulo) + "» (" + esc(h.it.autor || "") + ")").join(", ") +
+    " como <b>firma invitada</b> del boletín Nº " + String(b.numero).padStart(2, "0") + ". Revísalo en el apartado 4 y, cuando esté listo, apruébalo para publicarlo.");
+}
+
+/* ---------- estadísticas (solo administradores) ---------- */
+const NOMBRE_RED = { whatsapp: "WhatsApp", x: "X", facebook: "Facebook", instagram: "Instagram", enlace: "Copiar enlace", otro: "Otro" };
+function nombrePagina(r) {
+  r = String(r || "#/");
+  if (r === "#/") return "Portada";
+  const [, sec, id] = r.split("/");
+  const b = id && datos.find(x => x.id === decodeURIComponent(id) || String(x.numero) === decodeURIComponent(id));
+  if (sec === "boletin") return "Boletín Nº " + (b ? String(b.numero).padStart(2, "0") : decodeURIComponent(id || ""));
+  if (sec === "editorial") return "Editorial" + (b && b.editorial && b.editorial.titulo ? ": " + b.editorial.titulo : "");
+  if (sec === "colaboracion") { for (const x of datos) { const c = (x.colaboraciones || []).find(y => y.id === decodeURIComponent(id)); if (c) return "Firma invitada: " + c.titulo; } }
+  if (sec === "al") { const a = (CFG.alMomento || []).find(x => x.slug === decodeURIComponent(id) || x.id === decodeURIComponent(id)); if (a) return "Al momento: " + a.titulo; }
+  return sec.charAt(0).toUpperCase() + sec.slice(1) + (id ? " · " + decodeURIComponent(id) : "");
+}
+function fechaCorta(f) { return f ? new Date(f).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""; }
+async function cargarEst() {
+  const dias = $("estDias").value, unDia = $("estDia").value;
+  $("estCuerpo").innerHTML = '<p class="nota">Cargando…</p>';
+  let d;
+  try {
+    const r = await fetch("/est.php?accion=resumen&dias=" + dias + (unDia ? "&dia=" + unDia : ""), { headers: { Authorization: "Bearer " + TOKEN } });
+    d = await r.json().catch(() => ({}));
+    if (r.status === 401) { caducada(); return; }
+    if (!r.ok) throw new Error(d.error || "Error " + r.status);
+  } catch (err) { $("estCuerpo").innerHTML = '<p class="acceso-error">No se han podido cargar: ' + esc(err.message) + "</p>"; return; }
+  const T = d.totales, fila = (a, b) => "<tr><td>" + a + '</td><td class="n">' + b + "</td></tr>";
+  const max = Math.max(1, ...d.porDia.map(x => x.visitas));
+  let h = '<div class="est-cifras">' +
+    [["Entradas al boletín", T.entradas || 0], ["Páginas vistas", T.visitas], [d.dia ? "Lectores" : "Lectores (uno por día)", T.lectores], ["Veces compartido", T.compartidos], ["Visitas por reenvíos", T.porReenvio], ["Clics en enlaces", T.clics], ["Clics de comunicaciones", T.deComunicaciones]]
+      .map(([a, b]) => "<div><b>" + b + "</b><span>" + a + "</span></div>").join("") + "</div>";
+  h = (d.dia ? '<p class="nota" style="font-size:14px"><b>Solo el ' + esc(new Date(d.dia + "T12:00:00").toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })) + '</b> (hora de España). <a href="#" onclick="$(\'estDia\').value=\'\';cargarEst();return false">Ver el periodo completo</a></p>' : "") + h;
+  h += '<h4>' + (d.porHoras ? "Páginas vistas por hora" : 'Páginas vistas por día <small>pulsa en una barra para ver ese día</small>') + '</h4><div class="est-barras">' + d.porDia.map(x => '<i title="' + esc(x.dia) + ": " + x.visitas + " páginas vistas, " + x.lectores + ' lectores"' + (d.porHoras ? "" : ' onclick="$(\'estDia\').value=\'' + x.dia + '\';cargarEst()" ') + ' style="cursor:' + (d.porHoras ? "default" : "pointer") + ';height:' + Math.round(x.visitas / max * 100) + '%"></i>').join("") + "</div>" +
+    (d.porHoras ? '<div class="nota" style="display:flex;justify-content:space-between;font-size:11px"><span>0 h</span><span>6 h</span><span>12 h</span><span>18 h</span><span>23 h</span></div>' : "");
+  h += '<div class="est-cols"><div><h4>Cómo llegan</h4><table>' + (d.origen.map(x => fila(esc(x.origen), x.visitas)).join("") || fila("Todavía no hay datos", "")) + "</table></div>" +
+       "<div><h4>Dónde lo comparten</h4><table>" + (d.redes.map(x => fila(esc(NOMBRE_RED[x.red] || x.red), x.veces)).join("") || fila("Nadie lo ha compartido todavía", "")) + "</table></div></div>";
+  h += "<h4>Reenvíos <small>cada vez que un lector lo comparte, y cuánta gente entra por su enlace</small></h4>" + (d.reenvios.length ? '<table class="est-tabla"><tr><th>Cuándo</th><th>Qué</th><th>Por</th><th class="n">Visitas</th><th class="n">Lectores</th><th class="n">Lo vuelven a compartir</th></tr>' +
+    d.reenvios.map(x => "<tr><td>" + esc(fechaCorta(x.fecha)) + "</td><td>" + esc(nombrePagina(x.pagina)) + "</td><td>" + esc(x.redes.map(r => NOMBRE_RED[r] || r).join(", ") || "—") + '</td><td class="n">' + x.visitas + '</td><td class="n">' + x.lectores + '</td><td class="n">' + x.loVolvieronACompartir + "</td></tr>").join("") + "</table>" : '<p class="nota">Todavía no hay reenvíos.</p>');
+  h += "<h4>Por página <small>cuántas veces se abre cada página y cuántos clics se hacen desde ella</small></h4>" + ((d.porPagina || []).length ? '<table class="est-tabla"><tr><th>Página</th><th class="n">Vistas</th><th class="n">Clics</th><th class="n">Lectores que pinchan</th></tr>' +
+    d.porPagina.map(x => "<tr><td>" + esc(nombrePagina(x.pagina)) + '</td><td class="n">' + x.visitas + '</td><td class="n">' + x.clics + '</td><td class="n">' + x.lectoresClic + "</td></tr>").join("") + "</table>" : '<p class="nota">Todavía no hay datos.</p>');
+  h += "<h4>En qué pinchan <small>noticias, vídeos y enlaces de fuera</small></h4>" + (d.clics.length ? '<table class="est-tabla"><tr><th>Enlace</th><th class="n">Clics</th><th class="n">Lectores</th></tr>' +
+    d.clics.map(x => '<tr><td><a href="' + esc(x.enlace) + '" target="_blank" rel="noopener">' + esc(x.texto || x.enlace) + '</a></td><td class="n">' + x.veces + '</td><td class="n">' + x.lectores + "</td></tr>").join("") + "</table>" : '<p class="nota">Todavía no hay clics.</p>');
+  h += "<h4>Quién pincha en las comunicaciones personales</h4>" + (d.quien.length ? '<table class="est-tabla"><tr><th>Cuándo</th><th>Quién</th><th>Comunicación</th><th>Qué abrió</th></tr>' +
+    d.quien.map(x => "<tr><td>" + esc(fechaCorta(x.fecha)) + "</td><td>" + esc(x.nombre) + (x.como ? " <small>" + esc(x.como) + "</small>" : "") + "</td><td>" + esc(x.comunicacion || "—") + '</td><td><a href="' + esc(x.enlace) + '" target="_blank" rel="noopener">' + esc(recortar(x.enlace.replace(/^https?:\/\/(www\.)?/, ""), 60)) + "</a></td></tr>").join("") + "</table>" : '<p class="nota">Nadie ha pinchado todavía en un enlace de una comunicación.</p>');
+  if (d.reenviosComunicacion.length) h += '<p class="nota"><b>Posibles reenvíos de comunicaciones:</b> ' + d.reenviosComunicacion.map(x => esc(x.nombre) + " (abierto en " + x.dispositivos + " dispositivos distintos)").join(", ") + "</p>";
+  h += '<p class="nota" style="margin-top:14px">Sin cookies y sin guardar la IP: los lectores del boletín son anónimos. Solo se sabe <b>quién</b> pincha en los enlaces de las comunicaciones personales, porque cada persona recibe los suyos. Los datos se guardan 13 meses.</p>';
+  $("estCuerpo").innerHTML = h;
+}
+$("btnEst").onclick = () => { $("modalEst").classList.add("abierto"); cargarEst(); };
+$("estDias").onchange = () => { $("estDia").value = ""; cargarEst(); };
+$("estDia").onchange = cargarEst;
+
+/* ---------- instrucciones ---------- */
+$("btnAyuda").onclick = () => $("modalAyuda").classList.add("abierto");
+$("modalAyuda").addEventListener("click", e => { if (e.target.id === "modalAyuda") e.target.classList.remove("abierto"); });
+function ayudaPrimeraVez() { try { if (!localStorage.getItem("patriam_ayuda_vista")) { localStorage.setItem("patriam_ayuda_vista", "1"); $("modalAyuda").classList.add("abierto"); } } catch (e) {} }
+
+/* ---------- arranque ---------- */
+function arrancar() { if (!datos.length) { $("btnNuevo").click(); return; } actual = ordenar(datos)[0]; pintarSelector(); cargarFormulario(); }
+async function cargar() {
+  $("acceso").hidden = true; avisar("Cargando los boletines…");
+  try {
+    const d = await api("datos");
+    usuario = d.usuario;
+    Object.keys(CFG).forEach(k => delete CFG[k]); Object.assign(CFG, d.cfg || {});
+    cfgEtag = d.cfgEtag; cfgGuardado = huella(CFG);
+    if (CFG.lema && /familia/i.test(CFG.lema)) CFG.lema = lemaDe(CFG);
+    if (!CFG.web || /netlify\.app/i.test(CFG.web)) CFG.web = "https://movimientopatriam.es/";   // la web ya no está en Netlify
+    if (!CFG.direccion || /netlify\.app/i.test(CFG.direccion)) CFG.direccion = "https://boletin.movimientopatriam.es/";   // el lema ya no lleva «Familia»: se corrige y se guarda solo
+    datos = d.boletines || [];
+    if (window.prepararCriticas) prepararCriticas(datos, CFG);
+    (window.PATRIAM_AJUSTES || []).forEach(a => datos.forEach(b => { if (Number(b.numero) === Number(a.numero)) (b.noticias || []).forEach(n => { if (String(n.titular || "").startsWith(a.titular) && a.seccion) n.seccion = a.seccion; }); }));
+    datos.forEach(b => { if (Number(b.numero) === 1 && b.fecha === "2026-10-21") b.fecha = "2026-10-30"; });   // el nº 1 sale el 30 de octubre
+    datos.forEach(b => { etags[b.id] = b._etag; guardados[b.id] = huella(b); });
+    document.querySelectorAll("[data-cfg]").forEach(i => i.value = CFG[i.dataset.cfg] || "");
+    $("cfgComentaristas").value = (CFG.comentaristas || []).join(", ");
+    trasEntrar(); listo = true; arrancar(); pintarTodo();
+    if (esAdmin()) (async () => { for (const b of datos.filter(x => x.estado === "aprobado" && !x.tarjeta)) await hacerTarjeta(b); })();
+    estadoGuardado("Guardado ✓");
+    ayudaPrimeraVez();
+    const pend = ordenar(datos).filter(b => b.estado === "pendiente");
+    const pendAM = (CFG.alMomento || []).filter(x => x.estado === "pendiente").length;
+    if (esAdmin() && pendAM && !pend.length) avisar("Hay " + pendAM + (pendAM === 1 ? " envío «Al momento» pendiente" : " envíos «Al momento» pendientes") + " de aprobar. Están en la pestaña «Al momento · WhatsApp».");
+    if (esAdmin() && pend.length) avisar("Hay " + (pend.length === 1 ? "un boletín pendiente" : pend.length + " boletines pendientes") + " de aprobación: Nº " +
+      pend.map(b => String(b.numero).padStart(2, "0")).join(", ") + ". Elígelo arriba, revísalo y pulsa «Aprobar y publicar».");
+    else if (!(esAdmin() && pendAM)) ocultarAviso();
+    await importarPendientes();
+  } catch (err) {
+    if (err.status !== 401) avisar("No se han podido cargar los boletines: " + esc(err.message) + ' <button class="btn" onclick="location.reload()">Reintentar</button>');
+  }
+}
+window.addEventListener("beforeunload", e => {
+  if (COM && huella(COM) !== comGuardado) { comGuardarYa(); e.preventDefault(); e.returnValue = ""; }
+  if (listo && (huella(CFG) !== cfgGuardado || datos.some(b => huella(b) !== guardados[b.id]))) { guardarAhora(); e.preventDefault(); e.returnValue = ""; }
+});
+arrancar();
+if (TOKEN) cargar(); else mostrarAcceso("entrar");
+</script>
+</body>
+</html>

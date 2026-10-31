@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Concentración por Ceuta · PATRIAM</title>
+    <meta name="description" content="Concentración y marcha por Ceuta convocada por Mujeres Caballas, de Atocha a la plaza de las Cortes. Domingo 25 de octubre, 10:30." />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Concentración por Ceuta · PATRIAM" />
+    <meta property="og:description" content="Concentración y marcha por Ceuta convocada por Mujeres Caballas, de Atocha a la plaza de las Cortes. Domingo 25 de octubre, 10:30." />
+    <meta property="og:url" content="https://movimientopatriam.es/accion/concentracion-por-ceuta-25-octubre" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Concentración por Ceuta · PATRIAM" />
+    <meta name="twitter:description" content="Concentración y marcha por Ceuta convocada por Mujeres Caballas, de Atocha a la plaza de las Cortes. Domingo 25 de octubre, 10:30." />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/accion/concentracion-por-ceuta-25-octubre" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <script type="application/ld+json" id="ld-pagina">{"@context":"https://schema.org","@type":"Event","name":"Concentración por Ceuta","description":"Concentración y marcha por Ceuta convocada por Mujeres Caballas, de Atocha a la plaza de las Cortes. Domingo 25 de octubre, 10:30.","startDate":"2026-10-25T08:30:00+00:00","endDate":"2026-10-25T13:00:00+00:00","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Madrid, glorieta de Atocha","address":"Madrid, glorieta de Atocha"},"organizer":{"@type":"Organization","name":"PATRIAM","url":"https://movimientopatriam.es/"}}</script>
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Concentración por Ceuta</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><p>Madrid, glorieta de Atocha</p><p>La convocatoria</p><p>Convoca Mujeres Caballas, movimiento cívico de madres de Ceuta. PATRIAM se suma y anima a participar.</p><p>- Domingo 25 de octubre - 10:30 concentración en la glorieta de Atocha (plaza del Emperador Carlos V) - 11:30 sale la marcha hacia la plaza de las Cortes, frente al Congreso, donde se lee el manifiesto</p><p>Qué se pide</p><p>Una Ceuta segura, digna y tranquila: más seguridad, refuerzo de la frontera y de la Guardia Civil, y soluciones urgentes para que Ceuta no caiga en el olvido.</p></main></div>
+  </body>
+</html>
