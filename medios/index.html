@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PATRIAM en los medios · PATRIAM</title>
+    <meta name="description" content="Apariciones de PATRIAM en prensa, radio, televisión y medios digitales." />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="PATRIAM en los medios · PATRIAM" />
+    <meta property="og:description" content="Apariciones de PATRIAM en prensa, radio, televisión y medios digitales." />
+    <meta property="og:url" content="https://movimientopatriam.es/medios" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PATRIAM en los medios · PATRIAM" />
+    <meta name="twitter:description" content="Apariciones de PATRIAM en prensa, radio, televisión y medios digitales." />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/medios" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>PATRIAM en los medios</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><ul><li><a href="/articulo/el-debate-concentracion-dimision-oscar-puente-valladolid">Convocan una concentración para pedir la dimisión de Óscar Puente en Valladolid, donde va de «uno» al Congreso</a> — El Debate se hace eco de la concentración convocada por PATRIAM este viernes a las 19:00 junto a la estación de Campo Grande, en Valladolid, para pedir la…</li><li><a href="/articulo/el-espanol-concentracion-valladolid-oscar-puente-accidente-toledo">Convocan una concentración en Valladolid exigiendo cárcel para Óscar Puente tras el accidente de Toledo</a> — El Español informa de la concentración convocada por el movimiento PATRIAM el viernes 30 de octubre a las 19:00 en la estación de Valladolid, tras el…</li><li><a href="/articulo/el-espanol-sanchez-valladolid-protesta-entrada">Sánchez vuelve a su talismán de Valladolid rodeado de los pesos pesados del PSOECyL pero sin ZP: habrá protesta en la entrada</a> — El Español recoge la protesta convocada por la Asociación PATRIAM a las 17:30, frente al acto del presidente del Gobierno en Valladolid.</li><li><a href="/articulo/diario-de-valladolid-dimision-oscar-puente-subdelegacion">Medio centenar de personas exigen la dimisión de Óscar Puente frente a la Subdelegación del Gobierno</a> — Diario de Valladolid recoge la concentración convocada por el Movimiento PATRIAM ante la Subdelegación del Gobierno en Valladolid para exigir la dimisión del…</li></ul></main></div>
+  </body>
+</html>

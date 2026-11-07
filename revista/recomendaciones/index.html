@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // Direcciones antiguas con # (movimientopatriam.es/#/tienda): se pasan a la dirección limpia (/tienda)
+      // antes de que cargue la web, conservando lo que venga detrás (p. ej. el acceso de Supabase)
+      (function () {
+        var h = location.hash
+        if (h.indexOf('#/') !== 0) return
+        var resto = h.slice(1), i = resto.indexOf('#'), extra = ''
+        if (i > 0) { extra = resto.slice(i); resto = resto.slice(0, i) }
+        history.replaceState(null, '', resto + extra)
+      })()
+    </script>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recomendaciones · PATRIAM</title>
+    <meta name="description" content="Lecturas, artículos, libros y vídeos que recomienda PATRIAM." />
+    <!-- Vista previa al compartir (WhatsApp, X, Facebook, LinkedIn, Telegram) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="PATRIAM" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:title" content="Recomendaciones · PATRIAM" />
+    <meta property="og:description" content="Lecturas, artículos, libros y vídeos que recomienda PATRIAM." />
+    <meta property="og:url" content="https://movimientopatriam.es/revista/recomendaciones" />
+    <meta property="og:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logotipo de PATRIAM: Dios, Patria, Justicia" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Recomendaciones · PATRIAM" />
+    <meta name="twitter:description" content="Lecturas, artículos, libros y vídeos que recomienda PATRIAM." />
+    <meta name="twitter:image" content="https://movimientopatriam.es/og-patriam.jpg" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <script type="module" crossorigin src="/assets/index-3sC8BHWE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BlXM7_qz.css">
+      <link rel="canonical" href="https://movimientopatriam.es/revista/recomendaciones" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+  </head>
+  <body>
+    <div id="root"><main class="prerender"><h1>Recomendaciones</h1><nav><a href="/">Inicio</a> · <a href="/sobre-patriam">Sobre PATRIAM</a> · <a href="/revista">Revista</a> · <a href="/comunicados">Comunicados</a> · <a href="/campanas">Campañas</a> · <a href="/tienda">Tienda</a> · <a href="https://boletin.movimientopatriam.es/">Boletín</a> · <a href="/adhierete">Únete</a></nav><ul><li><a href="/articulo/la-eurocamara-investigara-la-violacion-de-la-integridad-territorial-de-espana-en-la-crisis-de-ceuta">La Eurocámara investigará la violación de la integridad territorial de España en la crisis de Ceuta</a> — Información útil para seguir la crisis de Ceuta, tema de nuestra campaña actual.</li><li><a href="/articulo/en-la-boca-del-lobo">En la boca del lobo</a> — Pódcast de Decisión Radio. Disponible en las principales plataformas de audio.</li><li><a href="/articulo/espana-inteligible">España inteligible</a> — Ensayo clásico de Julián Marías sobre la historia de España. Lectura recomendada para el ciclo cultural.</li><li><a href="/articulo/las-manifestaciones-de-apoyo-a-ceuta">Las manifestaciones de apoyo a Ceuta</a> — Viñeta de opinión sobre las muestras de apoyo ciudadano a Ceuta.</li></ul></main></div>
+  </body>
+</html>
