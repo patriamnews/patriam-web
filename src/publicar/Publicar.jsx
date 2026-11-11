@@ -26,6 +26,7 @@ import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
 import Estadisticas from './Estadisticas'
 import BoletinPaso from './BoletinPaso'
+import FichaColaborador from './FichaColaborador'
 import InstalarApp from '../admin/InstalarApp'
 import { useSeo } from '../lib/seo'
 
@@ -155,6 +156,8 @@ function Inicio() {
           {aprueba ? 'Lo que publiques sale directamente en la web.' : `Antes de salir en la web, ${APROBADOR.nombre} lo revisa y lo aprueba; te llegará un aviso.`}
         </p>
       </div>
+
+      <FichaColaborador perfil={perfil} />
 
       {aprueba && (
         <Link to="/publicar/aprobar" className={`pub-aprobar ${pendientes ? 'hay' : ''}`}>

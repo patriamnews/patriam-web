@@ -134,7 +134,7 @@ export default function BoletinPaso() {
             {pendientes.some((x) => x.origen === 'correo') && <p className="bp-nota">Los marcados «por correo» han llegado a hola@movimientopatriam.com con el asunto «ARTICULO» y el nombre de quien firma. Ábrelos con «Leer» antes de aprobar.</p>}
             <ul className="bp-lista">
               {pendientes.map((x) => (
-                <Fila key={x.id} x={x} leer>
+                <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
                   {x.tipo === 'firma' && (
                     <select value={x.datos.seccion || 'Análisis'} onChange={(v) => accion('seccion', { id: x.id, seccion: v.target.value })} aria-label="Sección">
                       {SECCIONES.map((s) => <option key={s}>{s}</option>)}
@@ -172,8 +172,15 @@ export default function BoletinPaso() {
   )
 }
 
-function Fila({ x, children, leer }) {
-  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial' }
+function Fila({ x, children, leer, api, onCambio }) {
+  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación' }
+  const [bio, setBio] = useState(x.datos.bio || '')
+  const bajarCv = async () => {
+    try {
+      const j = await api('cv', { id: x.id })
+      const a = document.createElement('a'); a.href = 'data:application/octet-stream;base64,' + j.datos; a.download = j.nombre || 'cv'; a.click()
+    } catch (e) { window.alert(e.message) }
+  }
   return (
     <li>
       {x.datos.imagen ? <img src={x.datos.imagen} alt="" /> : <span className="bp-sinimg" />}
@@ -182,7 +189,16 @@ function Fila({ x, children, leer }) {
         <b>{tituloDe(x)}</b>
         {x.estado === 'pendiente' && <em className="bp-espera">Esperando aprobación</em>}
         {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
-        {leer && (x.datos.texto || x.datos.entradilla) && (
+        {leer && x.tipo === 'ficha' && (
+          <details className="bp-leer" open={!x.datos.bio}>
+            <summary>Ver y preparar la presentación</summary>
+            {x.datos.cargo && <p><i>{x.datos.cargo}</i></p>}
+            {x.tieneCv && <p><button type="button" className="btn btn-sec" onClick={bajarCv}>Descargar su CV</button></p>}
+            <textarea rows={6} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Escribe aquí su presentación a partir del CV (es lo que verán los lectores)" style={{ width: '100%' }} />
+            <p><button type="button" className="btn btn-sec" onClick={async () => { try { onCambio(await api('editar-ficha', { id: x.id, bio })) } catch (e) { window.alert(e.message) } }}>Guardar presentación</button></p>
+          </details>
+        )}
+        {leer && x.tipo !== 'ficha' && (x.datos.texto || x.datos.entradilla) && (
           <details className="bp-leer">
             <summary>Leer</summary>
             {x.datos.entradilla && <p><i>{x.datos.entradilla}</i></p>}

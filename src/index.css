@@ -1630,3 +1630,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-leer p, .bp-leer h4 { margin: .5rem 0; max-width: 70ch; white-space: pre-line; }
 .bp-leer h4 { color: #7b1c2c; }
 .bp-acc select { margin-right: .4rem; padding: .3rem; }
+
+/* Publicar: se pide la presentación y el CV a quien escribe en el boletín */
+.ficha-pide { background: #fff; border: 2px solid #7b1c2c; padding: 1rem 1.2rem; margin: 0 0 1.4rem; }
+.ficha-pide h2 { margin: 0 0 .4rem; color: #7b1c2c; }
+.ficha-pide form { display: grid; gap: .7rem; margin-top: .6rem; }
+.ficha-pide label { display: grid; gap: .25rem; font-weight: 600; }
+.ficha-pide label small { font-weight: 400; color: #7a6d66; }
+.ficha-pide input, .ficha-pide textarea { font: inherit; padding: .5rem; border: 1px solid #e4d9c7; background: #fffdf9; }
