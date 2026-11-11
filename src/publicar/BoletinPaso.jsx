@@ -258,12 +258,13 @@ export default function BoletinPaso() {
                     <span><b>{x.titulo}</b><small>{[x.tipo, x.firma, x.medio].filter(Boolean).join(' · ')} · desde el editor</small></span>
                   </li>
                 ))}
-                {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])].map((x) => (
-                  <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
+                {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])]
+                  .sort((a, b) => (b.id === e.principal) - (a.id === e.principal))   // la principal, siempre la primera
+                  .map((x) => (
+                  <Fila key={x.id} x={x} leer api={api} onCambio={setE} principal={x.id === e.principal}>
                     {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => aprobar(x.id)}>✓ Aprobar</button>}
-                    {e.puedeAprobar && x.tipo === 'firma' && x.numero === ab.numero && (x.id === e.principal
-                      ? <span className="bp-principal">★ Noticia principal</span>
-                      : <button type="button" className="btn btn-sec" onClick={() => hacerPrincipal(x.id)}>★ Hacer principal</button>)}
+                    {e.puedeAprobar && ['firma', 'noticia'].includes(x.tipo) && x.numero === ab.numero && x.id !== e.principal &&
+                      <button type="button" className="btn btn-sec" onClick={() => hacerPrincipal(x.id)}>★ Hacer principal</button>}
                     {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                     {x.numero === ab.numero && x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
                   </Fila>
@@ -291,7 +292,7 @@ export default function BoletinPaso() {
                   {p.datos.imagen ? <img src={p.datos.imagen} alt="" /> : null}
                   <div><small>★ Noticia principal{e.principalElegida ? '' : ' · propuesta: la que más puede correr'}</small><b>{tituloDe(p)}</b>
                     {p.estado !== 'aprobado' && <em className="bp-espera">Sin aprobar todavía: apruébala arriba para que salga</em>}
-                    <span className="bp-nota">Para cambiarla, pulsa «★ Hacer principal» en otro artículo.</span></div>
+                    <span className="bp-nota">Para cambiarla, pulsa «★ Hacer principal» en otra noticia o artículo.</span></div>
                 </div>
               ) : <p className="bp-nota">Todavía no hay ningún artículo de PATRIAM para abrir el envío.</p>}
               {env.enviado && <p className="aviso-ok">Ya enviado: {env.correos} correos{env.whatsapp ? ` y ${env.whatsapp} WhatsApp` : ''} ({new Date(env.enviado).toLocaleString('es-ES', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}). Si vuelves a pulsar, solo se manda a quien falte.</p>}
@@ -308,7 +309,7 @@ export default function BoletinPaso() {
   )
 }
 
-function Fila({ x, children, leer, api, onCambio }) {
+function Fila({ x, children, leer, api, onCambio, principal }) {
   const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día' }
   const [bio, setBio] = useState(x.datos.bio || '')
   const [abierto, setAbierto] = useState(false)
@@ -353,8 +354,9 @@ function Fila({ x, children, leer, api, onCambio }) {
     setSubiendo(false); ev.target.value = ''
   }
   return (
-    <li>
+    <li className={principal ? 'bp-es-principal' : ''}>
       <div className="bp-pieza">
+        {principal && <span className="bp-marca-principal">★ Noticia principal · abre el boletín, el correo y el WhatsApp</span>}
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
         <b>{tituloDe(x)}</b>
         <div className="bp-estados">

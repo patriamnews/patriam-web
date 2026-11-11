@@ -1826,3 +1826,8 @@ html, body, .sitio { background: var(--crema) !important; }
   .bp-acc { flex-wrap: wrap; }
   .bp-herr { flex-wrap: wrap; }
 }
+
+/* La noticia principal: la primera de la lista y bien marcada */
+.bp-lista li.bp-es-principal { border: 2px solid #c9a24a; background: #fffaf0; height: 204px; }
+.bp-marca-principal { display: inline-block; background: #c9a24a; color: #fff; font: 700 .72rem var(--sans); letter-spacing: .04em; text-transform: uppercase; padding: .15rem .55rem; border-radius: 3px; margin-bottom: .25rem; }
+@media (max-width: 640px) { .bp-lista li.bp-es-principal { height: auto; } }
