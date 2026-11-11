@@ -1720,3 +1720,8 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-lector h3 { margin: 0 0 0.3rem; }
 .bp-lector-firma { color: #7b1c2c; font-weight: 600; margin: 0 0 0.6rem; }
 .bp-lector p { line-height: 1.6; }
+.bp-foto { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; flex: 0 0 auto; }
+.bp-foto-cambiar { font-size: 0.75rem; color: #7b1c2c; cursor: pointer; white-space: nowrap; text-decoration: underline; }
+.bp-lista li { grid-template-columns: 96px 1fr auto; }
+.bp-lista .bp-foto img, .bp-lista .bp-foto .bp-sinimg { width: 96px; height: 64px; }
+@media (max-width: 640px) { .bp-lista li { grid-template-columns: 76px 1fr; } .bp-lista .bp-foto img, .bp-lista .bp-foto .bp-sinimg { width: 76px; height: 54px; } }
