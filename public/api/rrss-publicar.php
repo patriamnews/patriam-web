@@ -4,6 +4,7 @@
      conexion          → qué redes tiene conectadas (nunca devuelve las claves)
      conectar          {x:{apiKey,apiSecret,token,tokenSecret}, meta:{pageId,pageToken,igId}}  (vacío = se deja; «-» = se borra)
      boletin           → las publicaciones preparadas del boletín (boletin.movimientopatriam.es/redes/)
+     articulos         → artículos propios del boletín (editorial y firmas, no noticias) con su día: uno diario desde el sábado siguiente al envío
      publicar          {red: x|facebook|instagram, texto, imagen (data:image/… o https://…)}
      publicados        → lo publicado desde aquí (de todo el equipo)
      seguimiento       {id} → cifras y comentarios de una publicación
@@ -14,6 +15,7 @@ require_once __DIR__ . '/_comun.php';
 const GRAPH = 'https://graph.facebook.com/v21.0';
 const XAPI = 'https://api.x.com';
 const BOLETIN_REDES = 'https://boletin.movimientopatriam.es/redes/';
+const BOLETIN_WEB = 'https://boletin.movimientopatriam.es/';
 
 /* ---------- imágenes públicas ---------- */
 if (isset($_GET['img'])) {
@@ -128,6 +130,39 @@ if ($accion === 'boletin') {
       'texto' => html_entity_decode($t[2] ?? '', ENT_QUOTES, 'UTF-8')];
   }
   salir(['posts' => $posts]);
+}
+
+/* Artículo del día: los artículos PROPIOS de PATRIAM del boletín (editorial y firmas), nunca las noticias de otros medios.
+   Desde el sábado siguiente al envío del boletín toca uno cada día, por orden: primero la editorial y luego las firmas. */
+if ($accion === 'articulos') {
+  $ch = curl_init(BOLETIN_WEB . 'boletines.js?t=' . time()); curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 25, CURLOPT_FOLLOWLOCATION => true]); $js = (string)curl_exec($ch); curl_close($ch);
+  if (!preg_match('/window\.BOLETINES\s*=\s*(\[.*\]);?\s*$/s', $js, $mm)) salir(['error' => 'No se han podido leer los boletines.'], 502);
+  $bols = array_values(array_filter(json_decode(rtrim($mm[1], "; \n"), true) ?: [], fn($b) => ($b['estado'] ?? '') === 'aprobado' && !empty($b['fecha'])));
+  usort($bols, fn($a, $b) => ($b['numero'] ?? 0) <=> ($a['numero'] ?? 0));
+  $abs = fn($u) => !$u ? '' : (preg_match('#^https?://#', $u) ? $u : BOLETIN_WEB . ltrim($u, '/'));
+  $resumen = function ($t) { $t = trim(preg_replace('/\s+/u', ' ', strip_tags((string)$t))); return mb_strlen($t) > 220 ? rtrim(mb_substr($t, 0, mb_strrpos(mb_substr($t, 0, 220), ' ') ?: 220), " ,.;:") . '…' : $t; };
+  // Lo ya publicado de cada artículo (por quien sea del equipo)
+  $hecho = [];
+  foreach (leerJson('rrss-publicados.json') as $x) if (preg_match('/^artículo · (\S+)/u', $x['origen'] ?? '', $o)) $hecho[$o[1]][] = ['red' => $x['red'], 'fecha' => $x['fecha'], 'url' => $x['url']];
+  $hoy = (new DateTime('now', new DateTimeZone('Europe/Madrid')))->format('Y-m-d');
+  $salida = [];
+  foreach ($bols as $b) {
+    $arts = [];
+    $ed = $b['editorial'] ?? [];
+    if (trim($ed['texto'] ?? '') !== '') $arts[] = ['id' => 'ed-' . $b['id'], 'tipo' => 'Editorial', 'titulo' => $ed['titulo'] ?: 'Editorial', 'autor' => $ed['firma'] ?? '',
+      'entradilla' => $resumen($ed['texto']), 'imagen' => $abs($ed['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/editorial/' . rawurlencode($b['id'])];
+    foreach ($b['colaboraciones'] ?? [] as $c) {
+      if (trim($c['titulo'] ?? '') === '' || empty($c['id'])) continue;
+      $arts[] = ['id' => 'col-' . $c['id'], 'tipo' => 'Firma', 'titulo' => $c['titulo'], 'autor' => $c['autor'] ?? '',
+        'entradilla' => $resumen(($c['entradilla'] ?? '') ?: ($c['texto'] ?? '')), 'imagen' => $abs($c['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/colaboracion/' . rawurlencode($c['id'])];
+    }
+    // Calendario: del sábado siguiente al envío, un artículo por día
+    $d = new DateTime($b['fecha'], new DateTimeZone('Europe/Madrid'));
+    $d->modify('next saturday');
+    foreach ($arts as $i => &$a) { $a['dia'] = (clone $d)->modify("+$i day")->format('Y-m-d'); $a['publicado'] = $hecho[$a['id']] ?? []; } unset($a);
+    $salida[] = ['numero' => $b['numero'] ?? null, 'fecha' => $b['fecha'], 'articulos' => $arts];
+  }
+  salir(['hoy' => $hoy, 'boletines' => $salida]);
 }
 
 if ($accion === 'publicar') {

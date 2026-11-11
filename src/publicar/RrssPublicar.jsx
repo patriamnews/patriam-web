@@ -121,6 +121,82 @@ export function DelBoletin({ conexion }) {
   )
 }
 
+/* ---------------------------------------------------------------- Artículo del día
+   Solo artículos propios de PATRIAM del boletín (editorial y firmas), nunca las noticias de otros medios.
+   Desde el sábado siguiente al envío del boletín toca uno cada día; también se puede mandar uno suelto cuando se quiera. */
+const diaLargo = (d) => { try { return new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }) } catch { return d } }
+function textosArticulo(a) {
+  const firma = a.autor ? ' — ' + a.autor : ''
+  const cab = a.tipo === 'Editorial' ? 'Editorial de PATRIAM' : 'Firma invitada en el boletín de PATRIAM'
+  const finX = '\n\nLéelo en el boletín 👉 ' + a.enlace
+  let entr = a.entradilla || ''
+  const base = `«${a.titulo}»${firma}`
+  const sobra = 280 - (base.length + 2 + finX.length)
+  if (entr.length > sobra) entr = sobra > 20 ? entr.slice(0, sobra - 1).replace(/\s+\S*$/, '') + '…' : ''
+  return {
+    x: base + (entr ? '\n\n' + entr : '') + finX,
+    facebook: `${cab}\n«${a.titulo}»${firma}\n\n${a.entradilla}\n\nLéelo completo en «Lo que hay que saber: con criterio»:\n${a.enlace}\n\nDios, Patria, Justicia.`,
+    instagram: `${cab}\n«${a.titulo}»${firma}\n\n${a.entradilla}\n\nLéelo completo en nuestro boletín (enlace en la bio).\n\nDios, Patria, Justicia.\n#PATRIAM #DiosPatriaJusticia #España`,
+  }
+}
+function TarjetaArticulo({ a, hoy, conexion, onHecho }) {
+  const [red, setRed] = useState('x')
+  const [textos, setTextos] = useState(() => textosArticulo(a))
+  const toca = a.dia === hoy
+  const pasado = !!a.dia && a.dia < hoy
+  const hechas = [...new Set((a.publicado || []).map((p) => NOMBRE_RED[p.red]))]
+  return (
+    <article className={'rrss-post-bol rrss-art' + (toca ? ' toca' : '')}>
+      {a.imagen ? <img src={a.imagen} alt="" loading="lazy" /> : <div className="rrss-art-sinimg">Sin imagen</div>}
+      <div>
+        {a.dia && <div className="rrss-art-dia">{toca ? '★ Hoy toca' : diaLargo(a.dia)}{pasado && !hechas.length && <small> · no se publicó</small>}</div>}
+        <b>{a.tipo}: «{a.titulo}»</b>{a.autor && <small> · {a.autor}</small>}
+        {hechas.length > 0 && <p className="ok letra-pequena">✔ Publicado en {hechas.join(', ')}</p>}
+        <div className="pestanas">
+          {Object.entries(NOMBRE_RED).map(([k, v]) => <button key={k} type="button" className={red === k ? 'activa' : ''} onClick={() => setRed(k)}>{v}</button>)}
+        </div>
+        <textarea rows={6} value={textos[red]} onChange={(e) => setTextos({ ...textos, [red]: e.target.value })} />
+        {red === 'x' && <small className={textos.x.length > 280 ? 'error' : 'letra-pequena'}>{textos.x.length}/280</small>}
+        <div className="acciones">
+          <button type="button" className="btn btn-claro" onClick={() => navigator.clipboard?.writeText(textos[red])}>Copiar texto</button>
+          {a.imagen && <a className="btn btn-claro" href={a.imagen} download target="_blank" rel="noopener noreferrer">Descargar imagen</a>}
+          <a className="btn-texto" href={a.enlace} target="_blank" rel="noopener noreferrer">Ver el artículo</a>
+        </div>
+        {red === 'instagram' && !a.imagen
+          ? <p className="letra-pequena">Instagram necesita imagen y este artículo no tiene.</p>
+          : <BotonesPublicar texto={textos[red]} imagen={a.imagen} conexion={conexion} redes={[red]} origen={`artículo · ${a.id} · ${a.titulo}`.slice(0, 80)} onHecho={onHecho} />}
+      </div>
+    </article>
+  )
+}
+export function ArticuloDelDia({ conexion }) {
+  const [datos, setDatos] = useState(null)
+  const [error, setError] = useState('')
+  const cargar = () => rrss('articulos').then(setDatos).catch((e) => setError(e.message))
+  useEffect(() => { cargar() }, [])
+  if (error) return <p className="error">{error}</p>
+  if (!datos) return <p>Cargando los artículos del boletín…</p>
+  const [actual, ...anteriores] = datos.boletines
+  if (!actual) return <p>Todavía no hay ningún boletín publicado.</p>
+  const hoyArt = actual.articulos.find((a) => a.dia === datos.hoy)
+  return (
+    <div className="rrss-boletin">
+      <p className="letra-pequena">Los artículos propios de PATRIAM del boletín (editorial y firmas; las noticias de otros medios no). Desde el sábado siguiente al envío, uno cada día. También puedes mandar cualquiera suelto cuando quieras.</p>
+      <h3>Boletín nº {actual.numero} · {hoyArt ? 'hoy toca «' + hoyArt.titulo + '»' : actual.articulos[0] && datos.hoy < actual.articulos[0].dia ? 'empieza el ' + diaLargo(actual.articulos[0].dia) : 'calendario terminado'}</h3>
+      {actual.articulos.length ? actual.articulos.map((a) => <TarjetaArticulo key={a.id} a={a} hoy={datos.hoy} conexion={conexion} onHecho={cargar} />) : <p>Este boletín no tiene artículos propios.</p>}
+      {anteriores.some((b) => b.articulos.length) && (
+        <details className="rrss-mas"><summary>Artículos de boletines anteriores (para mandar uno suelto)</summary>
+          {anteriores.filter((b) => b.articulos.length).map((b) => (
+            <section key={b.numero}><h3>Boletín nº {b.numero}</h3>
+              {b.articulos.map((a) => <TarjetaArticulo key={a.id} a={{ ...a, dia: '' }} hoy={datos.hoy} conexion={conexion} onHecho={cargar} />)}
+            </section>
+          ))}
+        </details>
+      )}
+    </div>
+  )
+}
+
 /* ---------------------------------------------------------------- Seguimiento */
 export function Seguimiento() {
   const [lista, setLista] = useState(null)

@@ -8,7 +8,7 @@ import { REDES } from '../lib/config'
 import logo from '../assets/logo.png'
 import logoClaro from '../assets/logo-claro.png'
 import Redes from '../admin/Redes'
-import { rrss, Conectar, DelBoletin, Seguimiento, BotonesPublicar } from './RrssPublicar'
+import { rrss, Conectar, DelBoletin, ArticuloDelDia, Seguimiento, BotonesPublicar } from './RrssPublicar'
 
 export default function Rrss() {
   const [pestana, setPestana] = useState('boletin')
@@ -19,11 +19,13 @@ export default function Rrss() {
       <Conectar conexion={conexion} onCambio={setConexion} />
       <div className="pestanas grandes">
         <button className={pestana === 'boletin' ? 'activa' : ''} onClick={() => setPestana('boletin')}>Boletín</button>
+        <button className={pestana === 'articulo' ? 'activa' : ''} onClick={() => setPestana('articulo')}>Artículo del día</button>
         <button className={pestana === 'nuevos' ? 'activa' : ''} onClick={() => setPestana('nuevos')}>Nuevos</button>
         <button className={pestana === 'seguimiento' ? 'activa' : ''} onClick={() => setPestana('seguimiento')}>Seguimiento</button>
       </div>
       <div className="rrss-cuerpo">
         {pestana === 'boletin' && <DelBoletin conexion={conexion} />}
+        {pestana === 'articulo' && <ArticuloDelDia conexion={conexion} />}
         {pestana === 'nuevos' && <Disenar conexion={conexion} />}
         {pestana === 'seguimiento' && (
           <>

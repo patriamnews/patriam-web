@@ -1692,3 +1692,10 @@ html, body, .sitio { background: var(--crema) !important; }
 .rrss-cifras { display: flex; flex-wrap: wrap; gap: 1rem; }
 .rrss-mas { margin-top: 1.4rem; } .rrss-mas summary { cursor: pointer; font-weight: 600; }
 @media (max-width: 640px) { .rrss-post-bol { grid-template-columns: 1fr; } .rrss-post-bol img { max-width: 260px; } }
+
+/* RRSS › Artículo del día */
+.rrss-art.toca { background: #fbf4e4; outline: 2px solid var(--acento); outline-offset: 4px; }
+.rrss-art-dia { font-size: 0.85rem; text-transform: capitalize; color: var(--suave); margin-bottom: 0.2rem; }
+.rrss-art.toca .rrss-art-dia { color: var(--acento); font-weight: 700; text-transform: none; }
+.rrss-art-sinimg { aspect-ratio: 1; display: grid; place-items: center; border: 1px dashed #e3d6c1; color: var(--suave); font-size: 0.85rem; }
+.rrss-art .pestanas { margin: 0.5rem 0 0; }
