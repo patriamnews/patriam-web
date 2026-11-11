@@ -239,6 +239,11 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
       <h2>{QUE[que].icono} {QUE[que].titulo} <small>para el boletín nº {numero}</small></h2>
 
       {que === 'noticia' && <>
+        <Sugerencias api={api} elegir={(g) => setD((v) => ({
+          ...v, titular: g.titulo, resumen: g.resumen || '', imagen: g.imagen || '', url: g.medios[0]?.url || '',
+          medio: g.medios.map((m) => m.medio).join(' · '),
+          enlaces: g.medios.map((m) => ({ medio: m.medio, url: m.url })),
+        }))} />
         {enlace('Enlace de la noticia', 'Cópialo del periódico y pégalo aquí.')}
         <P t="Titular"><input value={d.titular || ''} onChange={pon('titular')} required /></P>
         <P t="Resumen" ayuda="Dos o tres líneas."><textarea rows={3} value={d.resumen || ''} onChange={pon('resumen')} /></P>
@@ -283,6 +288,44 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
       {error && <p className="error">{error}</p>}
       <button type="submit" className="btn bp-grande" disabled={enviando}>{enviando ? 'Guardando…' : `Meter en el boletín nº ${numero}`}</button>
     </form>
+  )
+}
+
+// «España al día»: las noticias de la semana que se recogen solas; se elige una y se rellena el formulario
+function Sugerencias({ api, elegir }) {
+  const [lista, setLista] = useState(null)
+  const [abierto, setAbierto] = useState(false)
+  const [buscar, setBuscar] = useState('')
+  const [elegida, setElegida] = useState('')
+  useEffect(() => {
+    if (abierto && !lista) api('sugerencias').then((j) => setLista(j.grupos || [])).catch(() => setLista([]))
+  }, [abierto]) // eslint-disable-line react-hooks/exhaustive-deps
+  const q = buscar.trim().toLowerCase()
+  const vistas = (lista || []).filter((g) => !q || (g.titulo + ' ' + (g.resumen || '')).toLowerCase().includes(q)).slice(0, 12)
+  return (
+    <div className="bp-sug">
+      <button type="button" className="bp-sug-abrir" onClick={() => setAbierto(!abierto)}>
+        📰 <b>Coger una noticia de «España al día»</b> <small>Las de esta semana en The Objective, El Debate, La Gaceta y El Español. {abierto ? '▲' : '▼'}</small>
+      </button>
+      {abierto && (
+        <div>
+          <input type="search" placeholder="Buscar: huelga, Sánchez, vivienda…" value={buscar} onChange={(e) => setBuscar(e.target.value)} />
+          {!lista ? <p>Cargando…</p> : !vistas.length ? <p>No hay ninguna con eso.</p> : (
+            <ul>
+              {vistas.map((g, i) => (
+                <li key={i} className={elegida === g.titulo ? 'activa' : ''}>
+                  <button type="button" onClick={() => { elegir(g); setElegida(g.titulo); setAbierto(false) }}>
+                    {g.imagen ? <img src={g.imagen} alt="" loading="lazy" /> : <span className="bp-sinimg" />}
+                    <span><b>{g.titulo}</b><small>{g.medios.map((m) => m.medio).join(' · ')} · {new Date(g.fecha).toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' })}</small></span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+      {elegida && !abierto && <small className="bp-sug-ok">✓ Rellenado con «{elegida}». Revisa los datos y añade el comentario.</small>}
+    </div>
   )
 }
 

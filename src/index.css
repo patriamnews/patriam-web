@@ -1611,3 +1611,14 @@ html, body, .sitio { background: var(--crema) !important; }
   .bp-lista img, .bp-sinimg { width: 52px; height: 40px; }
   .bp-acc { grid-column: 1 / -1; justify-content: flex-start; }
 }
+.bp-sug { background: #f7efe1; border: 1px solid #e3d6c1; padding: .7rem .9rem; margin-bottom: .4rem; }
+.bp-sug-abrir { display: block; width: 100%; text-align: left; background: none; border: 0; cursor: pointer; font: inherit; color: #2a211d; padding: 0; }
+.bp-sug-abrir small { display: block; color: #7a6d66; }
+.bp-sug input { width: 100%; box-sizing: border-box; margin: .6rem 0; padding: .55rem .7rem; border: 1px solid #d8c9b2; font: 1rem var(--sans); }
+.bp-sug ul { list-style: none; padding: 0; margin: 0; display: grid; gap: .35rem; max-height: 420px; overflow: auto; }
+.bp-sug li button { display: grid; grid-template-columns: 72px 1fr; gap: .6rem; width: 100%; text-align: left; background: #fff; border: 1px solid #eee3d2; padding: .4rem; cursor: pointer; font: inherit; color: #2a211d; }
+.bp-sug li button:hover { border-color: #7b1c2c; }
+.bp-sug li img, .bp-sug .bp-sinimg { width: 72px; height: 50px; object-fit: cover; }
+.bp-sug li b { display: block; line-height: 1.25; font-size: .95rem; }
+.bp-sug li small { color: #7a6d66; font-size: .8rem; }
+.bp-sug-ok { display: block; margin-top: .4rem; color: #2f6b3a; font-weight: 600; }
