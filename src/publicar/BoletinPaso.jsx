@@ -313,6 +313,31 @@ function Fila({ x, children, leer, api, onCambio }) {
   const [bio, setBio] = useState(x.datos.bio || '')
   const [abierto, setAbierto] = useState(false)
   const cuerpo = x.datos.texto || x.datos.critica || x.datos.comentario || x.datos.resumen || ''
+  const [copiado, setCopiado] = useState(false)
+  // Copiar texto: titular, medio, resumen, texto, comentario y firma, limpio, para pegarlo donde se hace la imagen
+  const textoParaCopiar = () => {
+    const d = x.datos
+    const limpio = (t) => (t || '').replace(/\*\*|\*/g, '').replace(/^>\s?/gm, '').replace(/^##\s+/gm, '').replace(/^-\s+/gm, '• ').trim()
+    const firma = d.comenta || d.autor || d.firma || ''
+    const partes = [tituloDe(x)]
+    if (d.medio) partes.push(d.medio)
+    if (d.entradilla) partes.push(limpio(d.entradilla))
+    if (d.resumen) partes.push(limpio(d.resumen))
+    if (d.texto) partes.push(limpio(d.texto))
+    if (d.critica) partes.push(limpio(d.critica))
+    if (d.comentario) partes.push((x.tipo === 'noticia' ? 'Comentario de PATRIAM: ' : '') + limpio(d.comentario) + (firma ? ' — ' + firma : ''))
+    else if (firma) partes.push('— ' + firma)
+    if (d.url) partes.push(d.url)
+    return partes.filter(Boolean).join('\n\n')
+  }
+  const copiar = async () => {
+    const t = textoParaCopiar()
+    try { await navigator.clipboard.writeText(t) } catch {
+      const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') } catch { /* nada */ } ta.remove()
+    }
+    setCopiado(true); setTimeout(() => setCopiado(false), 2000)
+  }
   const bajarCv = async () => {
     try {
       const j = await api('cv', { id: x.id })
@@ -356,7 +381,7 @@ function Fila({ x, children, leer, api, onCambio }) {
         )}
         {!['ficha', 'espana'].includes(x.tipo) && api && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
       </div>
-      <span className="bp-acc">{children}</span>
+      <span className="bp-acc">{x.tipo !== 'ficha' && <button type="button" className="btn btn-sec" onClick={copiar} title="Copia el titular, el resumen, el comentario y la firma para hacer la imagen">{copiado ? '✓ Copiado' : '📋 Copiar texto'}</button>}{children}</span>
     </li>
   )
 }
