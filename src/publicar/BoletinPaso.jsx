@@ -196,32 +196,6 @@ export default function BoletinPaso() {
         </section>
       )}
 
-      {/* Aprobar (Carlos e Isabel) */}
-      {e.puedeAprobar && pendientes.length > 0 && (
-        <section className="bp-caja bp-pend">
-          <span className="bp-num">!</span>
-          <div>
-            <h2>Esperan tu visto bueno ({pendientes.length})</h2>
-            {pendientes.some((x) => x.origen === 'correo') && <p className="bp-nota">Los marcados «por correo» han llegado a hola@movimientopatriam.com con el asunto «ARTICULO» y el nombre de quien firma. Ábrelos con «Leer» antes de aprobar.</p>}
-            <ul className="bp-lista">
-              {pendientes.map((x) => (
-                <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
-                  {x.tipo === 'firma' && (
-                    <select value={x.datos.seccion || 'Análisis'} onChange={(v) => accion('seccion', { id: x.id, seccion: v.target.value })} aria-label="Sección">
-                      {SECCIONES.map((s) => <option key={s}>{s}</option>)}
-                    </select>
-                  )}
-                  {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
-                  <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>
-                  {x.numero && x.tipo !== 'espana' && x.tipo !== 'ficha' && <button type="button" className="btn-texto" onClick={async () => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }}>A la recámara</button>}
-                  <button type="button" className="btn btn-sec" onClick={() => accion('rechazar', { id: x.id })}>No publicar</button>
-                </Fila>
-              ))}
-            </ul>
-          </div>
-        </section>
-      )}
-
       {/* Lo que ya hay */}
       {ab && (
         <section className="bp-caja">
@@ -229,18 +203,18 @@ export default function BoletinPaso() {
           <div>
             <h2>Lo que ya hay en el nº {ab.numero} <small>({delAbierto.length + (e.delEditor?.items?.length || 0)})</small></h2>
             <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Nada sale en el boletín hasta que alguien pulsa «Aprobar», tampoco los cambios.</p>
-            {(delAbierto.length || e.delEditor?.items?.length) ? (
+            {(delAbierto.length || pendientes.length || e.delEditor?.items?.length) ? (
               <ul className="bp-lista">
                 {(e.delEditor?.items || []).map((x, i) => (
                   <li key={'ed' + i} className="bp-del-editor">
                     <span><b>{x.titulo}</b><small>{[x.tipo, x.firma, x.medio].filter(Boolean).join(' · ')} · desde el editor</small></span>
                   </li>
                 ))}
-                {delAbierto.map((x) => (
+                {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])].map((x) => (
                   <Fila key={x.id} x={x} leer>
                     {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>}
                     {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
-                    {x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
+                    {x.numero === ab.numero && x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
                   </Fila>
                 ))}
               </ul>

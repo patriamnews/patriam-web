@@ -68,7 +68,9 @@ export default function Telefonos({ numeros }) {
               {(numeros || [1]).map((n) => <option key={n} value={n}>{n}</option>)}
             </select>
           </label>
-          <p>Enviado a <b>{nEnv}</b> de <b>{conWa.length}</b> personas con móvil.</p>
+          <p>Por WhatsApp: enviado a <b>{nEnv}</b> de <b>{conWa.length}</b> personas con móvil.{d.whatsappApi ? ' Con la API de WhatsApp Business se manda solo el día que sale el boletín.' : ''}</p>
+          <p className="bp-nota">Por correo: el boletín se manda solo el día que sale, a las 8:00, a los <b>{d.suscriptores}</b> suscriptores. «España al día» sale cada mañana a sus <b>{d.diarios}</b> suscriptores.{!d.brevo && ' Falta la clave de Brevo: sin ella no sale ningún correo.'}
+            {d.enviosAuto?.[String(numero)] && <> Nº {numero}: {d.enviosAuto[String(numero)].correo} correos enviados.</>}</p>
           {siguiente
             ? <button type="button" className="btn bp-grande" onClick={() => abrirWa(siguiente)}>Mandar al siguiente: {siguiente.nombre || siguiente.movil} ↗</button>
             : conWa.length ? <p className="bp-ok">✓ Ya se ha mandado a todos.</p> : null}
@@ -90,13 +92,16 @@ export default function Telefonos({ numeros }) {
       <section className="bp-caja">
         <span className="bp-num">2</span>
         <div>
-          <h2>Añadir teléfonos</h2>
-          <p>Una persona por línea: <b>nombre; móvil; correo</b> (el correo, si lo hay). También puedes pegar las columnas de un Excel. Los repetidos no se añaden dos veces.</p>
-          <textarea rows={5} style={{ width: '100%' }} value={pegado} onChange={(e) => setPegado(e.target.value)} placeholder={'María López; 600 123 456; maria@correo.es\nJuan Pérez; 611222333'} />
-          <p><button type="button" className="btn" disabled={!pegado.trim()} onClick={() => hacer('anadir', { personas: leerPegado(pegado) }, (j) => {
-            setPegado('')
-            return `${j.anadidos} añadidos` + (j.repetidos ? ` · ${j.repetidos} ya estaban` : '') + (j.malos?.length ? ` · sin móvil válido: ${j.malos.join(', ')}` : '')
-          })}>Añadir a la lista</button></p>
+          <h2>Añadir una persona</h2>
+          <Alta hacer={hacer} />
+          <details className="bp-leer"><summary>Pegar muchas a la vez (de un Excel)</summary>
+            <p>Una persona por línea: <b>nombre; móvil; correo</b>. Entran en el boletín quincenal (si tienen correo) y en WhatsApp (si tienen móvil).</p>
+            <textarea rows={5} style={{ width: '100%' }} value={pegado} onChange={(e) => setPegado(e.target.value)} placeholder={'María López; 600 123 456; maria@correo.es'} />
+            <p><button type="button" className="btn btn-sec" disabled={!pegado.trim()} onClick={() => hacer('anadir', { personas: leerPegado(pegado) }, (j) => {
+              setPegado('')
+              return `${j.anadidos} nuevos` + (j.repetidos ? ` · ${j.repetidos} ya estaban (actualizados)` : '') + (j.malos?.length ? ` · sin móvil ni correo válido: ${j.malos.join(', ')}` : '')
+            })}>Añadir a la lista</button></p>
+          </details>
         </div>
       </section>
 
@@ -119,7 +124,7 @@ export default function Telefonos({ numeros }) {
                   </div>
                 ) : (
                   <div>
-                    <small>{c.movil || 'sin móvil'}{c.email ? ' · ' + c.email : ''}{c.nota ? ' · ' + c.nota : ''}</small>
+                    <small>{c.movil || 'sin móvil'}{c.email ? ' · ' + c.email : ''}{c.abonado ? ' · abonado' : ''}{c.quincenal ? ' · boletín' : ''}{c.diaria ? ' · España al día' : ''}</small>
                     <b>{c.nombre || '(sin nombre)'}</b>
                     {enviados[c.id] && <em className="bp-espera tel-ok">✓ nº {numero} enviado</em>}
                     {!c.wa && c.movil && <em className="bp-espera">No recibe el boletín por WhatsApp</em>}
@@ -140,5 +145,32 @@ export default function Telefonos({ numeros }) {
         </div>
       </section>
     </div>
+  )
+}
+
+// Formulario corto: nombre, apellidos, correo, teléfono, si es abonado y qué recibe
+function Alta({ hacer }) {
+  const vacio = { nombre: '', apellidos: '', email: '', movil: '', abonado: false, quincenal: true, diaria: false, whatsapp: true, permiso: false }
+  const [f, setF] = useState(vacio)
+  const pon = (k) => (e) => setF({ ...f, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value })
+  const enviar = (ev) => {
+    ev.preventDefault()
+    hacer('anadir', { personas: [f] }, (j) => { setF(vacio); return j.anadidos ? `${f.nombre} añadido ✓` : j.repetidos ? `${f.nombre} ya estaba: actualizado ✓` : 'Falta un móvil o un correo válido.' })
+  }
+  return (
+    <form className="tel-alta" onSubmit={enviar}>
+      <label>Nombre<input value={f.nombre} onChange={pon('nombre')} required /></label>
+      <label>Apellidos<input value={f.apellidos} onChange={pon('apellidos')} /></label>
+      <label>Correo<input type="email" value={f.email} onChange={pon('email')} /></label>
+      <label>Teléfono<input type="tel" value={f.movil} onChange={pon('movil')} placeholder="600 123 456" /></label>
+      <label className="tel-check"><input type="checkbox" checked={f.abonado} onChange={pon('abonado')} /> Es abonado</label>
+      <fieldset className="tel-recibe"><legend>Recibe</legend>
+        <label className="tel-check"><input type="checkbox" checked={f.quincenal} onChange={pon('quincenal')} disabled={!f.email} /> El boletín quincenal por correo</label>
+        <label className="tel-check"><input type="checkbox" checked={f.diaria} onChange={pon('diaria')} disabled={!f.email} /> «España al día» cada mañana por correo</label>
+        <label className="tel-check"><input type="checkbox" checked={f.whatsapp} onChange={pon('whatsapp')} disabled={!f.movil} /> El boletín por WhatsApp</label>
+      </fieldset>
+      <label className="tel-check"><input type="checkbox" checked={f.permiso} onChange={pon('permiso')} required /> Nos ha dado su permiso para enviárselo</label>
+      <button className="btn" disabled={!f.email && !f.movil}>Añadir</button>
+    </form>
   )
 }

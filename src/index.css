@@ -1733,3 +1733,10 @@ html, body, .sitio { background: var(--crema) !important; }
 .rrss-auto select { width: 100%; }
 .rrss-auto .check { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 0.8rem; font-weight: 400; }
 .rrss-auto ul { margin: 0.4rem 0 0; padding-left: 1.1rem; font-size: 0.9rem; }
+.tel-alta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.6rem 1rem; align-items: end; margin-top: 0.6rem; }
+.tel-alta label { display: flex; flex-direction: column; font-weight: 600; font-size: 0.9rem; gap: 0.2rem; }
+.tel-alta input:not([type=checkbox]) { padding: 0.5rem 0.6rem; border: 1px solid #d9cbb3; border-radius: 5px; font: inherit; font-weight: 400; }
+.tel-alta .tel-check { flex-direction: row; align-items: center; gap: 0.45rem; font-weight: 400; }
+.tel-recibe { grid-column: 1 / -1; border: 1px solid #eadfcb; border-radius: 6px; padding: 0.4rem 0.8rem 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
+.tel-recibe legend { font-weight: 600; font-size: 0.9rem; padding: 0 0.3rem; }
+.tel-alta > .tel-check:last-of-type, .tel-alta > .btn { grid-column: 1 / -1; justify-self: start; }
