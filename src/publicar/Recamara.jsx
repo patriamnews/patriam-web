@@ -4,11 +4,11 @@
 import { useEffect, useState } from 'react'
 
 const TIPOS = [
-  ['', 'Todo'], ['firma', 'Artículos'], ['noticia', 'Noticias'], ['Libro', 'Libros'], ['Película', 'Películas'], ['Podcast', 'Podcasts y vídeos'], ['editorial', 'Editoriales'],
+  ['', 'Todo'], ['firma', 'Artículos'], ['noticia', 'Noticias'], ['Libro', 'Libros'], ['Película', 'Películas'], ['Podcast', 'Podcasts y vídeos'], ['editorial', 'Editoriales'], ['frase', 'Frases'],
 ]
-const etiqueta = (x) => x.tipo === 'firma' ? 'Artículo' : x.tipo === 'noticia' ? 'Noticia' : x.tipo === 'editorial' ? 'Editorial' : (x.datos.tipo || 'Recomendación')
+const etiqueta = (x) => x.tipo === 'firma' ? 'Artículo' : x.tipo === 'noticia' ? 'Noticia' : x.tipo === 'editorial' ? 'Editorial' : x.tipo === 'frase' ? 'Frase de cabecera' : (x.datos.tipo || 'Recomendación')
 const encaja = (x, t) => !t || x.tipo === t || (x.tipo === 'recomendacion' && (t === 'Podcast' ? /podcast|v[ií]deo|documental/i.test(x.datos.tipo || '') : new RegExp(t, 'i').test(x.datos.tipo || '')))
-const titulo = (x) => x.datos.titulo || x.datos.titular || '(sin título)'
+const titulo = (x) => x.tipo === 'frase' ? `«${x.datos.frase || ''}»${x.datos.autor ? ' — ' + x.datos.autor : ''}` : (x.datos.titulo || x.datos.titular || '(sin título)')
 const dia = (f) => { try { return new Date(f).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) } catch { return '' } }
 
 export default function Recamara({ api, abierto, onSubir, onUsado }) {

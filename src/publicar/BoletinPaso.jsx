@@ -22,6 +22,7 @@ const QUE = {
   firma: { titulo: 'Un artículo con firma', texto: 'Un texto propio o de un colaborador, como «Yo fui a un cole de monjas».', icono: '✍️' },
   recomendacion: { titulo: 'Una recomendación', texto: 'El podcast, el vídeo, el libro o la película de la semana.', icono: '⭐' },
   editorial: { titulo: 'La editorial', texto: 'El texto que abre el boletín.', icono: '🖋️' },
+  frase: { titulo: 'La frase de cabecera', texto: 'La cita que sale arriba, bajo «con criterio». Una por boletín.', icono: '❝' },
   espana: { titulo: 'Una noticia para España al día', texto: 'Una que no puede faltar (también de Instagram, X o YouTube). Sale destacada toda la semana.', icono: '🇪🇸' },
 }
 const fechaLarga = (f) => { try { return new Date(f + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }) } catch { return f } }
@@ -32,7 +33,7 @@ const firmaDe = (p) => {
   if (/^laura olivares/i.test(n) || e === 'lauraolivareses@yahoo.es') return 'LOC'
   return n
 }
-const tituloDe = (it) => it.datos.titular || it.datos.titulo || '(sin título)'
+const tituloDe = (it) => it.tipo === 'frase' ? `«${it.datos.frase || ''}»` : (it.datos.titular || it.datos.titulo || '(sin título)')
 
 export default function BoletinPaso() {
   const { perfil } = useAuth()
@@ -310,7 +311,7 @@ export default function BoletinPaso() {
 }
 
 function Fila({ x, children, leer, api, onCambio, principal }) {
-  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día' }
+  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día', frase: 'Frase de cabecera' }
   const [bio, setBio] = useState(x.datos.bio || '')
   const [abierto, setAbierto] = useState(false)
   const cuerpo = x.datos.texto || x.datos.critica || x.datos.comentario || x.datos.resumen || ''
@@ -534,6 +535,12 @@ function Formulario({ que, perfil, api, numero, editar, onCancelar, onHecho }) {
         <P t="¿Por qué la recomendamos?" ayuda={d.tipo === 'Película' ? 'Sin contar el final.' : undefined}><textarea rows={4} value={d.comentario || ''} onChange={pon('comentario')} required /></P>
         {d.tipo === 'Película' && <P t="Crítica completa (si la tienes)" ayuda="Esta sí puede contar el final: sale sola en el boletín siguiente."><textarea rows={10} value={d.critica || ''} onChange={pon('critica')} /></P>}
         {firma()}
+      </>}
+
+      {que === 'frase' && <>
+        <P t="La frase" ayuda="Sin comillas: se ponen solas."><textarea rows={3} value={d.frase || ''} onChange={pon('frase')} required /></P>
+        <P t="De quién es"><input value={d.autor || ''} onChange={pon('autor')} placeholder="Hernán Cortés" /></P>
+        <small className="bp-nota">Va una por boletín: si ya había otra en este número, pasa a la recámara.</small>
       </>}
 
       {que === 'editorial' && <>
