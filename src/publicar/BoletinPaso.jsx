@@ -18,6 +18,7 @@ const QUE = {
   firma: { titulo: 'Un artículo con firma', texto: 'Un texto propio o de un colaborador, como «Yo fui a un cole de monjas».', icono: '✍️' },
   recomendacion: { titulo: 'Una recomendación', texto: 'El podcast, el vídeo, el libro o la película de la semana.', icono: '⭐' },
   editorial: { titulo: 'La editorial', texto: 'El texto que abre el boletín.', icono: '🖋️' },
+  espana: { titulo: 'Una noticia para España al día', texto: 'Una que no puede faltar (también de Instagram, X o YouTube). Sale destacada toda la semana.', icono: '🇪🇸' },
 }
 const fechaLarga = (f) => { try { return new Date(f + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }) } catch { return f } }
 // Cada uno firma en el boletín como lo hace siempre: Isabel O.C., LOC (Laura)…
@@ -179,7 +180,7 @@ export default function BoletinPaso() {
 }
 
 function Fila({ x, children, leer, api, onCambio }) {
-  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación' }
+  const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día' }
   const [bio, setBio] = useState(x.datos.bio || '')
   const bajarCv = async () => {
     try {
@@ -274,6 +275,17 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
     <form className="bp-form" onSubmit={enviar}>
       <button type="button" className="pub-volver bp-atras" onClick={onCancelar}>← Elegir otra cosa</button>
       <h2>{QUE[que].icono} {QUE[que].titulo} <small>para el boletín nº {numero}</small></h2>
+
+      {que === 'espana' && <>
+        {enlace('Enlace', 'De un periódico, Instagram, X, YouTube… Si es de Instagram o X, el titular y la foto hay que ponerlos a mano.')}
+        <P t="Titular"><input value={d.titular || ''} onChange={pon('titular')} required /></P>
+        <P t="Resumen" ayuda="Una o dos líneas."><textarea rows={3} value={d.resumen || ''} onChange={pon('resumen')} /></P>
+        <P t="Foto"><Imagen valor={d.imagen} cambiar={pon('imagen')} /></P>
+        <P t="Nombre del botón" ayuda="El medio o la cuenta: «El Debate», «Instagram de Vox»…"><input value={d.medio || ''} onChange={pon('medio')} /></P>
+        <P t="¿De qué es?">
+          <div className="bp-opciones">{['Política', 'Economía'].map((t) => <button key={t} type="button" className={(d.tema || 'Política') === t ? 'activo' : ''} onClick={() => pon('tema')(t)}>{t}</button>)}</div>
+        </P>
+      </>}
 
       {que === 'noticia' && <>
         <Sugerencias api={api} elegir={(g) => setD((v) => ({
