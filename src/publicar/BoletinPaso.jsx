@@ -44,6 +44,7 @@ export default function BoletinPaso() {
   const [fecha, setFecha] = useState('')
   const [pest, setPest] = useState('este')
   const [aRecamara, setARecamara] = useState(false)
+  const [editar, setEditar] = useState(null)
 
   const api = async (accion, cuerpo) => {
     const b = base || urlBoletin(await getAjustes())
@@ -94,6 +95,18 @@ export default function BoletinPaso() {
           <button type="button" className="btn btn-sec" onClick={() => { setHecho(''); setPest('recamara') }}>Ver la recámara</button>
         </div>
       </div>
+      </>
+    )
+  }
+
+  if (editar) {
+    return (
+      <>{barra}
+      <Formulario
+        que={editar.tipo} perfil={perfil} api={api} numero={ab?.numero} editar={editar}
+        onCancelar={() => setEditar(null)}
+        onHecho={(j, texto) => { setE(j); setEditar(null); setHecho(texto) }}
+      />
       </>
     )
   }
@@ -197,6 +210,7 @@ export default function BoletinPaso() {
                       {SECCIONES.map((s) => <option key={s}>{s}</option>)}
                     </select>
                   )}
+                  {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                   <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>
                   <button type="button" className="btn btn-sec" onClick={() => accion('rechazar', { id: x.id })}>No publicar</button>
                 </Fila>
@@ -211,7 +225,8 @@ export default function BoletinPaso() {
         <section className="bp-caja">
           <span className="bp-num">3</span>
           <div>
-            <h2>Lo que ya hay en el nº {ab.numero}</h2>
+            <h2>Lo que ya hay en el nº {ab.numero} <small>({delAbierto.length + (e.delEditor?.items?.length || 0)})</small></h2>
+            <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Con «Cambiar» lo corriges; si no apruebas tú, el cambio espera a Carlos o Isabel.</p>
             {(delAbierto.length || e.delEditor?.items?.length) ? (
               <ul className="bp-lista">
                 {(e.delEditor?.items || []).map((x, i) => (
@@ -220,7 +235,8 @@ export default function BoletinPaso() {
                   </li>
                 ))}
                 {delAbierto.map((x) => (
-                  <Fila key={x.id} x={x}>
+                  <Fila key={x.id} x={x} leer>
+                    {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                     {(x.mio || e.puedeAprobar) && x.tipo !== 'espana' && <button type="button" className="btn-texto" onClick={async () => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }}>A la recámara</button>}
                     {(x.mio || e.puedeAprobar) && <button type="button" className="btn-texto" onClick={() => { if (window.confirm('¿Quitar «' + tituloDe(x) + '» del boletín?')) accion('borrar', { id: x.id }) }}>Quitar</button>}
                   </Fila>
@@ -252,7 +268,7 @@ function Fila({ x, children, leer, api, onCambio }) {
       <div>
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
         <b>{tituloDe(x)}</b>
-        {x.estado === 'pendiente' && <em className="bp-espera">Esperando aprobación</em>}
+        {x.estado === 'pendiente' && <em className="bp-espera">{x.propuestaDe ? `Cambio de ${x.propuestaDe}, esperando aprobación` : 'Esperando aprobación'}</em>}
         {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
         {leer && x.tipo === 'ficha' && (
           <details className="bp-leer" open={!x.datos.bio}>
@@ -277,8 +293,10 @@ function Fila({ x, children, leer, api, onCambio }) {
 }
 
 /* ---------- el formulario de cada cosa ---------- */
-function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
-  const [d, setD] = useState({ seccion: 'Actualidad', tipo: 'Libro', firma: firmaDe(perfil) })
+function Formulario({ que, perfil, api, numero, editar, onCancelar, onHecho }) {
+  const [d, setD] = useState(editar
+    ? { seccion: 'Actualidad', tipo: 'Libro', ...editar.datos, titular: editar.datos.titular || (editar.tipo === 'espana' ? editar.datos.titulo : undefined), firma: editar.datos.autor || editar.datos.comenta || editar.datos.firma || '' }
+    : { seccion: 'Actualidad', tipo: 'Libro', firma: firmaDe(perfil) })
   const [enviando, setEnviando] = useState(false)
   const [leyendo, setLeyendo] = useState(false)
   const [error, setError] = useState('')
@@ -308,6 +326,13 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
     ev.preventDefault()
     setError(''); setEnviando(true)
     try {
+      if (editar) {
+        const j = await api('editar', { id: editar.id, datos: d })
+        const x = j.items.find((y) => y.id === editar.id)
+        onHecho(j, x?.estado === 'pendiente' ? 'Cambio guardado. Saldrá cuando Carlos o Isabel lo aprueben.' : 'Cambiado ✓')
+        setEnviando(false)
+        return
+      }
       const j = await api('subir', { tipo: que, datos: d, destino: destino.current })
       const nuevo = j.items.find((x) => x.id === j.nuevo)
       onHecho(j, j.recamara ? 'Guardado en la recámara. Cuando prepares un boletín, lo eliges allí con «Usar en el nº…».' : nuevo?.estado === 'pendiente'
@@ -333,7 +358,7 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
   return (
     <form className="bp-form" onSubmit={enviar}>
       <button type="button" className="pub-volver bp-atras" onClick={onCancelar}>← Elegir otra cosa</button>
-      <h2>{QUE[que].icono} {QUE[que].titulo} <small>{numero ? `para el boletín nº ${numero}` : 'para la recámara'}</small></h2>
+      <h2>{QUE[que].icono} {editar ? 'Cambiar: ' + (editar.datos.titulo || editar.datos.titular || '') : QUE[que].titulo} <small>{editar ? '' : numero ? `para el boletín nº ${numero}` : 'para la recámara'}</small></h2>
 
       {que === 'espana' && <>
         {enlace('Enlace', 'De un periódico, Instagram, X, YouTube… Si es de Instagram o X, el titular y la foto hay que ponerlos a mano.')}
@@ -394,11 +419,13 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
       </>}
 
       {error && <p className="error">{error}</p>}
+      {editar ? <button type="submit" className="btn bp-grande" disabled={enviando}>{enviando ? 'Guardando…' : 'Guardar el cambio'}</button> :
       <div className="bp-botones">
         {numero && <button type="submit" className="btn bp-grande" disabled={enviando} onClick={() => { destino.current = 'boletin' }}>{enviando ? 'Guardando…' : `Meter en el boletín nº ${numero}`}</button>}
         {que !== 'espana' && <button type="submit" className={numero ? 'btn btn-sec bp-grande' : 'btn bp-grande'} disabled={enviando} onClick={() => { destino.current = 'recamara' }}>{enviando && !numero ? 'Guardando…' : 'Guardar en la recámara'}</button>}
       </div>
-      {numero && que !== 'espana' && <small className="bp-nota">«Guardar en la recámara» lo deja preparado para otro número, sin meterlo en este.</small>}
+      }
+      {!editar && numero && que !== 'espana' && <small className="bp-nota">«Guardar en la recámara» lo deja preparado para otro número, sin meterlo en este.</small>}
     </form>
   )
 }
