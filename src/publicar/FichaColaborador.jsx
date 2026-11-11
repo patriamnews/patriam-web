@@ -9,7 +9,7 @@ import { urlBoletin } from '../lib/boletin'
 
 // Quién tiene que presentarse, con la firma que usa en el boletín y su cargo
 const PIDE_FICHA = {
-  'lauraolivareses@yahoo.es': { firma: 'Laura O.C.', cargo: 'Compliance Officer en el sector bancario' },
+  'lauraolivareses@yahoo.es': { firma: 'LOC', cargo: 'Compliance Officer en el sector bancario' },
 }
 
 async function llamar(accion, cuerpo) {
