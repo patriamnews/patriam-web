@@ -1725,3 +1725,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-lista li { grid-template-columns: 96px 1fr auto; }
 .bp-lista .bp-foto img, .bp-lista .bp-foto .bp-sinimg { width: 96px; height: 64px; }
 @media (max-width: 640px) { .bp-lista li { grid-template-columns: 76px 1fr; } .bp-lista .bp-foto img, .bp-lista .bp-foto .bp-sinimg { width: 76px; height: 54px; } }
+
+/* RRSS › publicación automática */
+.rrss-auto { background: #fff; border: 1px solid #e3d6c1; border-left: 4px solid #c9b99c; padding: 0.8rem 1rem; margin-bottom: 1rem; }
+.rrss-auto.activa { border-left-color: #2f6b3a; }
+.rrss-auto h3 { margin: 0 0 0.3rem; }
+.rrss-auto select { width: 100%; }
+.rrss-auto .check { display: inline-flex; align-items: center; gap: 0.3rem; margin-right: 0.8rem; font-weight: 400; }
+.rrss-auto ul { margin: 0.4rem 0 0; padding-left: 1.1rem; font-size: 0.9rem; }

@@ -166,6 +166,57 @@ function TarjetaArticulo({ a, hoy, conexion, onHecho }) {
     </article>
   )
 }
+
+/* Publicación automática: un artículo del boletín cada día, con las cuentas conectadas de quien la activa */
+function PublicacionAutomatica({ datos }) {
+  const [a, setA] = useState(null)
+  const [msg, setMsg] = useState('')
+  const guardar = (cambios) => { setMsg(''); rrss('auto', cambios).then(setA).catch((e) => setMsg('✗ ' + e.message)) }
+  useEffect(() => { rrss('auto').then(setA).catch((e) => setMsg('✗ ' + e.message)) }, [])
+  if (!a) return <div className="rrss-auto"><p>{msg || 'Cargando la publicación automática…'}</p></div>
+  const todos = (datos?.boletines || []).flatMap((b) => b.articulos.map((x) => ({ ...x, numero: b.numero })))
+  const elegida = a.elegidas?.[a.hoy] || ''
+  const red = (r) => a.redes.includes(r)
+  return (
+    <div className={'rrss-auto' + (a.activo ? ' activa' : '')}>
+      <h3>🤖 Publicación automática {a.activo ? <span className="ok">· activada</span> : <span className="letra-pequena">· desactivada</span>}</h3>
+      <p className="letra-pequena">Cada día, a la hora que elijas, se publica solo un artículo del boletín en las redes marcadas, con las cuentas conectadas de quien la activa{a.quien ? ` (ahora: ${a.quien})` : ''}. Si no eliges ninguno, va el que toca por calendario y, si no, el siguiente sin publicar.</p>
+      <div className="dos-col">
+        <label>Hora de publicación
+          <select value={a.hora} onChange={(e) => guardar({ hora: Number(e.target.value) })}>
+            {Array.from({ length: 16 }, (_, i) => i + 7).map((h) => <option key={h} value={h}>{h}:00</option>)}
+          </select>
+        </label>
+        <fieldset className="grupo"><legend>Redes</legend>
+          {Object.entries(NOMBRE_RED).map(([k, v]) => (
+            <label key={k} className="check"><input type="checkbox" checked={red(k)} onChange={() => guardar({ redes: red(k) ? a.redes.filter((x) => x !== k) : [...a.redes, k] })} /> {v}{!a.conexion?.[k] && <small> (sin conectar)</small>}</label>
+          ))}
+        </fieldset>
+      </div>
+      <label>Artículo de hoy
+        <select value={elegida} onChange={(e) => guardar({ elegir: { dia: a.hoy, id: e.target.value } })}>
+          <option value="">Automático{a.hoyToca && !elegida ? ` · «${a.hoyToca.titulo}»` : ''}</option>
+          {todos.map((x) => <option key={x.id} value={x.id}>Nº {x.numero} · {x.titulo}{x.autor ? ' · ' + x.autor : ''}</option>)}
+        </select>
+      </label>
+      {a.hecho
+        ? <p className="ok letra-pequena">✔ Hoy ya se ha publicado «{a.hecho.titulo}»: {Object.entries(a.hecho.redes).map(([r, v]) => `${NOMBRE_RED[r]} ${v.slice(0, 1)}`).join(' · ')}</p>
+        : a.hoyToca && <p className="letra-pequena">Hoy saldrá a las {a.hora}:00: «{a.hoyToca.titulo}».</p>}
+      <div className="acciones">
+        {a.activo
+          ? <button type="button" className="btn btn-claro" onClick={() => guardar({ activo: false })}>Desactivar</button>
+          : <button type="button" className="btn" onClick={() => guardar({ activo: true })}>Activar con mis cuentas</button>}
+        {a.activo && !a.mia && <button type="button" className="btn-texto" onClick={() => guardar({ activo: true })}>Usar mis cuentas en vez de las de {a.quien}</button>}
+      </div>
+      {msg && <p className="error">{msg}</p>}
+      {Object.keys(a.ultimos || {}).length > 0 && (
+        <details className="rrss-mas"><summary>Últimos días</summary>
+          <ul>{Object.entries(a.ultimos).map(([d, x]) => <li key={d}><b>{d}</b> · «{x.titulo}» · {Object.entries(x.redes).map(([r, v]) => `${NOMBRE_RED[r]}: ${v}`).join(' · ')}</li>)}</ul>
+        </details>
+      )}
+    </div>
+  )
+}
 export function ArticuloDelDia({ conexion }) {
   const [datos, setDatos] = useState(null)
   const [error, setError] = useState('')
@@ -174,10 +225,11 @@ export function ArticuloDelDia({ conexion }) {
   if (error) return <p className="error">{error}</p>
   if (!datos) return <p>Cargando los artículos del boletín…</p>
   const [actual, ...anteriores] = datos.boletines
-  if (!actual) return <p>Todavía no hay ningún boletín publicado.</p>
+  if (!actual) return <><PublicacionAutomatica datos={datos} /><p>Todavía no hay ningún boletín publicado.</p></>
   const hoyArt = actual.articulos.find((a) => a.dia === datos.hoy)
   return (
     <div className="rrss-boletin">
+      <PublicacionAutomatica datos={datos} />
       <p className="letra-pequena">Los artículos propios de PATRIAM del boletín (editorial y firmas; las noticias de otros medios no). Desde el sábado siguiente al envío, uno cada día. También puedes mandar cualquiera suelto cuando quieras.</p>
       <h3>Boletín nº {actual.numero} · {hoyArt ? 'hoy toca «' + hoyArt.titulo + '»' : actual.articulos[0] && datos.hoy < actual.articulos[0].dia ? 'empieza el ' + diaLargo(actual.articulos[0].dia) : 'calendario terminado'}</h3>
       {actual.articulos.length ? actual.articulos.map((a) => <TarjetaArticulo key={a.id} a={a} hoy={datos.hoy} conexion={conexion} onHecho={cargar} />) : <p>Este boletín no tiene artículos propios.</p>}

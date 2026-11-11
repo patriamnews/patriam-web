@@ -17,17 +17,22 @@ const XAPI = 'https://api.x.com';
 const BOLETIN_REDES = 'https://boletin.movimientopatriam.es/redes/';
 const BOLETIN_WEB = 'https://boletin.movimientopatriam.es/';
 
+$CLI = PHP_SAPI === 'cli';
 /* ---------- imágenes públicas ---------- */
-if (isset($_GET['img'])) {
+if (!$CLI && isset($_GET['img'])) {
   if (!preg_match('/^([0-9a-f]{32})\.(png|jpg)$/', (string)$_GET['img'], $m) || !is_file($f = privado() . '/rrss-img/' . $m[0])) { http_response_code(404); exit; }
   header('Content-Type: image/' . ($m[2] === 'jpg' ? 'jpeg' : 'png'));
   header('Cache-Control: public, max-age=31536000, immutable');
   readfile($f); exit;
 }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permitido'], 405);
-$p = json_decode(file_get_contents('php://input'), true) ?: [];
-$h = exigirEquipo($p);
-$quien = (function ($h) { $eq = json_decode((string)@file_get_contents(privado() . '/equipo.json'), true) ?: []; return $eq[$h]['nombre'] ?? ($eq[$h]['email'] ?? ''); })($h);
+function nombreDe($h) { $eq = json_decode((string)@file_get_contents(privado() . '/equipo.json'), true) ?: []; return $eq[$h]['nombre'] ?? ($eq[$h]['email'] ?? ''); }
+if ($CLI) { $p = ['accion' => $argv[1] ?? '']; $h = ''; $quien = 'Automático'; }
+else {
+  if ($_SERVER['REQUEST_METHOD'] !== 'POST') salir(['error' => 'Método no permitido'], 405);
+  $p = json_decode(file_get_contents('php://input'), true) ?: [];
+  $h = exigirEquipo($p);
+  $quien = nombreDe($h);
+}
 
 function leerJson($n) { $f = privado() . '/' . $n; return is_file($f) ? (json_decode(file_get_contents($f), true) ?: []) : []; }
 function guardarJson($n, $d) { $f = privado() . '/' . $n; file_put_contents($f, json_encode($d, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), LOCK_EX); @chmod($f, 0600); }
@@ -71,18 +76,20 @@ function guardarImagen($v) {
   else return null;
   if (!$bin || strlen($bin) > 8000000) return null;
   $tipo = @getimagesizefromstring($bin)['mime'] ?? '';
-  if (!in_array($tipo, ['image/png', 'image/jpeg'], true)) return null;
-  // Instagram solo acepta JPEG: los PNG se convierten si se puede
-  if ($tipo === 'image/png' && function_exists('imagecreatefromstring') && ($im = @imagecreatefromstring($bin))) {
-    $w = imagesx($im); $hh = imagesy($im); $fondo = imagecreatetruecolor($w, $hh);
-    imagefill($fondo, 0, 0, imagecolorallocate($fondo, 255, 255, 255)); imagecopy($fondo, $im, 0, 0, 0, 0, $w, $hh);
+  if (!in_array($tipo, ['image/png', 'image/jpeg', 'image/gif'], true)) return null;
+  // Instagram solo acepta JPEG: los PNG y los GIF (su primer fotograma) se convierten; las pequeñas se agrandan a 1080 px
+  if (function_exists('imagecreatefromstring') && ($tipo !== 'image/jpeg' || (@getimagesizefromstring($bin)[0] ?? 1080) < 640) && ($im = @imagecreatefromstring($bin))) {
+    $w = imagesx($im); $hh = imagesy($im); $f = $w < 640 ? 1080 / $w : 1; $W = (int)round($w * $f); $H = (int)round($hh * $f);
+    $fondo = imagecreatetruecolor($W, $H);
+    imagefill($fondo, 0, 0, imagecolorallocate($fondo, 255, 255, 255)); imagecopyresampled($fondo, $im, 0, 0, 0, 0, $W, $H, $w, $hh);
     ob_start(); imagejpeg($fondo, null, 92); $bin = ob_get_clean(); $tipo = 'image/jpeg';
   }
+  if ($tipo === 'image/gif') return null;
   $ext = $tipo === 'image/jpeg' ? 'jpg' : 'png';
   @mkdir(privado() . '/rrss-img', 0750, true);
   $n = md5($bin) . '.' . $ext;
   file_put_contents(privado() . '/rrss-img/' . $n, $bin);
-  $esquema = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https' ? 'https' : 'http';
+  $esquema = PHP_SAPI === 'cli' || (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https' ? 'https' : 'http';
   $host = preg_replace('/^publicar\./', '', $_SERVER['HTTP_HOST'] ?? 'movimientopatriam.es');
   return ['bin' => $bin, 'tipo' => $tipo, 'url' => $esquema . '://' . $host . '/api/rrss-publicar.php?img=' . $n];
 }
@@ -134,9 +141,9 @@ if ($accion === 'boletin') {
 
 /* Artículo del día: los artículos PROPIOS de PATRIAM del boletín (editorial y firmas), nunca las noticias de otros medios.
    Desde el sábado siguiente al envío del boletín toca uno cada día, por orden: primero la editorial y luego las firmas. */
-if ($accion === 'articulos') {
+function articulosBoletin() {
   $ch = curl_init(BOLETIN_WEB . 'boletines.js?t=' . time()); curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 25, CURLOPT_FOLLOWLOCATION => true]); $js = (string)curl_exec($ch); curl_close($ch);
-  if (!preg_match('/window\.BOLETINES\s*=\s*(\[.*\]);?\s*$/s', $js, $mm)) salir(['error' => 'No se han podido leer los boletines.'], 502);
+  if (!preg_match('/window\.BOLETINES\s*=\s*(\[.*\]);?\s*$/s', $js, $mm)) throw new Exception('No se han podido leer los boletines.');
   $bols = array_values(array_filter(json_decode(rtrim($mm[1], "; \n"), true) ?: [], fn($b) => ($b['estado'] ?? '') === 'aprobado' && !empty($b['fecha'])));
   usort($bols, fn($a, $b) => ($b['numero'] ?? 0) <=> ($a['numero'] ?? 0));
   $abs = fn($u) => !$u ? '' : (preg_match('#^https?://#', $u) ? $u : BOLETIN_WEB . ltrim($u, '/'));
@@ -156,74 +163,154 @@ if ($accion === 'articulos') {
     $ed = $b['editorial'] ?? [];
     if (trim($ed['texto'] ?? '') !== '') $arts[] = ['id' => 'ed-' . $b['id'], 'tipo' => 'Editorial', 'titulo' => $ed['titulo'] ?: 'Editorial', 'autor' => $ed['firma'] ?? '',
       'entradilla' => $resumen($ed['texto']), 'imagen' => $abs($ed['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/editorial/' . rawurlencode($b['id'])];
-    foreach ($b['colaboraciones'] ?? [] as $c) {
+    $cols = $b['colaboraciones'] ?? [];
+    usort($cols, fn($x, $y) => !empty($y['apertura']) <=> !empty($x['apertura']));   // la apertura del número, la primera
+    foreach ($cols as $c) {
       if (trim($c['titulo'] ?? '') === '' || empty($c['id'])) continue;
       $arts[] = ['id' => 'col-' . $c['id'], 'tipo' => 'Firma', 'titulo' => $c['titulo'], 'autor' => $c['autor'] ?? '',
-        'entradilla' => $resumen(($c['texto'] ?? '') ?: ($c['entradilla'] ?? '')), 'imagen' => $abs($c['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/colaboracion/' . rawurlencode($c['id'])];
+        'entradilla' => $resumen(($c['texto'] ?? '') ?: ($c['entradilla'] ?? '')), 'imagen' => $abs($c['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . 'articulo/' . rawurlencode($c['id']), 'apertura' => !empty($c['apertura'])];
     }
+    $ap = array_values(array_filter($arts, fn($x) => !empty($x['apertura'])));
+    if ($ap) $arts = array_merge($ap, array_values(array_filter($arts, fn($x) => empty($x['apertura']))));
     // Calendario: del sábado siguiente al envío, un artículo por día
     $d = new DateTime($b['fecha'], new DateTimeZone('Europe/Madrid'));
     $d->modify('next saturday');
     foreach ($arts as $i => &$a) { $a['dia'] = (clone $d)->modify("+$i day")->format('Y-m-d'); $a['publicado'] = $hecho[$a['id']] ?? []; } unset($a);
     $salida[] = ['numero' => $b['numero'] ?? null, 'fecha' => $b['fecha'], 'articulos' => $arts];
   }
-  salir(['hoy' => $hoy, 'boletines' => $salida]);
+  return ['hoy' => $hoy, 'boletines' => $salida];
 }
+if ($accion === 'articulos') { try { salir(articulosBoletin()); } catch (Exception $e) { salir(['error' => $e->getMessage()], 502); } }
 
-if ($accion === 'publicar') {
-  $k = misClaves($h); $cx = conexion($k);
-  $red = $p['red'] ?? ''; $texto = trim((string)($p['texto'] ?? ''));
-  if (!in_array($red, ['x', 'facebook', 'instagram'], true)) salir(['error' => 'Red no válida'], 400);
-  if (empty($cx[$red])) salir(['error' => 'Primero conecta tu cuenta de ' . ['x' => 'X', 'facebook' => 'Facebook', 'instagram' => 'Instagram'][$red] . ' en «Conectar mis cuentas».'], 400);
-  $img = !empty($p['imagen']) ? guardarImagen($p['imagen']) : null;
-  if (!empty($p['imagen']) && !$img) salir(['error' => 'La imagen tiene que ser PNG o JPG y de menos de 8 MB.'], 400);
-  if ($red === 'instagram' && !$img) salir(['error' => 'Instagram necesita una imagen.'], 400);
+/* Publica en una red con las claves de la persona $h. Devuelve el enlace de lo publicado o lanza el error. */
+function publicarEn($h, $quien, $red, $texto, $imagen = '', $origen = '') {
+  $k = misClaves($h); $cx = conexion($k); $texto = trim((string)$texto);
+  if (!in_array($red, ['x', 'facebook', 'instagram'], true)) throw new Exception('Red no válida');
+  if (empty($cx[$red])) throw new Exception('Primero conecta tu cuenta de ' . ['x' => 'X', 'facebook' => 'Facebook', 'instagram' => 'Instagram'][$red] . ' en «Conectar mis cuentas».');
+  $img = $imagen ? guardarImagen($imagen) : null;
+  if ($imagen && !$img) throw new Exception('La imagen tiene que ser PNG o JPG y de menos de 8 MB.');
+  if ($red === 'instagram' && !$img) throw new Exception('Instagram necesita una imagen.');
   $id = ''; $url = '';
   if ($red === 'x') {
     $largoX = mb_strlen(preg_replace('#https?://\S+#u', str_repeat('x', 23), $texto));   // X cuenta cada enlace como 23
-    if ($largoX > 280) salir(['error' => 'En X caben 280 caracteres (hay ' . $largoX . ').'], 400);
+    if ($largoX > 280) throw new Exception('En X caben 280 caracteres (hay ' . $largoX . ').');
     $cuerpo = ['text' => $texto];
     if ($img) {
       $u = XAPI . '/2/media/upload';
       [$c, $j, $e] = http('POST', $u, [xFirma('POST', $u, $k['x'])], ['media' => new CURLStringFile($img['bin'], 'imagen.' . ($img['tipo'] === 'image/png' ? 'png' : 'jpg'), $img['tipo']), 'media_category' => 'tweet_image']);
       $mid = $j['data']['id'] ?? ($j['media_id_string'] ?? '');
-      if (!$mid) salir(['error' => 'X no ha aceptado la imagen: ' . errorApi($j, $c, $e)], 502);
+      if (!$mid) throw new Exception('X no ha aceptado la imagen: ' . errorApi($j, $c, $e));
       $cuerpo['media'] = ['media_ids' => [$mid]];
     }
     $u = XAPI . '/2/tweets';
     [$c, $j, $e] = http('POST', $u, [xFirma('POST', $u, $k['x']), 'Content-Type: application/json'], json_encode($cuerpo, JSON_UNESCAPED_UNICODE));
     $id = $j['data']['id'] ?? '';
-    if (!$id) salir(['error' => 'X no lo ha publicado: ' . errorApi($j, $c, $e) . ($c === 402 || $c === 403 ? ' (la cuenta de desarrollador de X tiene que tener saldo: se paga por publicación)' : '')], 502);
+    if (!$id) throw new Exception('X no lo ha publicado: ' . errorApi($j, $c, $e) . ($c === 402 || $c === 403 ? ' (la cuenta de desarrollador de X tiene que tener saldo: se paga por publicación)' : ''));
     $url = 'https://x.com/' . ($k['x']['usuario'] ?? 'i') . '/status/' . $id;
   } elseif ($red === 'facebook') {
     $m = $k['meta'];
     $q = $img ? ['url' => $img['url'], 'caption' => $texto] : ['message' => $texto];
     [$c, $j, $e] = http('POST', GRAPH . '/' . rawurlencode($m['pageId']) . ($img ? '/photos' : '/feed'), [], http_build_query($q + ['access_token' => $m['pageToken']]));
     $id = $j['post_id'] ?? ($j['id'] ?? '');
-    if (!$id) salir(['error' => 'Facebook no lo ha publicado: ' . errorApi($j, $c, $e)], 502);
+    if (!$id) throw new Exception('Facebook no lo ha publicado: ' . errorApi($j, $c, $e));
     $url = 'https://www.facebook.com/' . $id;
   } else {
     $m = $k['meta'];
     [$c, $j, $e] = http('POST', GRAPH . '/' . rawurlencode($m['igId']) . '/media', [], http_build_query(['image_url' => $img['url'], 'caption' => $texto, 'access_token' => $m['pageToken']]));
     $cont = $j['id'] ?? '';
-    if (!$cont) salir(['error' => 'Instagram no ha aceptado la imagen: ' . errorApi($j, $c, $e)], 502);
+    if (!$cont) throw new Exception('Instagram no ha aceptado la imagen: ' . errorApi($j, $c, $e));
     for ($n = 0; $n < 8; $n++) {   // Instagram prepara la imagen antes de publicarla
       [$c, $j] = http('GET', GRAPH . '/' . $cont . '?fields=status_code&access_token=' . rawurlencode($m['pageToken']));
       if (($j['status_code'] ?? '') === 'FINISHED') break;
-      if (($j['status_code'] ?? '') === 'ERROR') salir(['error' => 'Instagram no ha podido preparar la imagen.'], 502);
+      if (($j['status_code'] ?? '') === 'ERROR') throw new Exception('Instagram no ha podido preparar la imagen.');
       sleep(2);
     }
     [$c, $j, $e] = http('POST', GRAPH . '/' . rawurlencode($m['igId']) . '/media_publish', [], http_build_query(['creation_id' => $cont, 'access_token' => $m['pageToken']]));
     $id = $j['id'] ?? '';
-    if (!$id) salir(['error' => 'Instagram no lo ha publicado: ' . errorApi($j, $c, $e)], 502);
+    if (!$id) throw new Exception('Instagram no lo ha publicado: ' . errorApi($j, $c, $e));
     [, $j] = http('GET', GRAPH . '/' . $id . '?fields=permalink&access_token=' . rawurlencode($m['pageToken']));
     $url = $j['permalink'] ?? 'https://www.instagram.com/';
   }
   $lista = leerJson('rrss-publicados.json');
   array_unshift($lista, ['id' => bin2hex(random_bytes(6)), 'red' => $red, 'postId' => $id, 'url' => $url, 'texto' => mb_substr($texto, 0, 2200),
-    'imagen' => $img['url'] ?? '', 'fecha' => gmdate('c'), 'quien' => $quien, 'h' => $h, 'origen' => mb_substr((string)($p['origen'] ?? ''), 0, 80)]);
+    'imagen' => $img['url'] ?? '', 'fecha' => gmdate('c'), 'quien' => $quien, 'h' => $h, 'origen' => mb_substr((string)$origen, 0, 80)]);
   guardarJson('rrss-publicados.json', array_slice($lista, 0, 1000));
-  salir(['ok' => true, 'url' => $url]);
+  return $url;
+}
+if ($accion === 'publicar') {
+  try { salir(['ok' => true, 'url' => publicarEn($h, $quien, $p['red'] ?? '', $p['texto'] ?? '', $p['imagen'] ?? '', $p['origen'] ?? '')]); }
+  catch (Exception $e) { salir(['error' => $e->getMessage()], 400); }
+}
+
+/* ---------- Publicación automática: un artículo del boletín al día ----------
+   Lo activa una persona del equipo con SUS cuentas conectadas (normalmente Álvaro): se publica con sus claves.
+   rrss-auto.json: {activo, h, quien, hora, redes[], elegidas{dia: id}, hechos{dia: {...}}}
+   El cron de Hostinger lanza cada hora «php rrss-publicar.php diario»; a partir de la hora fijada publica el del día (una sola vez). */
+function textosAuto($a) {
+  $t = $a['titulo']; $r = trim($a['entradilla'] ?? ''); $en = $a['enlace']; $firma = $a['autor'] ? "\n\n✍️ " . $a['autor'] : '';
+  $sobra = 280 - mb_strlen($t . $firma . "\n\n\n\n") - 23 - mb_strlen("\n\n#PATRIAM");
+  $rx = mb_strlen($r) > $sobra ? ($sobra > 30 ? preg_replace('/\s+\S*$/u', '', mb_substr($r, 0, $sobra - 1)) . '…' : '') : $r;
+  return [
+    'x' => $t . ($rx ? "\n\n" . $rx : '') . $firma . "\n\n" . $en . "\n\n#PATRIAM",
+    'facebook' => $t . "\n\n" . $r . $firma . "\n\nLéelo completo: " . $en,
+    'instagram' => '📰 ' . $t . "\n\n" . $r . $firma . "\n\nLéelo entero en el boletín de PATRIAM (enlace en la bio).\n\nDios, Patria, Justicia 🇪🇸\n\n#PATRIAM #España #actualidad #ConCriterio",
+  ];
+}
+function autoLeer() { return leerJson('rrss-auto.json') + ['activo' => false, 'h' => '', 'quien' => '', 'hora' => 10, 'redes' => ['x', 'facebook', 'instagram'], 'elegidas' => [], 'hechos' => []]; }
+/* El artículo de un día: el elegido a mano; si no, el que toca por calendario; si no, el siguiente sin publicar del último boletín */
+function articuloDelDia($dia, $auto, $datos) {
+  $todos = []; foreach ($datos['boletines'] as $b) foreach ($b['articulos'] as $a) $todos[$a['id']] = $a;
+  if (!empty($auto['elegidas'][$dia]) && isset($todos[$auto['elegidas'][$dia]])) return [$todos[$auto['elegidas'][$dia]], 'elegido'];
+  foreach ($datos['boletines'][0]['articulos'] ?? [] as $a) if (($a['dia'] ?? '') === $dia) return [$a, 'calendario'];
+  $usados = array_column(array_values($auto['hechos']), 'id');
+  foreach ($datos['boletines'][0]['articulos'] ?? [] as $a) if (!$a['publicado'] && !in_array($a['id'], $usados, true)) return [$a, 'siguiente'];
+  return [null, ''];
+}
+function autoPublicar($forzar = false) {
+  $auto = autoLeer();
+  $ahora = new DateTime('now', new DateTimeZone('Europe/Madrid')); $hoy = $ahora->format('Y-m-d');
+  if (!$auto['activo'] || !$auto['h']) return 'Desactivada.';
+  if (!$forzar && (int)$ahora->format('G') < (int)$auto['hora']) return 'Todavía no es la hora (' . $auto['hora'] . ':00).';
+  if (!$forzar && !empty($auto['hechos'][$hoy])) return 'Hoy ya está publicado.';
+  try { [$a, $por] = articuloDelDia($hoy, $auto, articulosBoletin()); } catch (Exception $e) { return $e->getMessage(); }
+  if (!$a) return 'No hay artículo para hoy.';
+  $tx = textosAuto($a); $res = [];
+  foreach ($auto['redes'] as $red) {
+    if ($red === 'instagram' && !$a['imagen']) { $res[$red] = '— sin imagen'; continue; }
+    try { $res[$red] = '✔ ' . publicarEn($auto['h'], 'Automático', $red, $tx[$red], $a['imagen'], mb_substr('artículo · ' . $a['id'] . ' · ' . $a['titulo'], 0, 80)); }
+    catch (Exception $e) { $res[$red] = '✗ ' . $e->getMessage(); }
+  }
+  $auto['hechos'][$hoy] = ['id' => $a['id'], 'titulo' => $a['titulo'], 'por' => $por, 'redes' => $res, 'fecha' => gmdate('c')];
+  $auto['hechos'] = array_slice($auto['hechos'], -90, null, true);
+  guardarJson('rrss-auto.json', $auto);
+  $mal = array_filter($res, fn($v) => str_starts_with($v, '✗'));
+  if ($mal) avisar('Redes: no se ha podido publicar «' . $a['titulo'] . '»', implode("\n", array_map(fn($r, $v) => "$r: $v", array_keys($res), $res)) . "\n\nRevisa las claves en publicar.movimientopatriam.es › RRSS › Conectar mis cuentas.");
+  return '«' . $a['titulo'] . '» → ' . json_encode($res, JSON_UNESCAPED_UNICODE);
+}
+if ($CLI) {
+  if ($accion === 'diario') { echo autoPublicar() . "\n"; exit; }
+  echo "Uso: php rrss-publicar.php diario\n"; exit;
+}
+/* Ver y cambiar la publicación automática. Al activarla se usa la cuenta de quien la activa. */
+if ($accion === 'auto') {
+  $auto = autoLeer();
+  if (isset($p['activo'])) {
+    $auto['activo'] = (bool)$p['activo'];
+    if ($auto['activo']) { if (!array_filter(conexion(misClaves($h)))) salir(['error' => 'Primero conecta tus cuentas en «Conectar mis cuentas».'], 400); $auto['h'] = $h; $auto['quien'] = $quien; }
+  }
+  if (isset($p['hora'])) $auto['hora'] = max(0, min(23, (int)$p['hora']));
+  if (isset($p['redes']) && is_array($p['redes'])) $auto['redes'] = array_values(array_intersect(['x', 'facebook', 'instagram'], $p['redes']));
+  if (isset($p['elegir']['dia']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $p['elegir']['dia'])) {
+    $id = preg_replace('/[^A-Za-z0-9_.-]/', '', (string)($p['elegir']['id'] ?? ''));
+    if ($id) $auto['elegidas'][$p['elegir']['dia']] = $id; else unset($auto['elegidas'][$p['elegir']['dia']]);
+    $auto['elegidas'] = array_filter($auto['elegidas'], fn($d) => $d >= gmdate('Y-m-d', time() - 86400), ARRAY_FILTER_USE_KEY);
+  }
+  if (count($p) > 2) guardarJson('rrss-auto.json', $auto);
+  $hoy = (new DateTime('now', new DateTimeZone('Europe/Madrid')))->format('Y-m-d');
+  $prox = null; try { [$a, $por] = articuloDelDia($hoy, $auto, articulosBoletin()); if ($a) $prox = ['id' => $a['id'], 'titulo' => $a['titulo'], 'por' => $por]; } catch (Exception $e) {}
+  salir(['activo' => $auto['activo'], 'quien' => $auto['quien'], 'mia' => $auto['h'] === $h, 'hora' => $auto['hora'], 'redes' => $auto['redes'],
+    'elegidas' => $auto['elegidas'], 'hoy' => $hoy, 'hecho' => $auto['hechos'][$hoy] ?? null, 'hoyToca' => $prox,
+    'ultimos' => array_slice(array_reverse($auto['hechos'], true), 0, 10, true), 'conexion' => conexion(misClaves($h))]);
 }
 
 if ($accion === 'publicados') {
