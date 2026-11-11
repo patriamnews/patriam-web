@@ -399,7 +399,7 @@ function Fila({ x, children, leer, api, onCambio }) {
 /* Imágenes de un artículo: se suben una o varias; elige la que va quien subió el artículo (si solo hay una, se queda esa) */
 function OpcionesImagen({ x, api, onCambio }) {
   const ops = x.imagenesOpciones?.length ? x.imagenesOpciones : (x.datos.imagen ? [x.datos.imagen] : [])
-  if (!ops.length) return <p className="bp-sinfoto">Sin imagen todavía.</p>
+  if (!ops.length) return <p className="bp-sinfoto">Sin imagen</p>
   const elegir = async (url) => { try { onCambio(await api('imagen-elegir', { id: x.id, url })) } catch (e) { window.alert(e.message) } }
   return (
     <div className="bp-imgs">

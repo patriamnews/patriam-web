@@ -1808,3 +1808,21 @@ html, body, .sitio { background: var(--crema) !important; }
   .bp-lista li { grid-template-columns: 1fr; }
   .bp-acc { justify-content: flex-start; max-width: none; }
 }
+
+/* Todas las filas iguales: título en una línea, estado y herramientas en una línea, imagen siempre del mismo alto, botones sin saltar de línea */
+.bp-lista li { height: 182px; box-sizing: border-box; overflow: hidden; }
+.bp-pieza > small, .bp-pieza > b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bp-estados { flex-wrap: nowrap; overflow: hidden; height: 1.35rem; }
+.bp-estados .bp-espera { white-space: nowrap; }
+.bp-herr { flex-wrap: nowrap; white-space: nowrap; }
+.bp-imgs { flex-wrap: nowrap; height: 60px; margin-top: .4rem; }
+.bp-imgs small { white-space: nowrap; }
+.bp-sinfoto { width: 96px; height: 60px; margin: .4rem 0 0; display: grid; place-items: center; text-align: center; font-size: .72rem; background: #f4eee3; border: 1px dashed #d8c9b2; border-radius: 4px; box-sizing: border-box; }
+.bp-acc { flex-wrap: nowrap; max-width: none; }
+.bp-acc .btn, .bp-acc .bp-principal { white-space: nowrap; }
+.bp-lista li:has(.bp-leer[open]), .bp-lista li:has(.bp-lector) { height: auto; }
+@media (max-width: 640px) {
+  .bp-lista li { height: auto; }
+  .bp-acc { flex-wrap: wrap; }
+  .bp-herr { flex-wrap: wrap; }
+}
