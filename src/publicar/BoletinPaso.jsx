@@ -71,9 +71,23 @@ export default function BoletinPaso() {
   useEffect(() => { window.scrollTo(0, 0) }, [que, hecho, pest])
 
   const [aviso, setAviso] = useState('')
-  const elegir = async (id, si) => {
+  const aprobar = async (id) => {
     setAviso('')
-    try { setE(await api('elegir', { id, si })) } catch (x) { setAviso(x.message) }
+    try { setE(await api('aprobar', { id })) } catch (x) { setAviso(x.message) }
+  }
+  const hacerPrincipal = async (id) => {
+    setAviso('')
+    try { setE(await api('principal', { id })) } catch (x) { setAviso(x.message) }
+  }
+  const [enviando, setEnviando] = useState(false)
+  const [enviado, setEnviado] = useState(null)
+  const enviar = async () => {
+    const p = e.items.find((x) => x.id === e.principal)
+    const sale = ab.fecha > e.hoy ? ` El boletín sale HOY en la web (estaba previsto para el ${fechaLarga(ab.fecha)}).` : ''
+    if (!window.confirm(`Se manda ya el boletín nº ${ab.numero} por correo a ${e.suscriptores || 0} suscriptores${p ? `, con «${tituloDe(p)}» como noticia principal` : ''}.${sale} ¿Seguimos?`)) return
+    setEnviando(true); setAviso('')
+    try { const j = await api('enviar'); setE(j); setEnviado(j.enviados) } catch (x) { setAviso(x.message) }
+    setEnviando(false)
   }
   const accion = async (a, cuerpo) => {
     setError('')
@@ -227,14 +241,9 @@ export default function BoletinPaso() {
             <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Nada sale en el boletín hasta que alguien lo aprueba, tampoco los cambios.</p>
             {e.puedeAprobar && (
               <div className="bp-tope">
-                <p><b>Solo pueden salir {e.maxArticulos || 10} artículos por número.</b> Ve pulsando «Elegir» en lo que quieres que salga; no se aprueba nada hasta que pulses «Aprobar lo elegido». Hasta entonces puedes poner uno y quitar otro.
-                  Si ya hay {e.maxArticulos || 10}, para elegir otro tienes que quitar uno de los elegidos (o pasar uno ya aprobado a la recámara).</p>
-                <p className="bp-cuenta"><b>{(e.articulosAprobados || 0) + (e.articulosElegidos || 0)} de {e.maxArticulos || 10} artículos</b>
-                  {' '}· {e.articulosAprobados || 0} aprobados · {e.articulosElegidos || 0} elegidos{(e.seleccion || []).length > (e.articulosElegidos || 0) ? ` · ${(e.seleccion || []).length - (e.articulosElegidos || 0)} otras cosas elegidas` : ''}</p>
+                <p>Pulsa <b>«Aprobar»</b> en cada cosa que tiene que salir. Lo que no apruebes no sale. Cuando esté todo, abajo tienes <b>«Enviar»</b>.</p>
+                <p className="bp-cuenta"><b>{e.articulosAprobados || 0} de {e.maxArticulos || 10} artículos aprobados</b>{(e.articulosAprobados || 0) >= (e.maxArticulos || 10) ? ' · ya está lleno: para aprobar otro, pasa uno a la recámara' : ''}</p>
                 {aviso && <p className="error">{aviso}</p>}
-                <button type="button" className="btn bp-grande" disabled={!(e.seleccion || []).length} onClick={async () => { if (window.confirm(`Se aprueban las ${(e.seleccion || []).length} cosas elegidas y salen en el boletín. ¿Seguimos?`)) await accion('aprobar-eleccion') }}>
-                  ✓ Aprobar lo elegido ({(e.seleccion || []).length})
-                </button>
               </div>
             )}
             {(delAbierto.length || pendientes.length || e.delEditor?.items?.length) ? (
@@ -246,9 +255,10 @@ export default function BoletinPaso() {
                 ))}
                 {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])].map((x) => (
                   <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
-                    {e.puedeAprobar && x.estado === 'pendiente' && ((e.seleccion || []).includes(x.id)
-                      ? <button type="button" className="btn bp-elegido" onClick={() => elegir(x.id, false)}>✓ Elegido · quitar</button>
-                      : <button type="button" className="btn" onClick={() => elegir(x.id, true)}>Elegir</button>)}
+                    {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => aprobar(x.id)}>✓ Aprobar</button>}
+                    {e.puedeAprobar && x.tipo === 'firma' && x.numero === ab.numero && (x.id === e.principal
+                      ? <span className="bp-principal">★ Noticia principal</span>
+                      : <button type="button" className="btn btn-sec" onClick={() => hacerPrincipal(x.id)}>★ Hacer principal</button>)}
                     {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                     {x.numero === ab.numero && x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
                   </Fila>
@@ -260,6 +270,34 @@ export default function BoletinPaso() {
           </div>
         </section>
       )}
+
+      {/* Enviar */}
+      {ab && e.puedeAprobar && (() => {
+        const p = e.items.find((x) => x.id === e.principal)
+        const env = e.envio || {}
+        return (
+          <section className="bp-caja">
+            <span className="bp-num">4</span>
+            <div>
+              <h2>Enviar el nº {ab.numero}</h2>
+              <p>El correo y el WhatsApp abren con <b>una noticia principal</b> a lo grande; debajo, el resto de lo aprobado; y al final, <b>«Leer el boletín completo»</b>.</p>
+              {p ? (
+                <div className="bp-envio-principal">
+                  {p.datos.imagen ? <img src={p.datos.imagen} alt="" /> : null}
+                  <div><small>★ Noticia principal{e.principalElegida ? '' : ' · propuesta: la que más puede correr'}</small><b>{tituloDe(p)}</b>
+                    {p.estado !== 'aprobado' && <em className="bp-espera">Sin aprobar todavía: apruébala arriba para que salga</em>}
+                    <span className="bp-nota">Para cambiarla, pulsa «★ Hacer principal» en otro artículo.</span></div>
+                </div>
+              ) : <p className="bp-nota">Todavía no hay ningún artículo de PATRIAM para abrir el envío.</p>}
+              {env.enviado && <p className="aviso-ok">Ya enviado: {env.correos} correos{env.whatsapp ? ` y ${env.whatsapp} WhatsApp` : ''} ({new Date(env.enviado).toLocaleString('es-ES', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}). Si vuelves a pulsar, solo se manda a quien falte.</p>}
+              {enviado && <p className="aviso-ok">Hecho: {enviado.correos} correos{enviado.whatsapp ? ` y ${enviado.whatsapp} WhatsApp` : ''} enviados{enviado.errores ? ` · ${enviado.errores} no se han podido mandar` : ''}.</p>}
+              {(env.errores || []).length > 0 && <p className="bp-nota">Últimos fallos: {env.errores.map((x) => `${x.a} (${x.motivo})`).join(' · ')}</p>}
+              <button type="button" className="btn bp-grande" disabled={enviando} onClick={enviar}>{enviando ? 'Enviando…' : `✉ Enviar ahora a ${e.suscriptores || 0} suscriptores`}</button>
+              <p className="bp-nota">Si no lo envías tú, sale solo el {fechaLarga(ab.fecha)} a las 8:00 con lo que esté aprobado. Por WhatsApp, sin la API de Meta, se manda desde <button type="button" className="btn-texto" onClick={() => setPest('telefonos')}>Teléfonos WhatsApp</button>.</p>
+            </div>
+          </section>
+        )
+      })()}
     </div>
     </>
   )
@@ -284,6 +322,7 @@ function Fila({ x, children, leer, api, onCambio }) {
       <div>
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
         <b>{tituloDe(x)}</b>
+        {x.estado === 'aprobado' && <em className="bp-espera bp-aprobado">✓ Aprobado</em>}
         {x.estado === 'pendiente' && <em className="bp-espera">{x.propuestaDe ? `Cambio de ${x.propuestaDe}, esperando aprobación` : 'Esperando aprobación'}</em>}
         {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
         {leer && x.tipo === 'ficha' && (
@@ -310,7 +349,7 @@ function Fila({ x, children, leer, api, onCambio }) {
             <button type="button" className="btn-texto" onClick={() => setAbierto(false)}>Cerrar</button>
           </div>
         )}
-        {x.tipo === 'firma' && api && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
+        {!['ficha', 'espana'].includes(x.tipo) && api && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
       </div>
       <span className="bp-acc">{children}</span>
     </li>
@@ -330,8 +369,8 @@ function OpcionesImagen({ x, api, onCambio }) {
   const elegir = async (url) => { try { onCambio(await api('imagen-elegir', { id: x.id, url })) } catch (e) { window.alert(e.message) } }
   return (
     <div className="bp-imgs">
-      {ops.length > 1 && <small>{x.puedoElegirImagen ? 'Elige la imagen que va:' : 'Imágenes propuestas (elige quien subió el artículo):'}</small>}
-      {ops.length > 1 && (
+      {ops.length > 0 && <small>{x.puedoElegirImagen ? (ops.length > 1 ? 'Elige la imagen que va (la marcada es la que sale):' : 'Imagen (añade otras para poder elegir):') : 'Imágenes propuestas (elige quien subió el artículo):'}</small>}
+      {ops.length > 0 && (
         <div className="bp-imgs-lista">
           {ops.map((u) => (
             <button key={u} type="button" className={u === x.datos.imagen ? 'elegida' : ''} disabled={!x.puedoElegirImagen || u === x.datos.imagen} onClick={() => elegir(u)} title={u === x.datos.imagen ? 'La que va' : 'Elegir esta'}>
@@ -340,7 +379,7 @@ function OpcionesImagen({ x, api, onCambio }) {
           ))}
         </div>
       )}
-      <label className="btn-texto">{subiendo ? 'Subiendo…' : ops.length ? '+ Añadir otra imagen' : '+ Añadir imagen'}<input type="file" accept="image/*" hidden onChange={anadir} /></label>
+      <label className="btn-texto">{subiendo ? 'Subiendo…' : ops.length ? '+ Añadir otra imagen para elegir' : '+ Añadir imagen'}<input type="file" accept="image/*" hidden onChange={anadir} /></label>
     </div>
   )
 }

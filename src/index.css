@@ -1757,3 +1757,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-imgs-lista button.elegida { border-color: #2e6b3a; }
 .bp-imgs-lista button span { position: absolute; top: 2px; right: 2px; background: #2e6b3a; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 12px; line-height: 18px; text-align: center; }
 .bp-imgs-lista button:disabled { cursor: default; }
+
+.bp-aprobado { background: #e3f1e5 !important; color: #2e6b3a !important; }
+.bp-principal { display: inline-block; font-weight: 700; color: #a8873a; padding: .35rem .2rem; font-size: .9rem; }
+.bp-envio-principal { display: flex; gap: .8rem; align-items: flex-start; background: #fbf6ee; border: 1px solid #e6d9c4; border-left: 4px solid #a8873a; border-radius: 6px; padding: .7rem; margin: .6rem 0 1rem; }
+.bp-envio-principal img { width: 120px; height: 80px; object-fit: cover; border-radius: 4px; flex: none; }
+.bp-envio-principal div { display: flex; flex-direction: column; gap: .2rem; }
+.bp-envio-principal small { color: #a8873a; font-weight: 600; }
+@media (max-width: 560px) { .bp-envio-principal { flex-direction: column; } .bp-envio-principal img { width: 100%; height: auto; } }
