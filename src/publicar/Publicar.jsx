@@ -23,6 +23,7 @@ import Rrss from './Rrss'
 import Aprobaciones from '../admin/Aprobaciones'
 import Claves from './Claves'
 import CalendarioBoletin from './CalendarioBoletin'
+import EntrarCon from '../components/EntrarCon'
 import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
 import Estadisticas from './Estadisticas'
@@ -250,6 +251,7 @@ function Entrar() {
         <label>Contraseña<input type="password" required autoComplete="current-password" value={f.clave} onChange={(e) => setF({ ...f, clave: e.target.value })} /></label>
         {error && <p className="error">{error}</p>}
         <button className="btn btn-bloque" disabled={enviando}>{enviando ? 'Entrando…' : 'Entrar'}</button>
+        <EntrarCon volverA="/publicar" />
         <div className="pub-instalar"><InstalarApp /></div>
       </form>
     </div>

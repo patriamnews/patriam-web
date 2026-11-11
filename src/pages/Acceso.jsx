@@ -6,6 +6,7 @@ import { useAuth, destino } from '../lib/auth'
 import { USUARIOS_DEMO, CLIENTES_DEMO } from '../lib/mock/seed'
 import { reiniciarDemo } from '../lib/mock/client'
 import { useSeo } from '../lib/seo'
+import EntrarCon from '../components/EntrarCon'
 
 // Acceso único para todos: equipo, asociados y clientes.
 // Tras entrar, se reconoce el tipo de cuenta por el correo y se lleva a cada uno a su área.
@@ -76,6 +77,7 @@ export default function Acceso() {
           {msg && <p className="aviso-ok">{msg}</p>}
           <button className="btn btn-bloque">{modo === 'entrar' ? 'Entrar' : modo === 'registro' ? 'Crear cuenta' : 'Enviar enlace'}</button>
         </form>
+        {modo === 'entrar' && <EntrarCon volverA="/acceso" />}
         <div className="enlaces-acceso">
           {modo !== 'entrar' && <button className="btn-texto" onClick={() => setModo('entrar')}>Ya tengo cuenta</button>}
           {modo !== 'registro' && <button className="btn-texto" onClick={() => setModo('registro')}>Crear una cuenta</button>}

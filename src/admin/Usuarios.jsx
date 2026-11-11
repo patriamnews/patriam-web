@@ -9,11 +9,24 @@ export default function Usuarios() {
   const { perfil } = useAuth()
   const [lista, setLista] = useState([])
   const [msg, setMsg] = useState('')
+  const [otros, setOtros] = useState(null)   // perfil_id → [correos de Google/Microsoft con los que también entra]
 
   const cargar = () => supabase.from('perfiles').select('*').order('creado_at').then(({ data }) => setLista(data || []))
+  const cargarOtros = () => supabase.from('correos_entrada').select('email, perfil_id').then(({ data, error }) => {
+    if (error) return setOtros(false)   // falta ejecutar la migración 2026-11-11-entrar-google-microsoft.sql
+    const m = {}; (data || []).forEach((x) => { (m[x.perfil_id] = m[x.perfil_id] || []).push(x.email) }); setOtros(m)
+  })
   useEffect(() => {
-    cargar()
+    cargar(); cargarOtros()
   }, [])
+  const guardarOtros = async (u, texto) => {
+    const lista = [...new Set(texto.split(/[\s,;]+/).map((x) => x.trim().toLowerCase()).filter((x) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x)))]
+    setMsg('')
+    const { error: e1 } = await supabase.from('correos_entrada').delete().eq('perfil_id', u.id)
+    const { error: e2 } = lista.length ? await supabase.from('correos_entrada').upsert(lista.map((email) => ({ email, perfil_id: u.id }))) : { error: null }
+    setMsg(e1 || e2 ? 'Error: ' + (e1 || e2).message : 'Guardado: ' + (u.nombre || u.email) + ' podrá entrar también con ' + (lista.join(', ') || '— (ninguno)') + '.')
+    cargarOtros()
+  }
 
   const cambiar = async (u, cambios) => {
     setMsg('')
@@ -44,7 +57,7 @@ export default function Usuarios() {
       <div className="tabla-scroll">
         <table className="tabla">
           <thead>
-            <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Área</th><th>Redes</th><th>Tienda</th><th>Activo</th><th>Alta</th></tr>
+            <tr><th>Nombre</th><th>Email</th>{otros !== false && <th>Entra también con (Google / Microsoft)</th>}<th>Rol</th><th>Área</th><th>Redes</th><th>Tienda</th><th>Activo</th><th>Alta</th></tr>
           </thead>
           <tbody>
             {lista.map((u) => (
@@ -53,6 +66,12 @@ export default function Usuarios() {
                   <input className="input-tabla" defaultValue={u.nombre} onBlur={(e) => e.target.value !== u.nombre && cambiar(u, { nombre: e.target.value })} />
                 </td>
                 <td>{u.email}</td>
+                {otros !== false && (
+                  <td>
+                    <input className="input-tabla" placeholder="nombre@gmail.com, nombre@outlook.com" key={(otros?.[u.id] || []).join(',')} defaultValue={(otros?.[u.id] || []).join(', ')}
+                      onBlur={(e) => e.target.value.replace(/\s/g, '') !== (otros?.[u.id] || []).join(',') && guardarOtros(u, e.target.value)} />
+                  </td>
+                )}
                 <td>
                   <select value={u.rol} onChange={(e) => cambiar(u, { rol: e.target.value, area: e.target.value === 'editor' ? u.area || 'ciudadana' : null })}>
                     {Object.entries(ROLES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
@@ -75,6 +94,7 @@ export default function Usuarios() {
         </table>
       </div>
       <p className="letra-pequena">
+        <b>Entrar con Google o Microsoft:</b> ponga en «Entra también con» el Gmail o el Outlook de cada persona. La primera vez que entre con él (botones «Google» y «Microsoft» de la pantalla de acceso) tendrá los mismos permisos que su usuario de siempre.<br />
         Para cambiar el email de un usuario: Supabase › Authentication › Users. El cambio se refleja aquí automáticamente. Para dar de baja a alguien, desmarque "Activo": pierde el acceso al momento.
       </p>
     </>

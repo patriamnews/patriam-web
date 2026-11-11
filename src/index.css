@@ -1662,3 +1662,10 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-del-editor { display: flex; padding: 0.55rem 0; border-bottom: 1px solid var(--linea); }
 .bp-del-editor span { display: grid; gap: 0.1rem; }
 .bp-del-editor small { color: var(--suave); }
+
+/* Entrar con Google / Microsoft */
+.entrar-con { display: grid; gap: 0.5rem; margin-top: 1rem; }
+.entrar-con-o { text-align: center; color: var(--suave); font-size: 0.85rem; display: flex; align-items: center; gap: 0.6rem; }
+.entrar-con-o::before, .entrar-con-o::after { content: ""; flex: 1; border-top: 1px solid var(--linea); }
+.btn-oauth { display: flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.7rem 1rem; background: #fff; border: 1px solid var(--linea); border-radius: 4px; font: 500 0.95rem var(--sans, inherit); cursor: pointer; color: var(--tinta); }
+.btn-oauth:hover { border-color: var(--tinta); }
