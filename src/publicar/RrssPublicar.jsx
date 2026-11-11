@@ -125,19 +125,15 @@ export function DelBoletin({ conexion }) {
    Solo artículos propios de PATRIAM del boletín (editorial y firmas), nunca las noticias de otros medios.
    Desde el sábado siguiente al envío del boletín toca uno cada día; también se puede mandar uno suelto cuando se quiera. */
 const diaLargo = (d) => { try { return new Date(d + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }) } catch { return d } }
+// Cada post: título, resumen, enlace al artículo y su foto (la foto va aparte, como imagen del post)
+const largoX = (t) => t.replace(/https?:\/\/\S+/g, 'x'.repeat(23)).length   // X cuenta cada enlace como 23
 function textosArticulo(a) {
-  const firma = a.autor ? ' — ' + a.autor : ''
-  const cab = a.tipo === 'Editorial' ? 'Editorial de PATRIAM' : 'Firma invitada en el boletín de PATRIAM'
-  const finX = '\n\nLéelo en el boletín 👉 ' + a.enlace
-  let entr = a.entradilla || ''
-  const base = `«${a.titulo}»${firma}`
-  const sobra = 280 - (base.length + 2 + finX.length)
-  if (entr.length > sobra) entr = sobra > 20 ? entr.slice(0, sobra - 1).replace(/\s+\S*$/, '') + '…' : ''
-  return {
-    x: base + (entr ? '\n\n' + entr : '') + finX,
-    facebook: `${cab}\n«${a.titulo}»${firma}\n\n${a.entradilla}\n\nLéelo completo en «Lo que hay que saber: con criterio»:\n${a.enlace}\n\nDios, Patria, Justicia.`,
-    instagram: `${cab}\n«${a.titulo}»${firma}\n\n${a.entradilla}\n\nLéelo completo en nuestro boletín (enlace en la bio).\n\nDios, Patria, Justicia.\n#PATRIAM #DiosPatriaJusticia #España`,
-  }
+  const r = a.entradilla || ''
+  let rx = r
+  const sobra = 280 - largoX(`${a.titulo}\n\n\n\n${a.enlace}`)
+  if (rx.length > sobra) rx = sobra > 20 ? rx.slice(0, sobra - 1).replace(/\s+\S*$/, '') + '…' : ''
+  const comun = `${a.titulo}\n\n${r}\n\nLéelo completo: ${a.enlace}`
+  return { x: `${a.titulo}\n\n${rx}\n\n${a.enlace}`, facebook: comun, instagram: comun }
 }
 function TarjetaArticulo({ a, hoy, conexion, onHecho }) {
   const [red, setRed] = useState('x')
@@ -156,7 +152,8 @@ function TarjetaArticulo({ a, hoy, conexion, onHecho }) {
           {Object.entries(NOMBRE_RED).map(([k, v]) => <button key={k} type="button" className={red === k ? 'activa' : ''} onClick={() => setRed(k)}>{v}</button>)}
         </div>
         <textarea rows={6} value={textos[red]} onChange={(e) => setTextos({ ...textos, [red]: e.target.value })} />
-        {red === 'x' && <small className={textos.x.length > 280 ? 'error' : 'letra-pequena'}>{textos.x.length}/280</small>}
+        {red === 'x' && <small className={largoX(textos.x) > 280 ? 'error' : 'letra-pequena'}>{largoX(textos.x)}/280</small>}
+        {red === 'instagram' && <small className="letra-pequena">En Instagram el enlace no se puede pulsar: conviene ponerlo también en la bio.</small>}
         <div className="acciones">
           <button type="button" className="btn btn-claro" onClick={() => navigator.clipboard?.writeText(textos[red])}>Copiar texto</button>
           {a.imagen && <a className="btn btn-claro" href={a.imagen} download target="_blank" rel="noopener noreferrer">Descargar imagen</a>}

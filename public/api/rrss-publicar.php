@@ -140,7 +140,12 @@ if ($accion === 'articulos') {
   $bols = array_values(array_filter(json_decode(rtrim($mm[1], "; \n"), true) ?: [], fn($b) => ($b['estado'] ?? '') === 'aprobado' && !empty($b['fecha'])));
   usort($bols, fn($a, $b) => ($b['numero'] ?? 0) <=> ($a['numero'] ?? 0));
   $abs = fn($u) => !$u ? '' : (preg_match('#^https?://#', $u) ? $u : BOLETIN_WEB . ltrim($u, '/'));
-  $resumen = function ($t) { $t = trim(preg_replace('/\s+/u', ' ', strip_tags((string)$t))); return mb_strlen($t) > 220 ? rtrim(mb_substr($t, 0, mb_strrpos(mb_substr($t, 0, 220), ' ') ?: 220), " ,.;:") . '…' : $t; };
+  $resumen = function ($t) {   // las primeras frases del artículo, hasta unos 260 caracteres
+    $t = trim(preg_replace('/\s+/u', ' ', strip_tags((string)$t)));
+    if (mb_strlen($t) <= 260) return $t;
+    $c = mb_substr($t, 0, 260); $p = mb_strrpos($c, '. ');
+    return $p !== false && $p > 120 ? mb_substr($c, 0, $p + 1) : rtrim(mb_substr($c, 0, mb_strrpos($c, ' ') ?: 260), " ,.;:") . '…';
+  };
   // Lo ya publicado de cada artículo (por quien sea del equipo)
   $hecho = [];
   foreach (leerJson('rrss-publicados.json') as $x) if (preg_match('/^artículo · (\S+)/u', $x['origen'] ?? '', $o)) $hecho[$o[1]][] = ['red' => $x['red'], 'fecha' => $x['fecha'], 'url' => $x['url']];
@@ -154,7 +159,7 @@ if ($accion === 'articulos') {
     foreach ($b['colaboraciones'] ?? [] as $c) {
       if (trim($c['titulo'] ?? '') === '' || empty($c['id'])) continue;
       $arts[] = ['id' => 'col-' . $c['id'], 'tipo' => 'Firma', 'titulo' => $c['titulo'], 'autor' => $c['autor'] ?? '',
-        'entradilla' => $resumen(($c['entradilla'] ?? '') ?: ($c['texto'] ?? '')), 'imagen' => $abs($c['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/colaboracion/' . rawurlencode($c['id'])];
+        'entradilla' => $resumen(($c['texto'] ?? '') ?: ($c['entradilla'] ?? '')), 'imagen' => $abs($c['imagen'] ?? ''), 'enlace' => BOLETIN_WEB . '#/colaboracion/' . rawurlencode($c['id'])];
     }
     // Calendario: del sábado siguiente al envío, un artículo por día
     $d = new DateTime($b['fecha'], new DateTimeZone('Europe/Madrid'));
@@ -175,7 +180,8 @@ if ($accion === 'publicar') {
   if ($red === 'instagram' && !$img) salir(['error' => 'Instagram necesita una imagen.'], 400);
   $id = ''; $url = '';
   if ($red === 'x') {
-    if (mb_strlen($texto) > 280) salir(['error' => 'En X caben 280 caracteres (hay ' . mb_strlen($texto) . ').'], 400);
+    $largoX = mb_strlen(preg_replace('#https?://\S+#u', str_repeat('x', 23), $texto));   // X cuenta cada enlace como 23
+    if ($largoX > 280) salir(['error' => 'En X caben 280 caracteres (hay ' . $largoX . ').'], 400);
     $cuerpo = ['text' => $texto];
     if ($img) {
       $u = XAPI . '/2/media/upload';
