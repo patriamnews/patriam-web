@@ -212,6 +212,7 @@ export default function BoletinPaso() {
                   )}
                   {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                   <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>
+                  {x.numero && x.tipo !== 'espana' && x.tipo !== 'ficha' && <button type="button" className="btn-texto" onClick={async () => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }}>A la recámara</button>}
                   <button type="button" className="btn btn-sec" onClick={() => accion('rechazar', { id: x.id })}>No publicar</button>
                 </Fila>
               ))}
@@ -256,6 +257,8 @@ export default function BoletinPaso() {
 function Fila({ x, children, leer, api, onCambio }) {
   const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día' }
   const [bio, setBio] = useState(x.datos.bio || '')
+  const [abierto, setAbierto] = useState(false)
+  const cuerpo = x.datos.texto || x.datos.critica || x.datos.comentario || x.datos.resumen || ''
   const bajarCv = async () => {
     try {
       const j = await api('cv', { id: x.id })
@@ -279,12 +282,20 @@ function Fila({ x, children, leer, api, onCambio }) {
             <p><button type="button" className="btn btn-sec" onClick={async () => { try { onCambio(await api('editar-ficha', { id: x.id, bio })) } catch (e) { window.alert(e.message) } }}>Guardar presentación</button></p>
           </details>
         )}
-        {leer && x.tipo !== 'ficha' && (x.datos.texto || x.datos.entradilla) && (
-          <details className="bp-leer">
-            <summary>Leer</summary>
+        {leer && x.tipo !== 'ficha' && (cuerpo || x.datos.entradilla) && (
+          <button type="button" className="btn-texto bp-abrir" onClick={() => setAbierto(!abierto)}>{abierto ? 'Cerrar' : 'Abrir y leer'}</button>
+        )}
+        {abierto && (
+          <div className="bp-lector">
+            {x.datos.imagen && <img src={x.datos.imagen} alt="" />}
+            <h3>{tituloDe(x)}</h3>
+            {(x.datos.autor || x.datos.comenta) && <p className="bp-lector-firma">{x.datos.autor || x.datos.comenta}{x.datos.cargo ? ' · ' + x.datos.cargo : ''}</p>}
             {x.datos.entradilla && <p><i>{x.datos.entradilla}</i></p>}
-            {(x.datos.texto || '').split(/\n\s*\n/).map((b, i) => /^##\s/.test(b) ? <h4 key={i}>{b.replace(/^##\s+/, '')}</h4> : <p key={i}>{b.replace(/\*\*|\*/g, '').replace(/^>\s?/gm, '').replace(/^-\s+/gm, '• ')}</p>)}
-          </details>
+            {x.datos.url && <p><a href={x.datos.url} target="_blank" rel="noopener noreferrer">Abrir el enlace ↗</a></p>}
+            {x.tipo === 'recomendacion' && x.datos.comentario && x.datos.critica && <p>{x.datos.comentario.replace(/\*\*|\*/g, '')}</p>}
+            {cuerpo.split(/\n\s*\n/).map((b, i) => /^##\s/.test(b) ? <h4 key={i}>{b.replace(/^##\s+/, '')}</h4> : <p key={i}>{b.replace(/\*\*|\*/g, '').replace(/^>\s?/gm, '').replace(/^-\s+/gm, '• ')}</p>)}
+            <button type="button" className="btn-texto" onClick={() => setAbierto(false)}>Cerrar</button>
+          </div>
         )}
       </div>
       <span className="bp-acc">{children}</span>

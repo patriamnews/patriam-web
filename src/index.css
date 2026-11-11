@@ -1714,3 +1714,9 @@ html, body, .sitio { background: var(--crema) !important; }
 .tel-ok { background: #e6f2e6; color: #2f6b2f; }
 .tel-editar { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
 .tel-editar input { flex: 1 1 140px; padding: 0.4rem 0.5rem; border: 1px solid #d9cbb3; border-radius: 5px; font: inherit; }
+.bp-abrir { display: inline-block; margin-top: 0.3rem; font-weight: 600; }
+.bp-lector { margin-top: 0.6rem; padding: 1rem; background: #fffdf8; border: 1px solid #eadfcb; border-left: 4px solid #7b1c2c; border-radius: 6px; max-width: 70ch; }
+.bp-lista .bp-lector img, .bp-lector img { width: 100%; height: auto; max-height: 320px; object-fit: cover; border-radius: 4px; margin-bottom: 0.6rem; }
+.bp-lector h3 { margin: 0 0 0.3rem; }
+.bp-lector-firma { color: #7b1c2c; font-weight: 600; margin: 0 0 0.6rem; }
+.bp-lector p { line-height: 1.6; }
