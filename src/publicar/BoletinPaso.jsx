@@ -20,7 +20,13 @@ const QUE = {
   editorial: { titulo: 'La editorial', texto: 'El texto que abre el boletín.', icono: '🖋️' },
 }
 const fechaLarga = (f) => { try { return new Date(f + 'T12:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }) } catch { return f } }
-const firmaDe = (p) => (/^isabel olivares/i.test(p?.nombre || '') ? 'Isabel O.C.' : p?.nombre || '')
+// Cada uno firma en el boletín como lo hace siempre: Isabel O.C., LOC (Laura)…
+const firmaDe = (p) => {
+  const n = p?.nombre || '', e = (p?.email || '').toLowerCase()
+  if (/^isabel olivares/i.test(n)) return 'Isabel O.C.'
+  if (/^laura olivares/i.test(n) || e === 'lauraolivareses@yahoo.es') return 'LOC'
+  return n
+}
 const tituloDe = (it) => it.datos.titular || it.datos.titulo || '(sin título)'
 
 export default function BoletinPaso() {
