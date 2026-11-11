@@ -21,7 +21,8 @@ export function cargarBoletin(base) {
     s.onload = () => {
       const cfg = window.PATRIAM_CONFIG || {}
       const lista = (window.BOLETINES || [])
-        .filter((b) => !b.estado || b.estado === 'aprobado')
+        // Solo los que ya han salido: el número siguiente se ve únicamente en la vista previa temporal del equipo
+        .filter((b) => (!b.estado || b.estado === 'aprobado') && (!b.fecha || String(b.fecha).slice(0, 10) <= new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' })))
         .sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')) || (b.numero || 0) - (a.numero || 0))
       const abs = (r) => (!r ? '' : /^https?:/i.test(r) ? r : base + r.replace(/^\.?\//, ''))
       const ultimo = lista[0]

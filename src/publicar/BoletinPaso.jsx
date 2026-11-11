@@ -46,7 +46,13 @@ export default function BoletinPaso() {
   const [copiado, setCopiado] = useState('')
   const pedirPrevia = async (nueva) => {
     setError('')
-    try { setPrevia(await api('previa', nueva ? { nueva: true } : {})) } catch (x) { setError(x.message) }
+    try { const p = await api('previa', nueva ? { nueva: true } : {}); setPrevia(p); return p } catch (x) { setError(x.message) }
+  }
+  // El número que aún no ha salido solo se ve en la vista previa temporal con clave, nunca en la dirección pública
+  const verPrevia = async () => {
+    const w = window.open('', '_blank')
+    const p = previa || await pedirPrevia(false)
+    if (p?.url && w) { w.location.href = p.url; if (!copiado) copiar(p.clave, 'clave') } else if (w) w.close()
   }
   const copiar = (t, que) => { try { navigator.clipboard.writeText(t); setCopiado(que); setTimeout(() => setCopiado(''), 2000) } catch { /* sin portapapeles */ } }
   const [pest, setPest] = useState('este')
@@ -97,7 +103,6 @@ export default function BoletinPaso() {
   if (error && !e) return <p className="error">No se ha podido abrir: {error}</p>
   if (!e) return <p>Cargando el boletín…</p>
   const ab = e.abierto
-  const vista = ab ? `${base}?vista=${ab.numero}` : base
 
   const pestanas = [['este', ab ? `Este boletín (nº ${ab.numero})` : 'Este boletín'], ['recamara', 'Recámara'], ['archivo', 'Archivo por temas'], ['calendario', 'Calendario'],
     ...(e.puedeAprobar ? [['telefonos', 'Teléfonos WhatsApp']] : [])]
@@ -117,7 +122,7 @@ export default function BoletinPaso() {
         <p className="bp-ok">✓ {hecho}</p>
         <div className="bp-botones">
           <button type="button" className="btn" onClick={() => setHecho('')}>Añadir otra cosa</button>
-          <a className="btn btn-sec" href={vista} target="_blank" rel="noopener noreferrer">Ver cómo va el boletín ↗</a>
+          <button type="button" className="btn btn-sec" onClick={verPrevia}>Ver cómo va el boletín (vista previa) ↗</button>
           <button type="button" className="btn btn-sec" onClick={() => { setHecho(''); setPest('recamara') }}>Ver la recámara</button>
         </div>
       </div>
