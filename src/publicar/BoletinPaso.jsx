@@ -130,9 +130,15 @@ export default function BoletinPaso() {
           <span className="bp-num">!</span>
           <div>
             <h2>Esperan tu visto bueno ({pendientes.length})</h2>
+            {pendientes.some((x) => x.origen === 'correo') && <p className="bp-nota">Los marcados «por correo» han llegado a hola@movimientopatriam.com con el asunto «ARTICULO» y el nombre de quien firma. Ábrelos con «Leer» antes de aprobar.</p>}
             <ul className="bp-lista">
               {pendientes.map((x) => (
-                <Fila key={x.id} x={x}>
+                <Fila key={x.id} x={x} leer>
+                  {x.tipo === 'firma' && (
+                    <select value={x.datos.seccion || 'Análisis'} onChange={(v) => accion('seccion', { id: x.id, seccion: v.target.value })} aria-label="Sección">
+                      {SECCIONES.map((s) => <option key={s}>{s}</option>)}
+                    </select>
+                  )}
                   <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>
                   <button type="button" className="btn btn-sec" onClick={() => accion('rechazar', { id: x.id })}>No publicar</button>
                 </Fila>
@@ -165,7 +171,7 @@ export default function BoletinPaso() {
   )
 }
 
-function Fila({ x, children }) {
+function Fila({ x, children, leer }) {
   const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial' }
   return (
     <li>
@@ -174,6 +180,14 @@ function Fila({ x, children }) {
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
         <b>{tituloDe(x)}</b>
         {x.estado === 'pendiente' && <em className="bp-espera">Esperando aprobación</em>}
+        {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
+        {leer && (x.datos.texto || x.datos.entradilla) && (
+          <details className="bp-leer">
+            <summary>Leer</summary>
+            {x.datos.entradilla && <p><i>{x.datos.entradilla}</i></p>}
+            {(x.datos.texto || '').split(/\n\s*\n/).map((b, i) => /^##\s/.test(b) ? <h4 key={i}>{b.replace(/^##\s+/, '')}</h4> : <p key={i}>{b.replace(/\*\*|\*/g, '').replace(/^>\s?/gm, '').replace(/^-\s+/gm, '• ')}</p>)}
+          </details>
+        )}
       </div>
       <span className="bp-acc">{children}</span>
     </li>

@@ -1622,3 +1622,11 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-sug li b { display: block; line-height: 1.25; font-size: .95rem; }
 .bp-sug li small { color: #7a6d66; font-size: .8rem; }
 .bp-sug-ok { display: block; margin-top: .4rem; color: #2f6b3a; font-weight: 600; }
+
+/* Artículos llegados por correo: se pueden leer antes de aprobar */
+.bp-correo { background: #efe6d6; color: #5a1320; margin-left: .3rem; }
+.bp-leer { margin-top: .4rem; }
+.bp-leer summary { cursor: pointer; color: #7b1c2c; font-weight: 700; font-size: .85rem; }
+.bp-leer p, .bp-leer h4 { margin: .5rem 0; max-width: 70ch; white-space: pre-line; }
+.bp-leer h4 { color: #7b1c2c; }
+.bp-acc select { margin-right: .4rem; padding: .3rem; }
