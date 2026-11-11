@@ -1740,3 +1740,20 @@ html, body, .sitio { background: var(--crema) !important; }
 .tel-recibe { grid-column: 1 / -1; border: 1px solid #eadfcb; border-radius: 6px; padding: 0.4rem 0.8rem 0.6rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; }
 .tel-recibe legend { font-weight: 600; font-size: 0.9rem; padding: 0 0.3rem; }
 .tel-alta > .tel-check:last-of-type, .tel-alta > .btn { grid-column: 1 / -1; justify-self: start; }
+
+/* Publicar › Boletín: tope de artículos, elección e imágenes */
+.bp-tope { background: #fbf6ee; border: 1px solid #e6d9c4; border-left: 4px solid #7b1c2c; border-radius: 6px; padding: .8rem 1rem; margin: .6rem 0 1rem; }
+.bp-tope p { margin: .3rem 0; font-size: .9rem; }
+.bp-cuenta { font-size: 1rem !important; }
+.bp-elegido { background: #2e6b3a !important; border-color: #2e6b3a !important; }
+.bp-previa { background: #fbf6ee; border: 1px solid #e6d9c4; border-radius: 6px; padding: .7rem 1rem; margin: .4rem 0; }
+.bp-previa p { margin: .35rem 0; word-break: break-all; }
+.bp-previa code { font-size: 1.1rem; letter-spacing: .12em; background: #fff; padding: .1rem .4rem; border: 1px solid #e6d9c4; border-radius: 4px; }
+.bp-imgs { margin-top: .4rem; }
+.bp-imgs small { display: block; color: #7a6d66; }
+.bp-imgs-lista { display: flex; flex-wrap: wrap; gap: .4rem; margin: .3rem 0; }
+.bp-imgs-lista button { position: relative; padding: 0; border: 2px solid #e6d9c4; border-radius: 4px; background: none; cursor: pointer; width: 84px; height: 56px; overflow: hidden; }
+.bp-imgs-lista button img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bp-imgs-lista button.elegida { border-color: #2e6b3a; }
+.bp-imgs-lista button span { position: absolute; top: 2px; right: 2px; background: #2e6b3a; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 12px; line-height: 18px; text-align: center; }
+.bp-imgs-lista button:disabled { cursor: default; }

@@ -42,6 +42,13 @@ export default function BoletinPaso() {
   const [que, setQue] = useState('')
   const [hecho, setHecho] = useState('')
   const [fecha, setFecha] = useState('')
+  const [previa, setPrevia] = useState(null)
+  const [copiado, setCopiado] = useState('')
+  const pedirPrevia = async (nueva) => {
+    setError('')
+    try { setPrevia(await api('previa', nueva ? { nueva: true } : {})) } catch (x) { setError(x.message) }
+  }
+  const copiar = (t, que) => { try { navigator.clipboard.writeText(t); setCopiado(que); setTimeout(() => setCopiado(''), 2000) } catch { /* sin portapapeles */ } }
   const [pest, setPest] = useState('este')
   const [aRecamara, setARecamara] = useState(false)
   const [editar, setEditar] = useState(null)
@@ -63,6 +70,11 @@ export default function BoletinPaso() {
   useEffect(() => { cargar() }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { window.scrollTo(0, 0) }, [que, hecho, pest])
 
+  const [aviso, setAviso] = useState('')
+  const elegir = async (id, si) => {
+    setAviso('')
+    try { setE(await api('elegir', { id, si })) } catch (x) { setAviso(x.message) }
+  }
   const accion = async (a, cuerpo) => {
     setError('')
     try { setE(await api(a, cuerpo)) } catch (x) { setError(x.message) }
@@ -165,8 +177,18 @@ export default function BoletinPaso() {
           <div>
             <h2>Boletín nº {ab.numero} · abierto</h2>
             <p>Sale el <b>{fechaLarga(ab.fecha)}</b>. Todo lo que añadas ahora va en este boletín. Hasta ese día solo lo ve el equipo.</p>
-            <a className="btn bp-grande" href={vista} target="_blank" rel="noopener noreferrer">👁 Vista previa del nº {ab.numero} ↗</a>
-            <p className="bp-nota">Así lo verán los lectores el día que salga. Solo aparece lo aprobado: nada sale hasta que alguien pulsa «Aprobar».</p>
+            {!previa ? (
+              <button type="button" className="btn bp-grande" onClick={() => pedirPrevia(false)}>👁 Vista previa del nº {ab.numero} para el equipo</button>
+            ) : (
+              <div className="bp-previa">
+                <p><b>Enlace:</b> <a href={previa.url} target="_blank" rel="noopener noreferrer">{previa.url}</a> <button type="button" className="btn btn-sec" onClick={() => copiar(previa.url, 'url')}>{copiado === 'url' ? '✓ Copiado' : 'Copiar'}</button></p>
+                <p><b>Clave:</b> <code>{previa.clave}</code> <button type="button" className="btn btn-sec" onClick={() => copiar(previa.clave, 'clave')}>{copiado === 'clave' ? '✓ Copiada' : 'Copiar'}</button></p>
+                <p><button type="button" className="btn btn-sec" onClick={() => copiar(`Vista previa del boletín nº ${previa.numero} (solo equipo PATRIAM)\n${previa.url}\nClave: ${previa.clave}`, 'todo')}>{copiado === 'todo' ? '✓ Copiado' : 'Copiar enlace y clave para mandarlo'}</button>{' '}
+                  <a className="btn" href={previa.url} target="_blank" rel="noopener noreferrer">Abrir ↗</a></p>
+                <p className="bp-nota">Vale hasta el {new Date(previa.expira).toLocaleDateString('es-ES', { day: 'numeric', month: 'long' })}. <button type="button" className="btn-texto" onClick={() => pedirPrevia(true)}>Cambiar la clave</button> (el enlace anterior deja de valer).</p>
+              </div>
+            )}
+            <p className="bp-nota">La vista previa enseña todo lo que lleva el número, también lo pendiente de aprobar, y solo se abre con la clave. Los lectores verán solo lo aprobado, el día que salga.</p>
           </div>
         ) : (
           <div>
@@ -202,7 +224,19 @@ export default function BoletinPaso() {
           <span className="bp-num">3</span>
           <div>
             <h2>Lo que ya hay en el nº {ab.numero} <small>({delAbierto.length + (e.delEditor?.items?.length || 0)})</small></h2>
-            <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Nada sale en el boletín hasta que alguien pulsa «Aprobar», tampoco los cambios.</p>
+            <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Nada sale en el boletín hasta que alguien lo aprueba, tampoco los cambios.</p>
+            {e.puedeAprobar && (
+              <div className="bp-tope">
+                <p><b>Solo pueden salir {e.maxArticulos || 10} artículos por número.</b> Ve pulsando «Elegir» en lo que quieres que salga; no se aprueba nada hasta que pulses «Aprobar lo elegido». Hasta entonces puedes poner uno y quitar otro.
+                  Si ya hay {e.maxArticulos || 10}, para elegir otro tienes que quitar uno de los elegidos (o pasar uno ya aprobado a la recámara).</p>
+                <p className="bp-cuenta"><b>{(e.articulosAprobados || 0) + (e.articulosElegidos || 0)} de {e.maxArticulos || 10} artículos</b>
+                  {' '}· {e.articulosAprobados || 0} aprobados · {e.articulosElegidos || 0} elegidos{(e.seleccion || []).length > (e.articulosElegidos || 0) ? ` · ${(e.seleccion || []).length - (e.articulosElegidos || 0)} otras cosas elegidas` : ''}</p>
+                {aviso && <p className="error">{aviso}</p>}
+                <button type="button" className="btn bp-grande" disabled={!(e.seleccion || []).length} onClick={async () => { if (window.confirm(`Se aprueban las ${(e.seleccion || []).length} cosas elegidas y salen en el boletín. ¿Seguimos?`)) await accion('aprobar-eleccion') }}>
+                  ✓ Aprobar lo elegido ({(e.seleccion || []).length})
+                </button>
+              </div>
+            )}
             {(delAbierto.length || pendientes.length || e.delEditor?.items?.length) ? (
               <ul className="bp-lista">
                 {(e.delEditor?.items || []).map((x, i) => (
@@ -211,8 +245,10 @@ export default function BoletinPaso() {
                   </li>
                 ))}
                 {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])].map((x) => (
-                  <Fila key={x.id} x={x} leer>
-                    {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>}
+                  <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
+                    {e.puedeAprobar && x.estado === 'pendiente' && ((e.seleccion || []).includes(x.id)
+                      ? <button type="button" className="btn bp-elegido" onClick={() => elegir(x.id, false)}>✓ Elegido · quitar</button>
+                      : <button type="button" className="btn" onClick={() => elegir(x.id, true)}>Elegir</button>)}
                     {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
                     {x.numero === ab.numero && x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
                   </Fila>
@@ -220,7 +256,7 @@ export default function BoletinPaso() {
               </ul>
             ) : <p>Todavía no hay nada en este boletín.</p>}
             {e.delEditor && !e.delEditor.aprobado && <p className="bp-nota">Lo que haya en el editor del boletín para el nº {ab.numero} saldrá aquí en cuanto se apruebe allí.</p>}
-            <p className="bp-nota"><a href={vista} target="_blank" rel="noopener noreferrer">Ver el boletín nº {ab.numero} tal como va a salir ↗</a></p>
+            <p className="bp-nota"><button type="button" className="btn-texto" onClick={() => { pedirPrevia(false); window.scrollTo(0, 0) }}>Vista previa del nº {ab.numero} para el equipo (con todo, también lo pendiente)</button></p>
           </div>
         </section>
       )}
@@ -274,9 +310,38 @@ function Fila({ x, children, leer, api, onCambio }) {
             <button type="button" className="btn-texto" onClick={() => setAbierto(false)}>Cerrar</button>
           </div>
         )}
+        {x.tipo === 'firma' && api && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
       </div>
       <span className="bp-acc">{children}</span>
     </li>
+  )
+}
+
+/* Imágenes de un artículo: se suben una o varias; elige la que va quien subió el artículo (si solo hay una, se queda esa) */
+function OpcionesImagen({ x, api, onCambio }) {
+  const ops = x.imagenesOpciones || []
+  const [subiendo, setSubiendo] = useState(false)
+  const anadir = async (ev) => {
+    const f = ev.target.files?.[0]; if (!f) return
+    setSubiendo(true)
+    try { onCambio(await api('imagen-anadir', { id: x.id, url: await subirArchivo('imagenes', f) })) } catch (e) { window.alert(e.message) }
+    setSubiendo(false); ev.target.value = ''
+  }
+  const elegir = async (url) => { try { onCambio(await api('imagen-elegir', { id: x.id, url })) } catch (e) { window.alert(e.message) } }
+  return (
+    <div className="bp-imgs">
+      {ops.length > 1 && <small>{x.puedoElegirImagen ? 'Elige la imagen que va:' : 'Imágenes propuestas (elige quien subió el artículo):'}</small>}
+      {ops.length > 1 && (
+        <div className="bp-imgs-lista">
+          {ops.map((u) => (
+            <button key={u} type="button" className={u === x.datos.imagen ? 'elegida' : ''} disabled={!x.puedoElegirImagen || u === x.datos.imagen} onClick={() => elegir(u)} title={u === x.datos.imagen ? 'La que va' : 'Elegir esta'}>
+              <img src={u} alt="" loading="lazy" />{u === x.datos.imagen && <span>✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
+      <label className="btn-texto">{subiendo ? 'Subiendo…' : ops.length ? '+ Añadir otra imagen' : '+ Añadir imagen'}<input type="file" accept="image/*" hidden onChange={anadir} /></label>
+    </div>
   )
 }
 
