@@ -74,6 +74,9 @@ export default function BoletinPaso() {
     return j
   }
   const cargar = () => api('estado').then(setE).catch((x) => setError(x.message))
+  // Enlace y clave de revisión de cada artículo de un colaborador de fuera (para que dé su visto bueno antes de publicarlo)
+  const [revs, setRevs] = useState({})
+  useEffect(() => { if (e) api('revisiones').then((j) => setRevs(j.revisiones || {})).catch(() => {}) }, [e]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { cargar() }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { window.scrollTo(0, 0) }, [que, hecho, pest])
 
@@ -262,7 +265,7 @@ export default function BoletinPaso() {
                 {[...delAbierto, ...(e.puedeAprobar ? pendientes : [])]
                   .sort((a, b) => (b.id === e.principal) - (a.id === e.principal))   // la principal, siempre la primera
                   .map((x) => (
-                  <Fila key={x.id} x={x} leer api={api} onCambio={setE} principal={x.id === e.principal}>
+                  <Fila key={x.id} x={x} leer api={api} onCambio={setE} principal={x.id === e.principal} rev={revs[x.id]}>
                     {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => aprobar(x.id)}>✓ Aprobar</button>}
                     {e.puedeAprobar && ['firma', 'noticia'].includes(x.tipo) && x.numero === ab.numero && x.id !== e.principal &&
                       <button type="button" className="btn btn-sec" onClick={() => hacerPrincipal(x.id)}>★ Hacer principal</button>}
@@ -310,7 +313,7 @@ export default function BoletinPaso() {
   )
 }
 
-function Fila({ x, children, leer, api, onCambio, principal }) {
+function Fila({ x, children, leer, api, onCambio, principal, rev }) {
   const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día', frase: 'Frase de cabecera' }
   const [bio, setBio] = useState(x.datos.bio || '')
   const [abierto, setAbierto] = useState(false)
@@ -393,6 +396,7 @@ function Fila({ x, children, leer, api, onCambio, principal }) {
           </div>
         )}
         {conImagen && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
+        {rev && <Revision rev={rev} />}
       </div>
       <span className="bp-acc">{children}</span>
     </li>
@@ -624,6 +628,29 @@ function Imagen({ valor, cambiar }) {
         <input type="url" value={valor || ''} onChange={cambiar} placeholder="…o pega la dirección de la imagen" />
         {error && <small className="error">{error}</small>}
       </div>
+    </div>
+  )
+}
+
+/* Enlace y clave para que el autor revise SOLO su artículo y dé el visto bueno antes de publicarlo */
+function Revision({ rev }) {
+  const [hecho, setHecho] = useState('')
+  const copiar = async (t, que) => {
+    try { await navigator.clipboard.writeText(t) } catch {
+      const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy') } catch { /* nada */ } ta.remove()
+    }
+    setHecho(que); setTimeout(() => setHecho(''), 2000)
+  }
+  const mensaje = `Hola, te pasamos tu artículo tal como saldrá en el boletín de PATRIAM para que lo revises y nos des tu visto bueno.\n\nEnlace: ${rev.url}\nClave: ${rev.clave}`
+  return (
+    <div className="bp-revision">
+      <small>Para que el autor lo revise y dé su visto bueno</small>
+      <div className="bp-rev-fila"><span>Enlace</span><code>{rev.url}</code><button type="button" onClick={() => copiar(rev.url, 'url')}>{hecho === 'url' ? '✓ Copiado' : '📋 Copiar'}</button></div>
+      <div className="bp-rev-fila"><span>Clave</span><code>{rev.clave}</code><button type="button" onClick={() => copiar(rev.clave, 'clave')}>{hecho === 'clave' ? '✓ Copiada' : '📋 Copiar'}</button></div>
+      <button type="button" className="btn-texto" onClick={() => copiar(mensaje, 'msg')}>{hecho === 'msg' ? '✓ Mensaje copiado' : '✉ Copiar mensaje con enlace y clave para mandárselo'}</button>
+      {rev.respuesta === 'ok' && <p className="bp-rev-ok">✓ El autor ha dado su visto bueno{rev.comentario ? ': ' + rev.comentario : ''}</p>}
+      {rev.respuesta === 'cambios' && <p className="bp-rev-cambios">✎ El autor pide cambios: {rev.comentario}</p>}
     </div>
   )
 }

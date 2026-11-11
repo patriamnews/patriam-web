@@ -1831,3 +1831,12 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-lista li.bp-es-principal { border: 2px solid #c9a24a; background: #fffaf0; height: 204px; }
 .bp-marca-principal { display: inline-block; background: #c9a24a; color: #fff; font: 700 .72rem var(--sans); letter-spacing: .04em; text-transform: uppercase; padding: .15rem .55rem; border-radius: 3px; margin-bottom: .25rem; }
 @media (max-width: 640px) { .bp-lista li.bp-es-principal { height: auto; } }
+/* Publicar › Boletín: enlace y clave de revisión para el autor */
+.bp-revision { margin-top: .6rem; padding: .6rem .7rem; background: #faf5ec; border: 1px dashed rgba(123,28,44,.4); border-radius: 4px; display: grid; gap: .35rem; }
+.bp-revision > small { font-weight: 700; color: #7b1c2c; letter-spacing: .04em; }
+.bp-rev-fila { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.bp-rev-fila > span { flex: none; width: 3.6rem; font-size: .8rem; color: #6b5f58; }
+.bp-rev-fila code { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: #fff; border: 1px solid #e2d8c8; border-radius: 3px; padding: .25rem .45rem; font-size: .82rem; }
+.bp-rev-fila button { flex: none; }
+.bp-rev-ok { margin: .2rem 0 0; color: #1f6b3a; font-weight: 700; }
+.bp-rev-cambios { margin: .2rem 0 0; color: #a3242f; font-weight: 700; white-space: pre-wrap; }
