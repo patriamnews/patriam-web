@@ -1,0 +1,144 @@
+// Teléfonos para mandar el boletín por WhatsApp.
+// Es la misma lista que usan las comunicaciones de Carlos y el editor del boletín (no se duplica nada).
+// Sin WhatsApp Business: cada persona tiene su botón, que abre WhatsApp con el mensaje ya escrito,
+// y queda apuntado a quién se le ha mandado cada número. Solo lo ven Carlos e Isabel.
+import { useEffect, useState } from 'react'
+import { llamarBoletin } from './boletinApi'
+
+const api = (accion, cuerpo) => llamarBoletin('telefonos.php', accion, cuerpo)
+const ENLACE = 'https://boletin.movimientopatriam.es/'
+const sinTildes = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+
+// Una persona por línea: «Nombre; móvil; correo» (también vale con comas, tabuladores o pegado de Excel)
+function leerPegado(t) {
+  return t.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
+    const partes = l.split(/\t|;|,(?!\d{2}\b)/).map((x) => x.trim()).filter(Boolean)
+    const email = partes.find((x) => /@/.test(x)) || ''
+    const movil = partes.find((x) => (x.replace(/\D/g, '').length >= 9) && !/@/.test(x)) || ''
+    const nombre = partes.filter((x) => x !== email && x !== movil).join(' ')
+    return { nombre, movil, email }
+  })
+}
+
+export default function Telefonos({ numeros }) {
+  const [d, setD] = useState(null)
+  const [error, setError] = useState('')
+  const [aviso, setAviso] = useState('')
+  const [pegado, setPegado] = useState('')
+  const [q, setQ] = useState('')
+  const [numero, setNumero] = useState(numeros?.[0] || 1)
+  const [texto, setTexto] = useState('')
+  const [verTexto, setVerTexto] = useState(false)
+  const [editando, setEditando] = useState(null)
+
+  const cargar = (j) => { setD(j); setTexto(j.texto) }
+  useEffect(() => { api('datos').then(cargar).catch((e) => setError(e.message)) }, [])
+  const hacer = async (accion, cuerpo, ok) => {
+    setAviso('')
+    try { const j = await api(accion, cuerpo); cargar(j); if (ok) setAviso(typeof ok === 'function' ? ok(j) : ok) } catch (e) { setAviso('No se ha podido: ' + e.message) }
+  }
+
+  if (error) return <p className="error">{error}</p>
+  if (!d) return <p>Cargando los teléfonos…</p>
+
+  const enviados = d.envios?.[String(numero)] || {}
+  const conWa = d.contactos.filter((c) => c.wa)
+  const b = sinTildes(q.trim())
+  const lista = d.contactos.filter((c) => !b || sinTildes(c.nombre + ' ' + c.movil + ' ' + c.email + ' ' + c.nota).includes(b))
+  const mensaje = (c) => texto
+    .replaceAll('{nombre}', (c.nombre || '').split(/\s+/)[0] || '').replace(/Buenos días, :/, 'Buenos días:')
+    .replaceAll('{numero}', numero).replaceAll('{enlace}', ENLACE)
+  const abrirWa = (c) => {
+    window.open(`https://wa.me/${c.movil.replace(/\D/g, '')}?text=${encodeURIComponent(mensaje(c))}`, '_blank', 'noopener')
+    if (!enviados[c.id]) hacer('enviado', { numero, id: c.id })
+  }
+  const siguiente = conWa.find((c) => !enviados[c.id])
+  const nEnv = conWa.filter((c) => enviados[c.id]).length
+
+  return (
+    <div className="bp tel">
+      {aviso && <p className="bp-nota"><b>{aviso}</b></p>}
+
+      <section className="bp-caja abierto">
+        <span className="bp-num">1</span>
+        <div>
+          <h2>Mandar el boletín por WhatsApp</h2>
+          <label className="bp-fecha">Boletín nº{' '}
+            <select value={numero} onChange={(e) => setNumero(+e.target.value)}>
+              {(numeros || [1]).map((n) => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </label>
+          <p>Enviado a <b>{nEnv}</b> de <b>{conWa.length}</b> personas con móvil.</p>
+          {siguiente
+            ? <button type="button" className="btn bp-grande" onClick={() => abrirWa(siguiente)}>Mandar al siguiente: {siguiente.nombre || siguiente.movil} ↗</button>
+            : conWa.length ? <p className="bp-ok">✓ Ya se ha mandado a todos.</p> : null}
+          <p className="bp-nota">Cada botón abre WhatsApp con el mensaje ya escrito: solo hay que pulsar «Enviar». Así se manda desde el WhatsApp normal, sin WhatsApp Business.</p>
+          <button type="button" className="btn-texto" onClick={() => setVerTexto(!verTexto)}>{verTexto ? 'Cerrar el mensaje' : 'Ver o cambiar el mensaje'}</button>
+          {verTexto && (
+            <div>
+              <textarea rows={9} style={{ width: '100%' }} value={texto} onChange={(e) => setTexto(e.target.value)} />
+              <small>{'{nombre}'} es el nombre de cada persona, {'{numero}'} el número del boletín y {'{enlace}'} la dirección del boletín.</small>
+              <p>
+                <button type="button" className="btn btn-sec" onClick={() => hacer('texto', { texto }, 'Mensaje guardado ✓')}>Guardar el mensaje</button>{' '}
+                <button type="button" className="btn-texto" onClick={() => setTexto(d.textoBase)}>Volver al de siempre</button>
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="bp-caja">
+        <span className="bp-num">2</span>
+        <div>
+          <h2>Añadir teléfonos</h2>
+          <p>Una persona por línea: <b>nombre; móvil; correo</b> (el correo, si lo hay). También puedes pegar las columnas de un Excel. Los repetidos no se añaden dos veces.</p>
+          <textarea rows={5} style={{ width: '100%' }} value={pegado} onChange={(e) => setPegado(e.target.value)} placeholder={'María López; 600 123 456; maria@correo.es\nJuan Pérez; 611222333'} />
+          <p><button type="button" className="btn" disabled={!pegado.trim()} onClick={() => hacer('anadir', { personas: leerPegado(pegado) }, (j) => {
+            setPegado('')
+            return `${j.anadidos} añadidos` + (j.repetidos ? ` · ${j.repetidos} ya estaban` : '') + (j.malos?.length ? ` · sin móvil válido: ${j.malos.join(', ')}` : '')
+          })}>Añadir a la lista</button></p>
+        </div>
+      </section>
+
+      <section className="bp-caja">
+        <span className="bp-num">3</span>
+        <div>
+          <h2>La lista <small>({d.contactos.length})</small></h2>
+          <input type="search" className="arch-buscar" placeholder="Buscar por nombre, móvil o correo…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <ul className="bp-lista tel-lista">
+            {lista.map((c) => (
+              <li key={c.id}>
+                <span className="bp-sinimg tel-ini">{(c.nombre || '#').charAt(0).toUpperCase()}</span>
+                {editando?.id === c.id ? (
+                  <div className="tel-editar">
+                    <input value={editando.nombre} onChange={(e) => setEditando({ ...editando, nombre: e.target.value })} placeholder="Nombre" />
+                    <input value={editando.movil} onChange={(e) => setEditando({ ...editando, movil: e.target.value })} placeholder="Móvil" />
+                    <input value={editando.email} onChange={(e) => setEditando({ ...editando, email: e.target.value })} placeholder="Correo" />
+                    <button type="button" className="btn" onClick={() => { hacer('editar', editando, 'Guardado ✓'); setEditando(null) }}>Guardar</button>
+                    <button type="button" className="btn-texto" onClick={() => setEditando(null)}>Cancelar</button>
+                  </div>
+                ) : (
+                  <div>
+                    <small>{c.movil || 'sin móvil'}{c.email ? ' · ' + c.email : ''}{c.nota ? ' · ' + c.nota : ''}</small>
+                    <b>{c.nombre || '(sin nombre)'}</b>
+                    {enviados[c.id] && <em className="bp-espera tel-ok">✓ nº {numero} enviado</em>}
+                    {!c.wa && c.movil && <em className="bp-espera">No recibe el boletín por WhatsApp</em>}
+                  </div>
+                )}
+                {editando?.id !== c.id && (
+                  <span className="bp-acc">
+                    {c.wa && <button type="button" className="btn" onClick={() => abrirWa(c)}>WhatsApp ↗</button>}
+                    {enviados[c.id] && <button type="button" className="btn-texto" onClick={() => hacer('enviado', { numero, id: c.id, quitar: true })}>No enviado</button>}
+                    <button type="button" className="btn-texto" onClick={() => setEditando({ id: c.id, nombre: c.nombre, movil: c.movil, email: c.email })}>Cambiar</button>
+                    {c.movil && <button type="button" className="btn-texto" onClick={() => hacer('editar', { id: c.id, wa: !c.wa })}>{c.wa ? 'No mandar boletín' : 'Mandar boletín'}</button>}
+                    <button type="button" className="btn-texto" onClick={() => { if (window.confirm(`¿Quitar a ${c.nombre || c.movil} de la lista? También deja de recibir las comunicaciones.`)) hacer('quitar', { id: c.id }) }}>Quitar</button>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </div>
+  )
+}

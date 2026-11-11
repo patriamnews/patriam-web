@@ -10,6 +10,10 @@ import { useAuth } from '../lib/auth'
 import { getAjustes } from '../lib/data'
 import { urlBoletin } from '../lib/boletin'
 import { subirArchivo } from '../admin/subir'
+import Recamara from './Recamara'
+import ArchivoBoletin from './ArchivoBoletin'
+import CalendarioBoletin from './CalendarioBoletin'
+import Telefonos from './Telefonos'
 
 const SECCIONES = ['Actualidad', 'Historia', 'Sociedad', 'Análisis']
 const TIPOS_REC = [['Podcast', 'Podcast'], ['Vídeo', 'Vídeo o documental'], ['Libro', 'Libro'], ['Película', 'Película']]
@@ -38,6 +42,8 @@ export default function BoletinPaso() {
   const [que, setQue] = useState('')
   const [hecho, setHecho] = useState('')
   const [fecha, setFecha] = useState('')
+  const [pest, setPest] = useState('este')
+  const [aRecamara, setARecamara] = useState(false)
 
   const api = async (accion, cuerpo) => {
     const b = base || urlBoletin(await getAjustes())
@@ -54,7 +60,7 @@ export default function BoletinPaso() {
   }
   const cargar = () => api('estado').then(setE).catch((x) => setError(x.message))
   useEffect(() => { cargar() }, []) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { window.scrollTo(0, 0) }, [que, hecho])
+  useEffect(() => { window.scrollTo(0, 0) }, [que, hecho, pest])
 
   const accion = async (a, cuerpo) => {
     setError('')
@@ -66,32 +72,75 @@ export default function BoletinPaso() {
   const ab = e.abierto
   const vista = ab ? `${base}?vista=${ab.numero}` : base
 
+  const pestanas = [['este', ab ? `Este boletín (nº ${ab.numero})` : 'Este boletín'], ['recamara', 'Recámara'], ['archivo', 'Archivo por temas'], ['calendario', 'Calendario'],
+    ...(e.puedeAprobar ? [['telefonos', 'Teléfonos WhatsApp']] : [])]
+  const barra = (
+    <nav className="bp-pestanas">
+      {pestanas.map(([k, t]) => <button key={k} type="button" className={pest === k && !que && !hecho ? 'activa' : ''} onClick={() => { setQue(''); setHecho(''); setPest(k) }}>{t}</button>)}
+    </nav>
+  )
+  const maxNum = Math.max(ab?.numero || 0, e.ultimo?.numero || 0, 1)
+  const numeros = Array.from({ length: maxNum }, (_, i) => maxNum - i)
+    .filter((n) => !ab || n !== ab.numero || ab.fecha <= e.hoy)   // el abierto, solo el día que sale
+
   if (hecho) {
     return (
+      <>{barra}
       <div className="bp-hecho">
         <p className="bp-ok">✓ {hecho}</p>
         <div className="bp-botones">
           <button type="button" className="btn" onClick={() => setHecho('')}>Añadir otra cosa</button>
           <a className="btn btn-sec" href={vista} target="_blank" rel="noopener noreferrer">Ver cómo va el boletín ↗</a>
+          <button type="button" className="btn btn-sec" onClick={() => { setHecho(''); setPest('recamara') }}>Ver la recámara</button>
         </div>
       </div>
+      </>
     )
   }
 
-  if (que && ab) {
+  if (que && (ab || aRecamara)) {
     return (
+      <>{barra}
       <Formulario
-        que={que} perfil={perfil} api={api} numero={ab.numero}
-        onCancelar={() => setQue('')}
-        onHecho={(j, texto) => { setE(j); setQue(''); setHecho(texto) }}
+        que={que} perfil={perfil} api={api} numero={aRecamara ? null : ab.numero}
+        onCancelar={() => { setQue(''); setARecamara(false) }}
+        onHecho={(j, texto) => { setE(j); setQue(''); setARecamara(false); setHecho(texto) }}
       />
+      </>
     )
   }
+
+  if (aRecamara) {
+    return (
+      <>{barra}
+      <div className="bp">
+        <section className="bp-caja">
+          <span className="bp-num">R</span>
+          <div>
+            <button type="button" className="pub-volver bp-atras" onClick={() => setARecamara(false)}>← Volver a la recámara</button>
+            <h2>¿Qué guardas en la recámara?</h2>
+            <div className="bp-que">
+              {Object.entries(QUE).filter(([k]) => k !== 'espana').map(([k, q]) => (
+                <button key={k} type="button" onClick={() => setQue(k)}><span aria-hidden>{q.icono}</span><b>{q.titulo}</b><small>{q.texto}</small></button>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+      </>
+    )
+  }
+
+  if (pest === 'recamara') return <>{barra}<Recamara api={api} abierto={ab} onSubir={() => setARecamara(true)} onUsado={(j, t) => { setE(j); setHecho(t) }} /></>
+  if (pest === 'archivo') return <>{barra}<ArchivoBoletin api={api} /></>
+  if (pest === 'calendario') return <>{barra}<CalendarioBoletin /></>
+  if (pest === 'telefonos' && e.puedeAprobar) return <>{barra}<Telefonos numeros={numeros} /></>
 
   const pendientes = e.items.filter((x) => x.estado === 'pendiente')
   const delAbierto = ab ? e.items.filter((x) => x.numero === ab.numero && ['aprobado', 'pendiente'].includes(x.estado)) : []
 
   return (
+    <>{barra}
     <div className="bp">
       {error && <p className="error">{error}</p>}
 
@@ -121,6 +170,7 @@ export default function BoletinPaso() {
           <span className="bp-num">2</span>
           <div>
             <h2>¿Qué quieres añadir?</h2>
+            <p className="bp-nota">También puedes coger algo ya preparado de la <button type="button" className="btn-texto" onClick={() => setPest('recamara')}>recámara</button>.</p>
             <div className="bp-que">
               {Object.entries(QUE).map(([k, q]) => (
                 <button key={k} type="button" onClick={() => setQue(k)}>
@@ -171,6 +221,7 @@ export default function BoletinPaso() {
                 ))}
                 {delAbierto.map((x) => (
                   <Fila key={x.id} x={x}>
+                    {(x.mio || e.puedeAprobar) && x.tipo !== 'espana' && <button type="button" className="btn-texto" onClick={async () => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }}>A la recámara</button>}
                     {(x.mio || e.puedeAprobar) && <button type="button" className="btn-texto" onClick={() => { if (window.confirm('¿Quitar «' + tituloDe(x) + '» del boletín?')) accion('borrar', { id: x.id }) }}>Quitar</button>}
                   </Fila>
                 ))}
@@ -182,6 +233,7 @@ export default function BoletinPaso() {
         </section>
       )}
     </div>
+    </>
   )
 }
 
@@ -251,13 +303,14 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
     setLeyendo(false)
   }
 
+  const destino = useRef(numero ? 'boletin' : 'recamara')
   const enviar = async (ev) => {
     ev.preventDefault()
     setError(''); setEnviando(true)
     try {
-      const j = await api('subir', { tipo: que, datos: d })
+      const j = await api('subir', { tipo: que, datos: d, destino: destino.current })
       const nuevo = j.items.find((x) => x.id === j.nuevo)
-      onHecho(j, nuevo?.estado === 'pendiente'
+      onHecho(j, j.recamara ? 'Guardado en la recámara. Cuando prepares un boletín, lo eliges allí con «Usar en el nº…».' : nuevo?.estado === 'pendiente'
         ? `Guardado en el boletín nº ${numero}. Saldrá cuando Carlos o Isabel lo aprueben.`
         : `Ya está en el boletín nº ${numero}.`)
     } catch (x) { setError(x.message) }
@@ -280,7 +333,7 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
   return (
     <form className="bp-form" onSubmit={enviar}>
       <button type="button" className="pub-volver bp-atras" onClick={onCancelar}>← Elegir otra cosa</button>
-      <h2>{QUE[que].icono} {QUE[que].titulo} <small>para el boletín nº {numero}</small></h2>
+      <h2>{QUE[que].icono} {QUE[que].titulo} <small>{numero ? `para el boletín nº ${numero}` : 'para la recámara'}</small></h2>
 
       {que === 'espana' && <>
         {enlace('Enlace', 'De un periódico, Instagram, X, YouTube… Si es de Instagram o X, el titular y la foto hay que ponerlos a mano.')}
@@ -341,7 +394,11 @@ function Formulario({ que, perfil, api, numero, onCancelar, onHecho }) {
       </>}
 
       {error && <p className="error">{error}</p>}
-      <button type="submit" className="btn bp-grande" disabled={enviando}>{enviando ? 'Guardando…' : `Meter en el boletín nº ${numero}`}</button>
+      <div className="bp-botones">
+        {numero && <button type="submit" className="btn bp-grande" disabled={enviando} onClick={() => { destino.current = 'boletin' }}>{enviando ? 'Guardando…' : `Meter en el boletín nº ${numero}`}</button>}
+        {que !== 'espana' && <button type="submit" className={numero ? 'btn btn-sec bp-grande' : 'btn bp-grande'} disabled={enviando} onClick={() => { destino.current = 'recamara' }}>{enviando && !numero ? 'Guardando…' : 'Guardar en la recámara'}</button>}
+      </div>
+      {numero && que !== 'espana' && <small className="bp-nota">«Guardar en la recámara» lo deja preparado para otro número, sin meterlo en este.</small>}
     </form>
   )
 }

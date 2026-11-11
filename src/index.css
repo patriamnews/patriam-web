@@ -1699,3 +1699,18 @@ html, body, .sitio { background: var(--crema) !important; }
 .rrss-art.toca .rrss-art-dia { color: var(--acento); font-weight: 700; text-transform: none; }
 .rrss-art-sinimg { aspect-ratio: 1; display: grid; place-items: center; border: 1px dashed #e3d6c1; color: var(--suave); font-size: 0.85rem; }
 .rrss-art .pestanas { margin: 0.5rem 0 0; }
+/* Boletín paso a paso: pestañas (este boletín, recámara, archivo, calendario, teléfonos) */
+.bp-pestanas { display: flex; gap: 0.4rem; overflow-x: auto; scrollbar-width: none; margin: 0 0 1rem; padding-bottom: 0.2rem; border-bottom: 2px solid #eadfcb; }
+.bp-pestanas::-webkit-scrollbar { display: none; }
+.bp-pestanas button { flex: 0 0 auto; border: 0; background: none; padding: 0.55rem 0.8rem; font: inherit; font-weight: 600; color: #6b5d55; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.bp-pestanas button.activa { color: #7b1c2c; border-bottom-color: #7b1c2c; }
+.rec-filtros { flex-wrap: wrap; margin: 0.8rem 0 0.4rem; }
+.rec-filtros small { opacity: 0.6; margin-left: 0.2rem; }
+.arch-buscar { width: 100%; margin: 0.6rem 0; padding: 0.6rem 0.8rem; border: 1px solid #d9cbb3; border-radius: 6px; font: inherit; }
+.arch-grupo { border-top: 1px solid #eadfcb; padding: 0.5rem 0; }
+.arch-grupo > summary { cursor: pointer; padding: 0.3rem 0; }
+.arch-grupo > summary small { color: #8a7a6e; margin-left: 0.3rem; }
+.tel-ini { display: flex; align-items: center; justify-content: center; font-weight: 700; color: #7b1c2c; }
+.tel-ok { background: #e6f2e6; color: #2f6b2f; }
+.tel-editar { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.tel-editar input { flex: 1 1 140px; padding: 0.4rem 0.5rem; border: 1px solid #d9cbb3; border-radius: 5px; font: inherit; }
