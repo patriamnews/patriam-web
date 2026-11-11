@@ -10,6 +10,10 @@ on:
   # Cada día, para que Google tenga al día los productos, artículos y campañas nuevos (páginas y sitemap.xml)
   schedule:
     - cron: '17 4 * * *'
+    # Y 20 minutos después de cada actualización de «España al día» (boletín), para que se vea al día
+    - cron: '27 5 * * *'
+    - cron: '27 11 * * *'
+    - cron: '27 17 * * *'
 permissions:
   contents: write
 jobs:
