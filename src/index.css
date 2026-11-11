@@ -1765,3 +1765,27 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-envio-principal div { display: flex; flex-direction: column; gap: .2rem; }
 .bp-envio-principal small { color: #a8873a; font-weight: 600; }
 @media (max-width: 560px) { .bp-envio-principal { flex-direction: column; } .bp-envio-principal img { width: 100%; height: auto; } }
+
+/* Publicar › Boletín: cada pieza — a la izquierda título, herramientas y la imagen debajo; a la derecha los botones */
+.bp-lista li { grid-template-columns: 1fr auto; align-items: start; gap: 1rem; padding: .9rem 1rem; }
+.bp-pieza { min-width: 0; }
+.bp-pieza > b { font-size: 1.08rem; margin: .15rem 0 .3rem; }
+.bp-estados { display: flex; flex-wrap: wrap; gap: .35rem; }
+.bp-estados .bp-espera { margin: 0; }
+.bp-herr { display: flex; flex-wrap: wrap; gap: .3rem 1.1rem; margin: .5rem 0 .2rem; }
+.bp-herr button, .bp-herr label { background: none; border: 0; padding: 0; cursor: pointer; font: 600 .9rem var(--sans); color: #7b1c2c; }
+.bp-herr button:hover, .bp-herr label:hover { text-decoration: underline; }
+.bp-acc { flex-direction: column; align-items: stretch; min-width: 150px; }
+.bp-acc .btn { width: 100%; text-align: center; }
+.bp-acc .bp-principal { text-align: center; padding: .3rem 0; }
+.bp-imgs { margin-top: .6rem; }
+.bp-imgs small { margin-top: .2rem; text-transform: none; letter-spacing: 0; }
+.bp-imgs-lista button { width: 150px; height: 96px; }
+.bp-imgs-lista button span { width: auto; height: auto; border-radius: 3px; padding: .1rem .4rem; font-size: 11px; line-height: 1.4; top: 4px; right: 4px; }
+.bp-sinfoto { margin: .5rem 0 0; font-size: .85rem; color: #9a8d85; font-style: italic; }
+@media (max-width: 640px) {
+  .bp-lista li { grid-template-columns: 1fr; }
+  .bp-acc { flex-direction: row; flex-wrap: wrap; min-width: 0; }
+  .bp-acc .btn { width: auto; flex: 1 1 auto; }
+  .bp-imgs-lista button { width: calc(33.3% - .3rem); height: 64px; }
+}

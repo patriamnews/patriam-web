@@ -344,17 +344,31 @@ function Fila({ x, children, leer, api, onCambio }) {
       const a = document.createElement('a'); a.href = 'data:application/octet-stream;base64,' + j.datos; a.download = j.nombre || 'cv'; a.click()
     } catch (e) { window.alert(e.message) }
   }
+  const conImagen = !['ficha', 'espana'].includes(x.tipo) && api
+  const [subiendo, setSubiendo] = useState(false)
+  const anadirImagen = async (ev) => {
+    const f = ev.target.files?.[0]; if (!f) return
+    setSubiendo(true)
+    try { onCambio(await api('imagen-anadir', { id: x.id, url: await subirArchivo('imagenes', f) })) } catch (e) { window.alert(e.message) }
+    setSubiendo(false); ev.target.value = ''
+  }
   return (
     <li>
-      <span className="bp-foto">
-        {x.datos.imagen ? <img src={x.datos.imagen} alt="" /> : <span className="bp-sinimg" />}
-      </span>
-      <div>
+      <div className="bp-pieza">
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
         <b>{tituloDe(x)}</b>
-        {x.estado === 'aprobado' && <em className="bp-espera bp-aprobado">✓ Aprobado</em>}
-        {x.estado === 'pendiente' && <em className="bp-espera">{x.propuestaDe ? `Cambio de ${x.propuestaDe}, esperando aprobación` : 'Esperando aprobación'}</em>}
-        {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
+        <div className="bp-estados">
+          {x.estado === 'aprobado' && <em className="bp-espera bp-aprobado">✓ Aprobado</em>}
+          {x.estado === 'pendiente' && <em className="bp-espera">{x.propuestaDe ? `Cambio de ${x.propuestaDe}, esperando aprobación` : 'Esperando aprobación'}</em>}
+          {x.origen === 'correo' && <em className="bp-espera bp-correo">✉ por correo{x.remite ? ' · ' + x.remite : ''}</em>}
+        </div>
+        {x.tipo !== 'ficha' && (
+          <div className="bp-herr">
+            <button type="button" onClick={copiar}>{copiado ? '✓ Copiado' : '📋 Copiar texto'}</button>
+            {conImagen && <label>{subiendo ? 'Subiendo…' : '🖼 Subir imagen'}<input type="file" accept="image/*" hidden onChange={anadirImagen} /></label>}
+            {leer && (cuerpo || x.datos.entradilla) && <button type="button" onClick={() => setAbierto(!abierto)}>{abierto ? '✕ Cerrar' : '📖 Abrir y leer'}</button>}
+          </div>
+        )}
         {leer && x.tipo === 'ficha' && (
           <details className="bp-leer" open={!x.datos.bio}>
             <summary>Ver y preparar la presentación</summary>
@@ -364,12 +378,8 @@ function Fila({ x, children, leer, api, onCambio }) {
             <p><button type="button" className="btn btn-sec" onClick={async () => { try { onCambio(await api('editar-ficha', { id: x.id, bio })) } catch (e) { window.alert(e.message) } }}>Guardar presentación</button></p>
           </details>
         )}
-        {leer && x.tipo !== 'ficha' && (cuerpo || x.datos.entradilla) && (
-          <button type="button" className="btn-texto bp-abrir" onClick={() => setAbierto(!abierto)}>{abierto ? 'Cerrar' : 'Abrir y leer'}</button>
-        )}
         {abierto && (
           <div className="bp-lector">
-            {x.datos.imagen && <img src={x.datos.imagen} alt="" />}
             <h3>{tituloDe(x)}</h3>
             {(x.datos.autor || x.datos.comenta) && <p className="bp-lector-firma">{x.datos.autor || x.datos.comenta}{x.datos.cargo ? ' · ' + x.datos.cargo : ''}</p>}
             {x.datos.entradilla && <p><i>{x.datos.entradilla}</i></p>}
@@ -379,37 +389,28 @@ function Fila({ x, children, leer, api, onCambio }) {
             <button type="button" className="btn-texto" onClick={() => setAbierto(false)}>Cerrar</button>
           </div>
         )}
-        {!['ficha', 'espana'].includes(x.tipo) && api && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
+        {conImagen && <OpcionesImagen x={x} api={api} onCambio={onCambio} />}
       </div>
-      <span className="bp-acc">{x.tipo !== 'ficha' && <button type="button" className="btn btn-sec" onClick={copiar} title="Copia el titular, el resumen, el comentario y la firma para hacer la imagen">{copiado ? '✓ Copiado' : '📋 Copiar texto'}</button>}{children}</span>
+      <span className="bp-acc">{children}</span>
     </li>
   )
 }
 
 /* Imágenes de un artículo: se suben una o varias; elige la que va quien subió el artículo (si solo hay una, se queda esa) */
 function OpcionesImagen({ x, api, onCambio }) {
-  const ops = x.imagenesOpciones || []
-  const [subiendo, setSubiendo] = useState(false)
-  const anadir = async (ev) => {
-    const f = ev.target.files?.[0]; if (!f) return
-    setSubiendo(true)
-    try { onCambio(await api('imagen-anadir', { id: x.id, url: await subirArchivo('imagenes', f) })) } catch (e) { window.alert(e.message) }
-    setSubiendo(false); ev.target.value = ''
-  }
+  const ops = x.imagenesOpciones?.length ? x.imagenesOpciones : (x.datos.imagen ? [x.datos.imagen] : [])
+  if (!ops.length) return <p className="bp-sinfoto">Sin imagen todavía.</p>
   const elegir = async (url) => { try { onCambio(await api('imagen-elegir', { id: x.id, url })) } catch (e) { window.alert(e.message) } }
   return (
     <div className="bp-imgs">
-      {ops.length > 0 && <small>{x.puedoElegirImagen ? (ops.length > 1 ? 'Elige la imagen que va (la marcada es la que sale):' : 'Imagen (añade otras para poder elegir):') : 'Imágenes propuestas (elige quien subió el artículo):'}</small>}
-      {ops.length > 0 && (
-        <div className="bp-imgs-lista">
-          {ops.map((u) => (
-            <button key={u} type="button" className={u === x.datos.imagen ? 'elegida' : ''} disabled={!x.puedoElegirImagen || u === x.datos.imagen} onClick={() => elegir(u)} title={u === x.datos.imagen ? 'La que va' : 'Elegir esta'}>
-              <img src={u} alt="" loading="lazy" />{u === x.datos.imagen && <span>✓</span>}
-            </button>
-          ))}
-        </div>
-      )}
-      <label className="btn-texto">{subiendo ? 'Subiendo…' : ops.length ? '+ Añadir otra imagen para elegir' : '+ Añadir imagen'}<input type="file" accept="image/*" hidden onChange={anadir} /></label>
+      <div className="bp-imgs-lista">
+        {ops.map((u) => (
+          <button key={u} type="button" className={u === x.datos.imagen ? 'elegida' : ''} disabled={!x.puedoElegirImagen || u === x.datos.imagen} onClick={() => elegir(u)} title={u === x.datos.imagen ? 'La que va' : 'Elegir esta'}>
+            <img src={u} alt="" loading="lazy" />{u === x.datos.imagen && <span>✓ La que va</span>}
+          </button>
+        ))}
+      </div>
+      {ops.length > 1 && <small>{x.puedoElegirImagen ? 'Pulsa otra para cambiar la que va.' : 'La elige quien subió el artículo.'}</small>}
     </div>
   )
 }
