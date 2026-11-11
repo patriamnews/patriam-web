@@ -63,11 +63,6 @@ export default function BoletinPaso() {
   useEffect(() => { cargar() }, []) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { window.scrollTo(0, 0) }, [que, hecho, pest])
 
-  // Cambiar solo la foto, sin abrir el formulario (queda pendiente de «Aprobar», como cualquier cambio)
-  const cambiarFoto = async (x, url) => {
-    setError('')
-    try { setE(await api('editar', { id: x.id, datos: { ...x.datos, imagen: url } })) } catch (z) { setError(z.message) }
-  }
   const accion = async (a, cuerpo) => {
     setError('')
     try { setE(await api(a, cuerpo)) } catch (x) { setError(x.message) }
@@ -154,8 +149,9 @@ export default function BoletinPaso() {
   if (pest === 'calendario') return <>{barra}<CalendarioBoletin /></>
   if (pest === 'telefonos' && e.puedeAprobar) return <>{barra}<Telefonos numeros={numeros} /></>
 
-  const pendientes = e.items.filter((x) => x.estado === 'pendiente')
   const delAbierto = ab ? e.items.filter((x) => x.numero === ab.numero && ['aprobado', 'pendiente'].includes(x.estado)) : []
+  const pendientes = e.items.filter((x) => x.estado === 'pendiente' && !delAbierto.includes(x))
+  const aRec = async (x) => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }
 
   return (
     <>{barra}
@@ -209,7 +205,7 @@ export default function BoletinPaso() {
             {pendientes.some((x) => x.origen === 'correo') && <p className="bp-nota">Los marcados «por correo» han llegado a hola@movimientopatriam.com con el asunto «ARTICULO» y el nombre de quien firma. Ábrelos con «Leer» antes de aprobar.</p>}
             <ul className="bp-lista">
               {pendientes.map((x) => (
-                <Fila key={x.id} x={x} leer api={api} onCambio={setE} onFoto={x.tipo !== 'ficha' ? (url) => cambiarFoto(x, url) : undefined}>
+                <Fila key={x.id} x={x} leer api={api} onCambio={setE}>
                   {x.tipo === 'firma' && (
                     <select value={x.datos.seccion || 'Análisis'} onChange={(v) => accion('seccion', { id: x.id, seccion: v.target.value })} aria-label="Sección">
                       {SECCIONES.map((s) => <option key={s}>{s}</option>)}
@@ -241,10 +237,10 @@ export default function BoletinPaso() {
                   </li>
                 ))}
                 {delAbierto.map((x) => (
-                  <Fila key={x.id} x={x} leer onFoto={QUE[x.tipo] ? (url) => cambiarFoto(x, url) : undefined}>
+                  <Fila key={x.id} x={x} leer>
+                    {e.puedeAprobar && x.estado === 'pendiente' && <button type="button" className="btn" onClick={() => accion('aprobar', { id: x.id })}>Aprobar</button>}
                     {QUE[x.tipo] && <button type="button" className="btn btn-sec" onClick={() => setEditar(x)}>Cambiar</button>}
-                    {(x.mio || e.puedeAprobar) && x.tipo !== 'espana' && <button type="button" className="btn-texto" onClick={async () => { try { await api('a-recamara', { id: x.id }); cargar() } catch (z) { setError(z.message) } }}>A la recámara</button>}
-                    {(x.mio || e.puedeAprobar) && <button type="button" className="btn-texto" onClick={() => { if (window.confirm('¿Quitar «' + tituloDe(x) + '» del boletín?')) accion('borrar', { id: x.id }) }}>Quitar</button>}
+                    {x.tipo !== 'espana' && <button type="button" className="btn btn-sec" onClick={() => aRec(x)}>A la recámara</button>}
                   </Fila>
                 ))}
               </ul>
@@ -259,7 +255,7 @@ export default function BoletinPaso() {
   )
 }
 
-function Fila({ x, children, leer, api, onCambio, onFoto }) {
+function Fila({ x, children, leer, api, onCambio }) {
   const T = { noticia: 'Noticia', firma: 'Artículo', recomendacion: x.datos.tipo || 'Recomendación', editorial: 'Editorial', ficha: 'Presentación', espana: 'España al día' }
   const [bio, setBio] = useState(x.datos.bio || '')
   const [abierto, setAbierto] = useState(false)
@@ -274,7 +270,6 @@ function Fila({ x, children, leer, api, onCambio, onFoto }) {
     <li>
       <span className="bp-foto">
         {x.datos.imagen ? <img src={x.datos.imagen} alt="" /> : <span className="bp-sinimg" />}
-        {onFoto && <FotoRapida onFoto={onFoto} />}
       </span>
       <div>
         <small>{T[x.tipo]}{x.datos.seccion && x.tipo !== 'recomendacion' ? ' · ' + x.datos.seccion : ''} · {x.datos.comenta || x.datos.autor || x.datos.firma || x.autor}</small>
@@ -309,18 +304,6 @@ function Fila({ x, children, leer, api, onCambio, onFoto }) {
       <span className="bp-acc">{children}</span>
     </li>
   )
-}
-
-function FotoRapida({ onFoto }) {
-  const [subiendo, setSubiendo] = useState(false)
-  const subir = async (ev) => {
-    const f = ev.target.files?.[0]
-    if (!f) return
-    setSubiendo(true)
-    try { await onFoto(await subirArchivo('imagenes', f)) } catch (x) { window.alert('No se ha podido subir la foto: ' + x.message) }
-    setSubiendo(false)
-  }
-  return <label className="bp-foto-cambiar">{subiendo ? 'Subiendo…' : '📷 Cambiar foto'}<input type="file" accept="image/*" hidden onChange={subir} /></label>
 }
 
 /* ---------- el formulario de cada cosa ---------- */
