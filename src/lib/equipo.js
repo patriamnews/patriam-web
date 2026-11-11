@@ -35,3 +35,14 @@ export async function cambiarClaveEquipo(nueva) {
 }
 
 export const salirEquipo = () => guardarToken('')
+
+// Al entrar con Google o Microsoft no hay contraseña del equipo: se pide la ficha con la sesión de Supabase
+export async function fichaConCuenta(session) {
+  if (!session?.access_token || tokenEquipo()) return
+  const proveedor = session.user?.app_metadata?.provider
+  if (!proveedor || proveedor === 'email') return
+  try {
+    const { r, d } = await api({ accion: 'entrar-cuenta', acceso: session.access_token })
+    if (r.ok && d?.token) guardarToken(d.token)
+  } catch { /* sin servidor */ }
+}

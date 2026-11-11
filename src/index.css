@@ -1669,3 +1669,26 @@ html, body, .sitio { background: var(--crema) !important; }
 .entrar-con-o::before, .entrar-con-o::after { content: ""; flex: 1; border-top: 1px solid var(--linea); }
 .btn-oauth { display: flex; align-items: center; justify-content: center; gap: 0.6rem; padding: 0.7rem 1rem; background: #fff; border: 1px solid var(--linea); border-radius: 4px; font: 500 0.95rem var(--sans, inherit); cursor: pointer; color: var(--tinta); }
 .btn-oauth:hover { border-color: var(--tinta); }
+
+/* RRSS: publicar con las cuentas, lo del boletín y seguimiento */
+.rrss-conectar { margin: 0.4rem 0 0.2rem; }
+.rrss-conectar > .btn-texto small { color: var(--suave); font-weight: 400; }
+.rrss-conectar .formulario { background: var(--papel, #fffdf8); border: 1px solid #e3d6c1; padding: 1rem; margin-top: 0.5rem; }
+.rrss-conectar h4 { margin: 1rem 0 0.2rem; }
+.rrss-publicar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.6rem 0; }
+.rrss-publicar .ok { color: var(--ok, #2e6b3a); } .rrss-publicar .error { margin: 0; }
+.rrss-boletin h3 { margin: 1.4rem 0 0.4rem; color: var(--acento); }
+.rrss-post-bol { display: grid; gap: 1rem; grid-template-columns: 180px 1fr; border-top: 1px solid #e3d6c1; padding: 0.9rem 0; }
+.rrss-post-bol img { width: 100%; border: 1px solid #e3d6c1; }
+.rrss-post-bol textarea { width: 100%; margin-top: 0.4rem; font: inherit; font-size: 0.92rem; }
+.rrss-seguimiento { list-style: none; padding: 0; margin: 0; }
+.rrss-seguimiento > li { border-top: 1px solid #e3d6c1; padding: 0.8rem 0; }
+.rrss-seg-cab { display: grid; grid-template-columns: 90px 1fr; gap: 0.8rem; }
+.rrss-seg-cab:not(:has(img)) { grid-template-columns: 1fr; }
+.rrss-seg-cab img { width: 90px; height: 90px; object-fit: cover; }
+.rrss-seg-cab p { margin: 0.3rem 0; white-space: pre-wrap; }
+.rrss-seg-detalle { background: #fff; border: 1px solid #e3d6c1; padding: 0.7rem 0.9rem; margin-top: 0.5rem; }
+.rrss-seg-detalle ul { list-style: none; padding: 0; margin: 0; } .rrss-seg-detalle li { padding: 0.45rem 0; border-bottom: 1px solid #f0e7d8; }
+.rrss-cifras { display: flex; flex-wrap: wrap; gap: 1rem; }
+.rrss-mas { margin-top: 1.4rem; } .rrss-mas summary { cursor: pointer; font-weight: 600; }
+@media (max-width: 640px) { .rrss-post-bol { grid-template-columns: 1fr; } .rrss-post-bol img { max-width: 260px; } }

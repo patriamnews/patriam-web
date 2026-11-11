@@ -8,20 +8,31 @@ import { REDES } from '../lib/config'
 import logo from '../assets/logo.png'
 import logoClaro from '../assets/logo-claro.png'
 import Redes from '../admin/Redes'
+import { rrss, Conectar, DelBoletin, Seguimiento, BotonesPublicar } from './RrssPublicar'
 
 export default function Rrss() {
-  const [pestana, setPestana] = useState('disenar')
+  const [pestana, setPestana] = useState('boletin')
+  const [conexion, setConexion] = useState(null)
+  useEffect(() => { rrss('conexion').then((d) => setConexion(d.conexion)).catch(() => setConexion({})) }, [])
   return (
     <>
+      <Conectar conexion={conexion} onCambio={setConexion} />
       <div className="pestanas grandes">
-        <button className={pestana === 'disenar' ? 'activa' : ''} onClick={() => setPestana('disenar')}>Crear diseño</button>
-        <button className={pestana === 'cuentas' ? 'activa' : ''} onClick={() => setPestana('cuentas')}>Mis cuentas</button>
-        <button className={pestana === 'seguimiento' ? 'activa' : ''} onClick={() => setPestana('seguimiento')}>Publicaciones</button>
+        <button className={pestana === 'boletin' ? 'activa' : ''} onClick={() => setPestana('boletin')}>Boletín</button>
+        <button className={pestana === 'nuevos' ? 'activa' : ''} onClick={() => setPestana('nuevos')}>Nuevos</button>
+        <button className={pestana === 'seguimiento' ? 'activa' : ''} onClick={() => setPestana('seguimiento')}>Seguimiento</button>
       </div>
       <div className="rrss-cuerpo">
-        {pestana === 'disenar' && <Disenar />}
-        {pestana === 'cuentas' && <Cuentas />}
-        {pestana === 'seguimiento' && <Redes />}
+        {pestana === 'boletin' && <DelBoletin conexion={conexion} />}
+        {pestana === 'nuevos' && <Disenar conexion={conexion} />}
+        {pestana === 'seguimiento' && (
+          <>
+            <h3>Lo publicado desde aquí</h3>
+            <Seguimiento />
+            <details className="rrss-mas"><summary>Mis cuentas y seguidores</summary><Cuentas /></details>
+            <details className="rrss-mas"><summary>Registro a mano (lo publicado fuera de aquí)</summary><Redes /></details>
+          </>
+        )}
       </div>
     </>
   )
@@ -171,7 +182,7 @@ async function dibujar(canvas, d) {
 
 const hoy = () => new Date().toISOString().slice(0, 10)
 
-function Disenar() {
+function Disenar({ conexion }) {
   const canvas = useRef(null)
   const [d, setD] = useState({ formato: 'ig', fondo: 'granate', antetitulo: '', titular: '', texto: '', firma: '@patriam_es · movimientopatriam.es', foto: '' })
   const [post, setPost] = useState({ red: 'instagram', texto: '' })
@@ -264,7 +275,8 @@ function Disenar() {
             <button type="button" className="btn btn-claro" onClick={copiar} disabled={!post.texto}>Copiar texto</button>
             <a className="btn btn-claro" href={ABRIR[post.red](post.texto)} target="_blank" rel="noopener noreferrer">Abrir {REDES[post.red]} ↗</a>
           </div>
-          <p className="letra-pequena">Descargue la imagen, abra la red y súbala con el texto. Después apúntela aquí para llevar el seguimiento.</p>
+          <BotonesPublicar texto={post.texto} imagen={d.titular.trim() ? () => canvas.current.toDataURL('image/png') : ''} conexion={conexion} origen="diseño nuevo" />
+          <p className="letra-pequena">Con tu cuenta conectada, «Publicar en…» lo sube directamente y sale en «Seguimiento» con sus comentarios. Si no, descargue la imagen, abra la red y súbala con el texto; después apúntela aquí.</p>
           <div className="acciones">
             <button type="button" className="btn" onClick={() => apuntar('publicado')}>Apuntar como publicado</button>
             <button type="button" className="btn-texto" onClick={() => apuntar('programado')}>Apuntar como programado</button>

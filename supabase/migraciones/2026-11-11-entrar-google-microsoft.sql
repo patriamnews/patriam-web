@@ -49,13 +49,13 @@ begin
   return new;
 end $$;
 
--- Isabel: administradora máxima (aprueba y publica, como Carlos) y entra también con su Gmail y su Outlook
+-- Isabel: administradora máxima (aprueba y publica como Carlos) y entra también con su Gmail y su Outlook
 do $$
 declare isa uuid;
 begin
   select id into isa from perfiles where lower(email) = 'patriam-merc@outlook.es';
   if isa is null then raise notice 'No está el perfil patriam-merc@outlook.es'; return; end if;
-  update perfiles set rol = 'director', activo = true where id = isa;
+  update perfiles set rol = 'admin', activo = true where id = isa;   -- administradora (lo más alto) y, con «aprueba», publica como Carlos
   if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'perfiles' and column_name = 'aprueba') then
     execute 'update perfiles set aprueba = true where id = $1' using isa;
   end if;

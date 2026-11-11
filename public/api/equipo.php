@@ -20,6 +20,23 @@ $guardar = function () use (&$u, $f) { file_put_contents($f, json_encode($u), LO
 $p = json_decode(file_get_contents('php://input'), true) ?: [];
 $accion = $p['accion'] ?? '';
 
+/* Entrada con Google o Microsoft (sesión de Supabase): si el correo es del equipo, o es «otro correo» de alguien del equipo
+   (Usuarios y permisos › Entra también con), se da la misma ficha que con la contraseña. */
+if ($accion === 'entrar-cuenta') {
+  $tk = preg_replace('/[^A-Za-z0-9._-]/', '', (string)($p['acceso'] ?? ''));
+  $sb = 'https://igrjdsfcecbwnawwgdop.supabase.co';
+  $anon = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlncmpkc2ZjZWNid25hd3dnZG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI1MzAwMzcsImV4cCI6MjEwODEwNjAzN30.HCT6LM_Xly-s-Z2KLlBDgxVzDWAwKKkMXzSjFub5qBc';
+  $cab = ['apikey: ' . $anon, 'Authorization: Bearer ' . $tk];
+  [$c, $yo] = pedirHttp($sb . '/auth/v1/user', $cab);
+  $email = strtolower(trim((string)($yo['email'] ?? '')));
+  if ($c !== 200 || $email === '') salir(['error' => 'sesion'], 401);
+  $correos = [$email];
+  [$c, $d] = pedirHttp($sb . '/rest/v1/correos_entrada?select=perfiles(email)&email=eq.' . rawurlencode($email), $cab);
+  if ($c === 200) foreach ((array)$d as $x) if (!empty($x['perfiles']['email'])) $correos[] = strtolower($x['perfiles']['email']);
+  foreach ($correos as $e) { $h = hash('sha256', $e); if (!empty($u[$h])) salir(['equipo' => true, 'token' => crearToken($h), 'cambiar' => false]); }
+  salir(['equipo' => false]);
+}
+
 if ($accion === 'entrar') {
   $h = hash('sha256', strtolower(trim((string)($p['email'] ?? ''))));
   if (empty($u[$h])) salir(['equipo' => false]);          // no es del equipo: asociado o cliente

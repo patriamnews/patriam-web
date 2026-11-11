@@ -67,7 +67,7 @@ const COSAS = [
   { ruta: 'gelato', titulo: 'Camiseta, taza… con Gelato', texto: 'Sube el diseño, pon nombre y precio: se crea en Gelato y sale a la venta.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
-  { ruta: 'redes', titulo: 'RRSS', texto: 'Crear diseños para X, Instagram…, descargarlos, y seguir tus cuentas y publicaciones.', sale: 'Redes sociales', icono: 'red', grupo: 'otros' },
+  { ruta: 'redes', titulo: 'RRSS', texto: 'Lo preparado en el boletín, posts nuevos y su seguimiento con los comentarios. Se publica con tus cuentas desde aquí.', sale: 'Redes sociales', icono: 'red', grupo: 'otros' },
   { ruta: 'claves', titulo: 'Cuentas y claves', texto: 'Usuario, contraseña, API keys y secret keys de cada aplicación (Hostinger, GitHub, Stripe, Gelato, Brevo…).', sale: 'Solo en el servidor', icono: 'llave', grupo: 'otros' },
 ]
 
@@ -118,7 +118,7 @@ export default function Publicar() {
           <Route path="gelato" element={<Paso titulo="Nuevo producto con Gelato" ayuda="Elija el artículo, suba el diseño y ponga el precio. Gelato lo fabrica y lo envía cuando alguien lo compra."><ProductoGelato /></Paso>} />
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
-          <Route path="redes" element={<Paso titulo="RRSS" ayuda="Cree el diseño, descárguelo y súbalo a la red. En «Mis cuentas» apunte sus cuentas y los seguidores; en «Publicaciones», lo publicado y sus cifras."><Rrss /></Paso>} />
+          <Route path="redes" element={<Paso titulo="RRSS" ayuda="«Boletín»: los posts preparados con cada boletín. «Nuevos»: crea un diseño y su texto. «Seguimiento»: lo publicado, con sus cifras y comentarios. Conecta tus cuentas arriba para publicar desde aquí."><Rrss /></Paso>} />
           <Route path="boletin" element={<Paso titulo="Boletín paso a paso" ayuda="Abre el boletín de la semana y mete en él lo que quieras: una noticia, un artículo, una recomendación o la editorial. Sin entrar en el editor."><BoletinPaso /></Paso>} />
           <Route path="calendario-boletin" element={<Paso titulo="Calendario de boletines" ayuda="Cada dos viernes sale un boletín. Una semana antes, a cada colaborador le llega un correo para que mande su artículo."><CalendarioBoletin /></Paso>} />
           <Route path="estadisticas" element={<Paso titulo="Estadísticas del boletín" ayuda="Visitas, lectores, en qué pinchan, por dónde lo comparten y cuánta gente entra por cada reenvío. Las mismas que en el editor del boletín."><Estadisticas /></Paso>} />

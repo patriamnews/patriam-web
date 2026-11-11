@@ -1,4 +1,4 @@
-import { salirEquipo } from './equipo'
+import { salirEquipo, fichaConCuenta } from './equipo'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { supabase } from './supabase'
 
@@ -27,9 +27,10 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
+      fichaConCuenta(data.session)
       if (!data.session) setCargando(false)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setSession(s))
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => { setSession(s); fichaConCuenta(s) })
     return () => sub.subscription.unsubscribe()
   }, [])
 
