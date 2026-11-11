@@ -95,7 +95,8 @@ export default function BoletinPaso() {
           <div>
             <h2>Boletín nº {ab.numero} · abierto</h2>
             <p>Sale el <b>{fechaLarga(ab.fecha)}</b>. Todo lo que añadas ahora va en este boletín. Hasta ese día solo lo ve el equipo.</p>
-            <a href={vista} target="_blank" rel="noopener noreferrer">Ver cómo va ↗</a>
+            <a className="btn bp-grande" href={vista} target="_blank" rel="noopener noreferrer">👁 Vista previa del nº {ab.numero} ↗</a>
+            <p className="bp-nota">Así lo verán los lectores el día que salga. Solo aparece lo aprobado: lo que espera tu visto bueno sale en cuanto lo apruebas.</p>
           </div>
         ) : (
           <div>

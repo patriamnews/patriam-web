@@ -4,7 +4,9 @@
 export const BOLETIN_POR_DEFECTO = 'https://boletin.movimientopatriam.es/'
 
 export const urlBoletin = (aj) => {
-  const u = (aj?.boletin_url || BOLETIN_POR_DEFECTO).trim()
+  // Las direcciones antiguas de Netlify ya no sirven: el boletín está en boletin.movimientopatriam.es
+  let u = (aj?.boletin_url || BOLETIN_POR_DEFECTO).trim()
+  if (/netlify\.app/i.test(u)) u = BOLETIN_POR_DEFECTO
   return u.endsWith('/') ? u : u + '/'
 }
 
