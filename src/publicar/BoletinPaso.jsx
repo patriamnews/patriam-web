@@ -165,7 +165,7 @@ export default function BoletinPaso() {
             <h2>Boletín nº {ab.numero} · abierto</h2>
             <p>Sale el <b>{fechaLarga(ab.fecha)}</b>. Todo lo que añadas ahora va en este boletín. Hasta ese día solo lo ve el equipo.</p>
             <a className="btn bp-grande" href={vista} target="_blank" rel="noopener noreferrer">👁 Vista previa del nº {ab.numero} ↗</a>
-            <p className="bp-nota">Así lo verán los lectores el día que salga. Solo aparece lo aprobado: lo que espera tu visto bueno sale en cuanto lo apruebas.</p>
+            <p className="bp-nota">Así lo verán los lectores el día que salga. Solo aparece lo aprobado: nada sale hasta que alguien pulsa «Aprobar».</p>
           </div>
         ) : (
           <div>
@@ -226,7 +226,7 @@ export default function BoletinPaso() {
           <span className="bp-num">3</span>
           <div>
             <h2>Lo que ya hay en el nº {ab.numero} <small>({delAbierto.length + (e.delEditor?.items?.length || 0)})</small></h2>
-            <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Con «Cambiar» lo corriges; si no apruebas tú, el cambio espera a Carlos o Isabel.</p>
+            <p className="bp-nota">Todo lo que va en este número, lo haya subido quien sea y como sea. Nada sale en el boletín hasta que alguien pulsa «Aprobar», tampoco los cambios.</p>
             {(delAbierto.length || e.delEditor?.items?.length) ? (
               <ul className="bp-lista">
                 {(e.delEditor?.items || []).map((x, i) => (
@@ -329,14 +329,14 @@ function Formulario({ que, perfil, api, numero, editar, onCancelar, onHecho }) {
       if (editar) {
         const j = await api('editar', { id: editar.id, datos: d })
         const x = j.items.find((y) => y.id === editar.id)
-        onHecho(j, x?.estado === 'pendiente' ? 'Cambio guardado. Saldrá cuando Carlos o Isabel lo aprueben.' : 'Cambiado ✓')
+        onHecho(j, 'Cambio guardado. No sale hasta que alguien pulse «Aprobar».')
         setEnviando(false)
         return
       }
       const j = await api('subir', { tipo: que, datos: d, destino: destino.current })
       const nuevo = j.items.find((x) => x.id === j.nuevo)
-      onHecho(j, j.recamara ? 'Guardado en la recámara. Cuando prepares un boletín, lo eliges allí con «Usar en el nº…».' : nuevo?.estado === 'pendiente'
-        ? `Guardado en el boletín nº ${numero}. Saldrá cuando Carlos o Isabel lo aprueben.`
+      onHecho(j, j.recamara ? 'Guardado en la recámara. Cuando prepares un boletín, lo eliges allí con «Usar en el nº…».' : nuevo?.estado === 'pendiente' && nuevo
+        ? `Guardado en el boletín nº ${numero}. No sale hasta que alguien pulse «Aprobar».`
         : `Ya está en el boletín nº ${numero}.`)
     } catch (x) { setError(x.message) }
     setEnviando(false)

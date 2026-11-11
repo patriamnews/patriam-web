@@ -20,7 +20,7 @@ export default function Recamara({ api, abierto, onSubir, onUsado }) {
   useEffect(() => { cargar() }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const usar = async (x) => {
-    try { const j = await api('usar', { id: x.id }); onUsado(j, `«${titulo(x)}» ya está en el boletín nº ${abierto.numero}.`) } catch (e) { setError(e.message) }
+    try { const j = await api('usar', { id: x.id }); onUsado(j, `«${titulo(x)}» está en el boletín nº ${abierto.numero}, esperando que alguien lo apruebe.`) } catch (e) { setError(e.message) }
   }
   const quitar = async (x) => {
     if (!window.confirm(`¿Quitar «${titulo(x)}» de la recámara?`)) return
