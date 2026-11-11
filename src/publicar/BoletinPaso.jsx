@@ -406,7 +406,7 @@ function OpcionesImagen({ x, api, onCambio }) {
       <div className="bp-imgs-lista">
         {ops.map((u) => (
           <button key={u} type="button" className={u === x.datos.imagen ? 'elegida' : ''} disabled={!x.puedoElegirImagen || u === x.datos.imagen} onClick={() => elegir(u)} title={u === x.datos.imagen ? 'La que va' : 'Elegir esta'}>
-            <img src={u} alt="" loading="lazy" />{u === x.datos.imagen && <span>✓ La que va</span>}
+            <img src={u} alt="" loading="lazy" />{u === x.datos.imagen && <span>✓</span>}
           </button>
         ))}
       </div>
