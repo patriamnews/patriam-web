@@ -17,7 +17,7 @@ $fC = privado() . '/cuentas.json';
 $cu = is_file($fC) ? (json_decode(file_get_contents($fC), true) ?: []) : [];
 $CAMPOS = ['stripe' => '/^(sk|rk)_(live|test)_[A-Za-z0-9]+$/', 'stripePublica' => '/^pk_(live|test)_[A-Za-z0-9]+$/', 'stripeWebhook' => '/^whsec_[A-Za-z0-9]+$/', 'stripeDisenador' => '/^acct_[A-Za-z0-9]+$/',
   'gelato' => '/^[A-Za-z0-9\-_:.]{10,}$/', 'gelatoTienda' => '/^[A-Za-z0-9\-]{6,}$/',
-  'brevo' => '/^xkeysib-[A-Za-z0-9\-]+$/', 'waToken' => '/^[A-Za-z0-9_\-]{20,}$/', 'waPhone' => '/^[0-9]{6,20}$/', 'waPlantilla' => '/^[a-z0-9_]{1,100}$/',
+  'brevo' => '/^xkeysib-[A-Za-z0-9\-]+$/', 'waToken' => '/^[A-Za-z0-9_\-]{20,}$/', 'waInterno' => '/^[\x21-\x7E]{16,200}$/', 'waPhone' => '/^[0-9]{6,20}$/', 'waPlantilla' => '/^[a-z0-9_]{1,100}$/',
   'awin' => '/^[0-9]{3,12}$/', 'supabaseUrl' => '#^https://[a-z0-9]+\.supabase\.co$#', 'supabaseAnon' => '/^[A-Za-z0-9_\-.]{20,}$/'];
 foreach ($CAMPOS as $c => $re) {
   if (!isset($p['valores'][$c])) continue;
