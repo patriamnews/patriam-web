@@ -26,6 +26,7 @@ import CalendarioBoletin from './CalendarioBoletin'
 import EntrarCon from '../components/EntrarCon'
 import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
+import Liquidacion from './Liquidacion'
 import Estadisticas from './Estadisticas'
 import BoletinPaso from './BoletinPaso'
 import FichaColaborador from './FichaColaborador'
@@ -64,6 +65,7 @@ const COSAS = [
   { ruta: 'campana', titulo: 'Campaña de firmas', texto: 'Enlace a la petición de CitizenGO.', sale: 'Campañas', icono: 'firma', grupo: 'web' },
   { ruta: 'recomendacion', titulo: 'Recomendación', texto: 'Un libro, artículo, pódcast o vídeo.', sale: 'Recomendaciones', icono: 'estrella', grupo: 'web' },
   { ruta: 'gelato-tienda', titulo: 'Mis productos de Gelato', texto: 'Los que vas haciendo en Gelato salen aquí: pon el precio y a la venta.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
+  { ruta: 'liquidacion', titulo: 'Liquidación del diseñador', texto: 'Su parte de cada venta de sus diseños, mes a mes, y si ya se le ha pagado.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'gelato', titulo: 'Camiseta, taza… con Gelato', texto: 'Sube el diseño, pon nombre y precio: se crea en Gelato y sale a la venta.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'producto', titulo: 'Producto de la tienda', texto: 'Ropa, libros, cursos o actividades.', sale: 'Tienda', icono: 'bolsa', grupo: 'tienda' },
   { ruta: 'textos', titulo: 'Cambiar textos de la web', texto: 'Inicio, Sobre PATRIAM, Únete, Contacto…', sale: 'Páginas', icono: 'texto', grupo: 'web' },
@@ -115,6 +117,7 @@ export default function Publicar() {
           <Route path="campanas" element={<Paso titulo="Campañas de firmas"><CampanasAdmin /></Paso>} />
           <Route path="recomendacion" element={<Paso titulo="Nueva recomendación"><RecomendacionesAdmin nuevo /></Paso>} />
           <Route path="gelato-tienda" element={<Paso titulo="Mis productos de Gelato" ayuda="Aquí salen los productos que haga en su tienda de Gelato. Ponga el precio de venta y pulse «Poner a la venta»."><TiendaGelato /></Paso>} />
+          <Route path="liquidacion" element={<Paso titulo="Liquidación del diseñador" ayuda="De cada camiseta, oversize o sudadera de sus diseños le toca el 50 % de la diferencia entre lo que se cobra y lo que cobra Gelato por fabricarla. El envío no entra."><Liquidacion /></Paso>} />
           <Route path="gelato" element={<Paso titulo="Nuevo producto con Gelato" ayuda="Elija el artículo, suba el diseño y ponga el precio. Gelato lo fabrica y lo envía cuando alguien lo compra."><ProductoGelato /></Paso>} />
           <Route path="producto" element={<Paso titulo="Nuevo producto de la tienda"><TiendaAdmin nuevo /></Paso>} />
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />

@@ -81,6 +81,24 @@ if ($cq === 200 && !empty($q['quotes'])) {
   }
 }
 $ped['costeGelato'] = $coste;
+
+// Parte del diseñador: de cada prenda con reparto, (precio cobrado − lo que cobra Gelato por fabricarla) × % del reparto.
+// El envío no entra: lo que paga el cliente de envío es para Gelato, y si el envío es gratis lo asume PATRIAM.
+if ($coste !== null) {
+  $costeItem = [];
+  foreach ($q['quotes'] as $qt) foreach ($qt['products'] ?? [] as $pr) $costeItem[$pr['itemReferenceId'] ?? ''] = (float)($pr['price'] ?? 0);
+  $total = 0; $detalle = [];
+  foreach ($ped['gelato'] as $g) {
+    $rep = (float)($g['reparto'] ?? 0);
+    if ($rep <= 0 || !isset($g['precio'])) continue;
+    $venta = round((float)$g['precio'] * (int)$g['cantidad'], 2);
+    $fab = round($costeItem[$g['ref']] ?? 0, 2);
+    $parte = round(max(0, $venta - $fab) * $rep / 100, 2);
+    $total += $parte;
+    $detalle[] = ['nombre' => $g['nombre'] ?? '', 'cantidad' => (int)$g['cantidad'], 'venta' => $venta, 'costeGelato' => $fab, 'beneficio' => round($venta - $fab, 2), 'reparto' => $rep, 'disenador' => $parte];
+  }
+  if ($detalle) $ped['disenador'] = ['importe' => round($total, 2), 'detalle' => $detalle, 'fecha' => date('c')];
+}
 if ($coste === null || $ped['pagado'] + 0.01 < $coste) {
   $ped['estado'] = 'revisar: ' . ($coste === null ? 'Gelato no ha dado presupuesto' : 'lo cobrado no cubre el coste');
   guardarPedido($ref, $ped);
@@ -95,9 +113,30 @@ if ($coste === null || $ped['pagado'] + 0.01 < $coste) {
 ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
 if ($co >= 200 && $co < 300 && !empty($o['id'])) {
   $ped['gelatoId'] = $o['id']; $ped['estado'] = 'enviado a Gelato'; guardarPedido($ref, $ped);
+  pagarDisenador($ref, $ped, $s, $K);
   avisar("Pedido $ref enviado a Gelato", "Cobrado: {$ped['pagado']} €. Coste en Gelato: $coste €. Gelato lo fabrica y lo envía a $nombre ({$destino['city']}). Nº de pedido en Gelato: {$o['id']}.");
 } else {
   $ped['estado'] = 'error al mandarlo a Gelato'; $ped['errorGelato'] = mb_substr($raw, 0, 500); guardarPedido($ref, $ped);
   avisar("Pedido $ref: error al mandarlo a Gelato", "Cobrado: {$ped['pagado']} €. Gelato respondió $co: " . mb_substr($raw, 0, 300));
 }
 salir(['ok' => true]);
+
+/* Pago automático al diseñador con Stripe Connect (solo si en Cuentas y claves › Stripe está puesta su cuenta «acct_…»).
+   Se transfiere su parte desde el propio cobro (source_transaction), así el dinero sale cuando Stripe lo libera.
+   Si no hay cuenta puesta, su parte queda apuntada en el pedido y sale en la liquidación mensual de Publicar. */
+function pagarDisenador($ref, &$ped, $s, $K) {
+  $imp = (float)($ped['disenador']['importe'] ?? 0);
+  $cuenta = trim((string)($K['stripeDisenador'] ?? ''));
+  if ($imp < 0.01 || !preg_match('/^acct_[A-Za-z0-9]+$/', $cuenta) || !empty($ped['disenador']['transferencia']) || empty($K['stripe'])) return;
+  $cab = ['Stripe-Version: 2024-06-20'];
+  [$c, $pi] = pedirHttp('https://api.stripe.com/v1/payment_intents/' . rawurlencode((string)($s['payment_intent'] ?? '')), $cab, null, $K['stripe'] . ':');
+  $cargo = $pi['latest_charge'] ?? '';
+  if ($c !== 200 || !$cargo) { avisar("Pedido $ref: pagar al diseñador a mano", "No se ha podido leer el cobro en Stripe. Su parte es de $imp €."); return; }
+  [$c, $t, $raw] = pedirHttp('https://api.stripe.com/v1/transfers', array_merge($cab, ['Idempotency-Key: disenador-' . $ref]), http_build_query([
+    'amount' => (int)round($imp * 100), 'currency' => 'eur', 'destination' => $cuenta, 'source_transaction' => $cargo,
+    'transfer_group' => $ref, 'description' => "Parte del diseñador · pedido $ref", 'metadata[referencia]' => $ref,
+  ]), $K['stripe'] . ':');
+  if ($c === 200 && !empty($t['id'])) $ped['disenador']['transferencia'] = $t['id'];
+  else { $ped['disenador']['errorTransferencia'] = mb_substr($raw, 0, 300); avisar("Pedido $ref: no se ha pagado al diseñador", "Stripe respondió $c al transferir $imp €. Páguele a mano o revise Stripe Connect."); }
+  guardarPedido($ref, $ped);
+}

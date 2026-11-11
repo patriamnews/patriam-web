@@ -5,7 +5,7 @@ import { euros, fecha, slugify } from '../lib/data'
 import { confirmar } from '../lib/confirmar'
 import { subirArchivo } from './subir'
 
-const NUEVO = { nombre: '', categoria: 'ropa', enlace_externo: '', gelato_uids: '', gelato_archivo: '', descripcion: '', precio: 0, opciones: '', stock: '', fecha: '', lugar: '', plazas: '', imagen_url: '', activo: true, orden: 0 }
+const NUEVO = { nombre: '', categoria: 'ropa', enlace_externo: '', gelato_uids: '', gelato_archivo: '', descripcion: '', precio: 0, opciones: '', stock: '', fecha: '', lugar: '', plazas: '', imagen_url: '', activo: true, orden: 0, reparto_disenador: 0 }
 
 export default function TiendaAdmin({ nuevo }) {
   const [vista, setVista] = useState('pedidos')
@@ -31,6 +31,7 @@ export default function TiendaAdmin({ nuevo }) {
     d.stock = d.stock === '' || d.stock == null ? null : Number(d.stock)
     d.plazas = d.plazas === '' || d.plazas == null ? null : Number(d.plazas)
     d.orden = Number(d.orden) || 0
+    d.reparto_disenador = Math.min(100, Math.max(0, Number(d.reparto_disenador) || 0))
     d.fecha = null
     if (d.categoria === 'libros') { d.gelato_uids = null; d.gelato_archivo = null; d.opciones = '' } else d.enlace_externo = null
     const res = id
@@ -148,6 +149,7 @@ export default function TiendaAdmin({ nuevo }) {
                     <label>Precio de venta (€)<input type="number" min="0" step="0.01" required value={f.precio} onChange={set('precio')} /></label>
                     <label>Orden en la tienda<input type="number" value={f.orden} onChange={set('orden')} /></label>
                   </div>
+                  <label>Parte del diseñador (% de la diferencia entre el precio y lo que cobra Gelato; 0 = no lleva)<input type="number" min="0" max="100" step="1" value={f.reparto_disenador ?? 0} onChange={set('reparto_disenador')} /></label>
                   {f.categoria === 'ropa' && (
                     <label>Tallas (separadas por comas; vacío = talla única)<input value={f.opciones || ''} onChange={set('opciones')} placeholder="S,M,L,XL,XXL" /></label>
                   )}

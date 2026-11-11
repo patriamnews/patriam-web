@@ -19,7 +19,7 @@ const APPS = [
   { id: 'meta', nombre: 'Meta · WhatsApp Business', para: 'Envío de las comunicaciones por WhatsApp', url: 'https://business.facebook.com',
     claves: [['waToken', 'Token de acceso', 'EAA…', true], ['waPhone', 'Identificador del número (Phone number ID)', '', true], ['waPlantilla', 'Nombre de la plantilla', 'comunicacion_patriam', true]] },
   { id: 'stripe', nombre: 'Stripe', para: 'Cobros con tarjeta: cuotas, donativos y tienda', url: 'https://dashboard.stripe.com',
-    claves: [['stripe', 'Clave secreta (sk_live_…)', 'sk_live_…', true], ['stripePublica', 'Clave publicable (pk_live_…)', 'pk_live_…'], ['stripeWebhook', 'Secreto del webhook (whsec_…)', 'whsec_…', true]],
+    claves: [['stripe', 'Clave secreta (sk_live_…)', 'sk_live_…', true], ['stripePublica', 'Clave publicable (pk_live_…)', 'pk_live_…'], ['stripeWebhook', 'Secreto del webhook (whsec_…)', 'whsec_…', true], ['stripeDisenador', 'Cuenta Stripe del diseñador (acct_…), para pagarle su parte solo', 'acct_…']],
     nota: 'Webhook: https://movimientopatriam.es/api/stripe-webhook.php con el evento checkout.session.completed.' },
   { id: 'gelato', nombre: 'Gelato', para: 'Fabrica y envía camisetas, sudaderas y tazas de la tienda', url: 'https://dashboard.gelato.com',
     claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]],
@@ -111,7 +111,7 @@ export default function Claves() {
               <Campo etiqueta="Usuario o email de acceso" valor={cuentas[a.id]?.usuario} onChange={(v) => setCuenta(a.id, 'usuario', v)} />
               <Campo etiqueta="Contraseña" valor={cuentas[a.id]?.clave} onChange={(v) => setCuenta(a.id, 'clave', v)} secreto />
               {(a.claves || []).map(([k, t, ph, usada]) => (
-                <Campo key={k} etiqueta={t + (usada ? ' · la usa la web' : '')} valor={claves[k]} onChange={(v) => setClaves({ ...claves, [k]: v })} secreto={!['gelatoTienda', 'waPhone', 'waPlantilla', 'awin', 'supabaseUrl'].includes(k)} placeholder={ph} />
+                <Campo key={k} etiqueta={t + (usada ? ' · la usa la web' : '')} valor={claves[k]} onChange={(v) => setClaves({ ...claves, [k]: v })} secreto={!['gelatoTienda', 'stripeDisenador', 'waPhone', 'waPlantilla', 'awin', 'supabaseUrl'].includes(k)} placeholder={ph} />
               ))}
               {a.nota && <p className="letra-pequena">{a.nota}</p>}
               {a.id === 'gelato' && webhook && <Campo etiqueta="Dirección del webhook (para pegar en Gelato)" valor={webhook} onChange={() => {}} />}

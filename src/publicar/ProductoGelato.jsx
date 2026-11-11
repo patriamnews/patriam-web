@@ -26,7 +26,7 @@ export default function ProductoGelato() {
   const [nuevaNombre, setNuevaNombre] = useState('')
   const [pl, setPl] = useState(null) // plantilla leída
   const [elegidas, setElegidas] = useState({})
-  const [f, setF] = useState({ titulo: '', descripcion: '', precio: '', categoria: 'ropa' })
+  const [f, setF] = useState({ titulo: '', descripcion: '', precio: '', categoria: 'ropa', disenador: true })
   const [archivo, setArchivo] = useState('')
   const [paso, setPaso] = useState('')
   const [error, setError] = useState('')
@@ -91,6 +91,7 @@ export default function ProductoGelato() {
         gelato_archivo: archivo,
         imagen_url: foto || pl.preview || archivo,
         activo: true,
+        reparto_disenador: f.disenador ? 50 : 0,
       }
       const { error: err } = await supabase.from('productos').insert(fila)
       if (err) throw new Error('Creado en Gelato, pero no se ha podido guardar en la web: ' + err.message)
@@ -170,6 +171,7 @@ export default function ProductoGelato() {
             <label>Descripción<textarea rows={3} value={f.descripcion} onChange={(e) => setF({ ...f, descripcion: e.target.value })} /></label>
             <label>Precio de venta en la web (€, IVA incluido)<input required inputMode="decimal" value={f.precio} onChange={(e) => setF({ ...f, precio: e.target.value })} placeholder="25" /></label>
             <p className="letra-pequena">El precio tiene que cubrir lo que cobra Gelato por fabricarlo y enviarlo; si no lo cubre, el pedido no se manda y os llega un aviso.</p>
+            <label className="check"><input type="checkbox" checked={f.disenador} onChange={(e) => setF({ ...f, disenador: e.target.checked })} /> Es un diseño del diseñador: se le paga el 50 % de la diferencia entre el precio y lo que cobra Gelato</label>
             <label>
               Sección de la tienda
               <select value={f.categoria} onChange={(e) => setF({ ...f, categoria: e.target.value })}>
