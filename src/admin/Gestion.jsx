@@ -29,6 +29,7 @@ import RecomendacionesAdmin from './RecomendacionesAdmin'
 import Administracion from './Administracion'
 import CambiarClave from './CambiarClave'
 import Manuales from './Manuales'
+import CalendarioBoletin from '../publicar/CalendarioBoletin'
 import { useSeo } from '../lib/seo'
 
 export default function Gestion() {
@@ -70,6 +71,7 @@ export default function Gestion() {
           <NavLink to="/gestion/articulos">Artículos</NavLink>
           <NavLink to="/gestion/nuevo">+ Nuevo artículo</NavLink>
           <NavLink to="/gestion/recomendaciones">Recomendaciones</NavLink>
+          <NavLink to="/gestion/calendario-boletin">Calendario de boletines</NavLink>
           {puedeAprobar(p) && <NavLink to="/gestion/aprobaciones">Pendientes de aprobación</NavLink>}
           {['ciudadana', 'cultural', 'social'].some((a) => puedeGestionarArea(p, a)) && <NavLink to="/gestion/acciones">Agenda de acciones</NavLink>}
           {puedeRedes(p) && <NavLink to="/gestion/redes">Redes sociales</NavLink>}
@@ -100,6 +102,7 @@ export default function Gestion() {
           <Route path="nuevo" element={<Editor />} />
           <Route path="editar/:id" element={<Editor />} />
           <Route path="redes" element={<Redes />} />
+          <Route path="calendario-boletin" element={<><h1>Calendario de boletines</h1><CalendarioBoletin /></>} />
           <Route path="campanas" element={<CampanasAdmin />} />
           <Route path="socios" element={<Socios />} />
           <Route path="tienda" element={<TiendaAdmin />} />

@@ -22,6 +22,7 @@ import Paginas from '../admin/Paginas'
 import Rrss from './Rrss'
 import Aprobaciones from '../admin/Aprobaciones'
 import Claves from './Claves'
+import CalendarioBoletin from './CalendarioBoletin'
 import ProductoGelato from './ProductoGelato'
 import TiendaGelato from './TiendaGelato'
 import Estadisticas from './Estadisticas'
@@ -118,6 +119,7 @@ export default function Publicar() {
           <Route path="textos" element={<Paso titulo="Cambiar textos de la web" ayuda="Elija la página, cambie el texto y guarde. Una línea en blanco separa los párrafos."><Paginas /></Paso>} />
           <Route path="redes" element={<Paso titulo="RRSS" ayuda="Cree el diseño, descárguelo y súbalo a la red. En «Mis cuentas» apunte sus cuentas y los seguidores; en «Publicaciones», lo publicado y sus cifras."><Rrss /></Paso>} />
           <Route path="boletin" element={<Paso titulo="Boletín paso a paso" ayuda="Abre el boletín de la semana y mete en él lo que quieras: una noticia, un artículo, una recomendación o la editorial. Sin entrar en el editor."><BoletinPaso /></Paso>} />
+          <Route path="calendario-boletin" element={<Paso titulo="Calendario de boletines" ayuda="Cada dos viernes sale un boletín. Una semana antes, a cada colaborador le llega un correo para que mande su artículo."><CalendarioBoletin /></Paso>} />
           <Route path="estadisticas" element={<Paso titulo="Estadísticas del boletín" ayuda="Visitas, lectores, en qué pinchan, por dónde lo comparten y cuánta gente entra por cada reenvío. Las mismas que en el editor del boletín."><Estadisticas /></Paso>} />
           <Route path="claves" element={<Paso titulo="Cuentas y claves" ayuda="Cada aplicación que usan la web y el boletín: para qué sirve, dónde se entra, usuario, contraseña y claves. Pulse una para abrirla."><Claves /></Paso>} />
           <Route path="mis-publicaciones" element={<Paso titulo="Lo publicado y en revisión"><Articulos base="/publicar" /></Paso>} />
@@ -180,6 +182,7 @@ function Inicio() {
           <b>Editor completo del boletín ↗</b>
           <small>Editorial, noticias, colaboraciones… Se abre el editor del boletín con tu usuario del boletín.</small>
         </a>
+        <Baldosa c={{ ruta: 'calendario-boletin', titulo: 'Calendario de boletines', texto: 'Cuándo sale cada boletín y el aviso que reciben los colaboradores una semana antes.', sale: 'Solo para el equipo', icono: 'calendario' }} />
         <Baldosa c={{ ruta: 'estadisticas', titulo: 'Estadísticas del boletín', texto: 'Visitas, lectores, clics, reenvíos y quién pincha en las comunicaciones.', sale: 'Solo para el equipo', icono: 'grafica' }} />
         {COSAS.filter((c) => c.grupo !== 'web').map((c) => <Baldosa key={c.ruta} c={c} />)}
       </div>

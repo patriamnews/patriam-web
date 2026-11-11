@@ -162,16 +162,22 @@ export default function BoletinPaso() {
           <span className="bp-num">3</span>
           <div>
             <h2>Lo que ya hay en el nº {ab.numero}</h2>
-            {delAbierto.length ? (
+            {(delAbierto.length || e.delEditor?.items?.length) ? (
               <ul className="bp-lista">
+                {(e.delEditor?.items || []).map((x, i) => (
+                  <li key={'ed' + i} className="bp-del-editor">
+                    <span><b>{x.titulo}</b><small>{[x.tipo, x.firma, x.medio].filter(Boolean).join(' · ')} · desde el editor</small></span>
+                  </li>
+                ))}
                 {delAbierto.map((x) => (
                   <Fila key={x.id} x={x}>
                     {(x.mio || e.puedeAprobar) && <button type="button" className="btn-texto" onClick={() => { if (window.confirm('¿Quitar «' + tituloDe(x) + '» del boletín?')) accion('borrar', { id: x.id }) }}>Quitar</button>}
                   </Fila>
                 ))}
               </ul>
-            ) : <p>Todavía no se ha añadido nada desde aquí.</p>}
-            <p className="bp-nota">Lo que se haya puesto desde el editor del boletín no sale en esta lista, pero está en el boletín.</p>
+            ) : <p>Todavía no hay nada en este boletín.</p>}
+            {e.delEditor && !e.delEditor.aprobado && <p className="bp-nota">Lo que haya en el editor del boletín para el nº {ab.numero} saldrá aquí en cuanto se apruebe allí.</p>}
+            <p className="bp-nota"><a href={vista} target="_blank" rel="noopener noreferrer">Ver el boletín nº {ab.numero} tal como va a salir ↗</a></p>
           </div>
         </section>
       )}

@@ -1638,3 +1638,27 @@ html, body, .sitio { background: var(--crema) !important; }
 .ficha-pide label { display: grid; gap: .25rem; font-weight: 600; }
 .ficha-pide label small { font-weight: 400; color: #7a6d66; }
 .ficha-pide input, .ficha-pide textarea { font: inherit; padding: .5rem; border: 1px solid #e4d9c7; background: #fffdf9; }
+
+/* Calendario de boletines */
+.cal-proximo { background: var(--papel); border-left: 4px solid var(--acento); padding: 0.8rem 1rem; margin: 0.5rem 0 1rem; display: grid; gap: 0.15rem; }
+.cal-proximo span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--suave); }
+.cal-proximo b { font-size: 1.15rem; }
+.cal-tabla { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1rem; font-size: 0.95rem; }
+.cal-tabla th, .cal-tabla td { text-align: left; padding: 0.45rem 0.4rem; border-bottom: 1px solid var(--linea); vertical-align: middle; }
+.cal-tabla input[type=date] { padding: 0.3rem; max-width: 10.5rem; }
+.cal-tabla tr.pasado { opacity: .55; }
+.cal-tabla tr.saltado td:nth-child(2) input { text-decoration: line-through; }
+.cal-fiesta { color: var(--acento); font-weight: 600; }
+.cal-colab { display: grid; grid-template-columns: auto 1fr 0.8fr 1.3fr 0.8fr auto; gap: 0.4rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid var(--linea); }
+.cal-check { display: flex !important; align-items: center; gap: 0.4rem; white-space: nowrap; }
+.cal-check input { width: auto; }
+.cal-bol .pestanas { flex-wrap: wrap; margin-bottom: 0.8rem; }
+@media (max-width: 720px) {
+  .cal-colab { grid-template-columns: 1fr 1fr; }
+  .cal-colab .cal-check { grid-column: 1 / -1; }
+  .cal-tabla th:nth-child(4), .cal-tabla td:nth-child(4) { display: none; }
+}
+
+.bp-del-editor { display: flex; padding: 0.55rem 0; border-bottom: 1px solid var(--linea); }
+.bp-del-editor span { display: grid; gap: 0.1rem; }
+.bp-del-editor small { color: var(--suave); }
