@@ -256,7 +256,50 @@ function textosAuto($a) {
     'instagram' => '📰 ' . $t . "\n\n" . $r . $firma . "\n\nLéelo entero en el boletín de PATRIAM (enlace en la bio).\n\nDios, Patria, Justicia 🇪🇸\n\n#PATRIAM #España #actualidad #ConCriterio",
   ];
 }
-function autoLeer() { return leerJson('rrss-auto.json') + ['activo' => false, 'h' => '', 'quien' => '', 'hora' => 10, 'redes' => ['x', 'facebook', 'instagram'], 'elegidas' => [], 'hechos' => []]; }
+function autoLeer() { return leerJson('rrss-auto.json') + ['activo' => false, 'h' => '', 'quien' => '', 'hora' => 10, 'redes' => ['x', 'facebook', 'instagram'], 'elegidas' => [], 'hechos' => [],
+  'aviso' => 'movimientopatriam@gmail.com', 'avisos' => []]; }
+/* Sin cuentas conectadas: el artículo del día llega por correo, listo para publicarlo con un toque (como hace Zapier sin API:
+   enlaces de X y Facebook que abren el post ya escrito, WhatsApp, y la imagen y el texto para Instagram). */
+function correoArticulo($para, $a, $tx, $hoy) {
+  $k = claves(); if (empty($k['brevo']) || !filter_var($para, FILTER_VALIDATE_EMAIL)) return 'Sin clave de Brevo o sin correo.';
+  $e = fn($t) => htmlspecialchars((string)$t, ENT_QUOTES, 'UTF-8');
+  $boton = fn($url, $txt, $color) => '<a href="' . $e($url) . '" style="display:inline-block;margin:4px 6px 4px 0;padding:11px 16px;background:' . $color . ';color:#fff;text-decoration:none;border-radius:6px;font:600 15px Arial,sans-serif">' . $txt . '</a>';
+  $html = '<div style="max-width:560px;margin:auto;font:15px/1.5 Georgia,serif;color:#2b2118">'
+    . '<p style="font:600 13px Arial,sans-serif;color:#7a1f1f;letter-spacing:.05em;text-transform:uppercase">PATRIAM · artículo del día</p>'
+    . ($a['imagen'] ? '<img src="' . $e($a['imagen']) . '" alt="" style="width:100%;border-radius:6px">' : '')
+    . '<h2 style="margin:12px 0 4px">' . $e($a['titulo']) . '</h2>' . ($a['autor'] ? '<p style="margin:0;color:#7b6a58">' . $e($a['autor']) . '</p>' : '')
+    . '<p>' . $e($a['entradilla']) . '</p>'
+    . '<p style="font:600 14px Arial,sans-serif;margin-top:20px">Publícalo con un toque (se abre ya escrito):</p>'
+    . $boton('https://x.com/intent/post?text=' . rawurlencode($tx['x']), 'Publicar en X', '#111')
+    . $boton('https://www.facebook.com/sharer/sharer.php?u=' . rawurlencode($a['enlace']), 'Compartir en Facebook', '#1877f2')
+    . $boton('https://wa.me/?text=' . rawurlencode($a['titulo'] . "\n" . $a['enlace']), 'Mandar por WhatsApp', '#25a244')
+    . '<p style="font:600 14px Arial,sans-serif;margin-top:20px">Instagram</p>'
+    . '<p style="font:14px Arial,sans-serif">' . ($a['imagen'] ? 'Mantén pulsada la imagen de arriba para guardarla y' : 'Este artículo no tiene imagen; puedes') . ' copiar este texto:</p>'
+    . '<pre style="white-space:pre-wrap;background:#f6efe2;padding:12px;border-radius:6px;font:14px Arial,sans-serif">' . $e($tx['instagram']) . '</pre>'
+    . '<p style="font:12px Arial,sans-serif;color:#7b6a58;margin-top:24px">Llega cada día mientras no estén conectadas las cuentas en publicar.movimientopatriam.es › RRSS. Con las cuentas conectadas y la publicación automática activada, se publica solo.</p></div>';
+  [$c] = pedirHttp('https://api.brevo.com/v3/smtp/email', ['api-key: ' . $k['brevo'], 'Content-Type: application/json', 'Accept: application/json'], json_encode([
+    'sender' => ['name' => 'PATRIAM Redes', 'email' => 'boletin@movimientopatriam.es'], 'replyTo' => ['email' => 'hola@movimientopatriam.com'],
+    'to' => [['email' => $para]], 'subject' => 'Artículo del día: ' . $a['titulo'], 'htmlContent' => $html,
+    'textContent' => $a['titulo'] . "\n\n" . $a['entradilla'] . "\n\n" . $a['enlace'] . "\n\nX: https://x.com/intent/post?text=" . rawurlencode($tx['x']),
+  ], JSON_UNESCAPED_UNICODE));
+  return $c >= 200 && $c < 300 ? 'Correo enviado a ' . $para : 'Brevo respondió ' . $c;
+}
+function autoAviso($auto, $ahora, $forzar) {
+  $hoy = $ahora->format('Y-m-d');
+  if (empty($auto['aviso'])) return 'Desactivada (ni cuentas ni correo).';
+  if (!$forzar && (int)$ahora->format('G') < (int)$auto['hora']) return 'Todavía no es la hora (' . $auto['hora'] . ':00).';
+  if (!$forzar && !empty($auto['avisos'][$hoy])) return 'Hoy ya se ha mandado el correo.';
+  try { [$a, $por] = articuloDelDia($hoy, $auto, articulosBoletin()); } catch (Exception $e) { return $e->getMessage(); }
+  if (!$a) return 'No hay artículo para hoy.';
+  $r = correoArticulo($auto['aviso'], $a, textosAuto($a), $hoy);
+  $auto['avisos'][$hoy] = ['id' => $a['id'], 'titulo' => $a['titulo'], 'res' => $r];
+  $auto['avisos'] = array_slice($auto['avisos'], -60, null, true);
+  // cuenta como usado para que mañana vaya el siguiente
+  $auto['hechos'][$hoy] = ['id' => $a['id'], 'titulo' => $a['titulo'], 'por' => $por, 'redes' => ['correo' => (str_starts_with($r, 'Correo') ? '✔ ' : '✗ ') . $r], 'fecha' => gmdate('c')];
+  $auto['hechos'] = array_slice($auto['hechos'], -90, null, true);
+  guardarJson('rrss-auto.json', $auto);
+  return '«' . $a['titulo'] . '» → ' . $r;
+}
 /* El artículo de un día: el elegido a mano; si no, el que toca por calendario; si no, el siguiente sin publicar del último boletín */
 function articuloDelDia($dia, $auto, $datos) {
   $todos = []; foreach ($datos['boletines'] as $b) foreach ($b['articulos'] as $a) $todos[$a['id']] = $a;
@@ -269,7 +312,7 @@ function articuloDelDia($dia, $auto, $datos) {
 function autoPublicar($forzar = false) {
   $auto = autoLeer();
   $ahora = new DateTime('now', new DateTimeZone('Europe/Madrid')); $hoy = $ahora->format('Y-m-d');
-  if (!$auto['activo'] || !$auto['h']) return 'Desactivada.';
+  if (!$auto['activo'] || !$auto['h']) return autoAviso($auto, $ahora, $forzar);
   if (!$forzar && (int)$ahora->format('G') < (int)$auto['hora']) return 'Todavía no es la hora (' . $auto['hora'] . ':00).';
   if (!$forzar && !empty($auto['hechos'][$hoy])) return 'Hoy ya está publicado.';
   try { [$a, $por] = articuloDelDia($hoy, $auto, articulosBoletin()); } catch (Exception $e) { return $e->getMessage(); }
@@ -299,6 +342,7 @@ if ($accion === 'auto') {
     if ($auto['activo']) { if (!array_filter(conexion(misClaves($h)))) salir(['error' => 'Primero conecta tus cuentas en «Conectar mis cuentas».'], 400); $auto['h'] = $h; $auto['quien'] = $quien; }
   }
   if (isset($p['hora'])) $auto['hora'] = max(0, min(23, (int)$p['hora']));
+  if (isset($p['aviso'])) $auto['aviso'] = filter_var(trim((string)$p['aviso']), FILTER_VALIDATE_EMAIL) ?: '';
   if (isset($p['redes']) && is_array($p['redes'])) $auto['redes'] = array_values(array_intersect(['x', 'facebook', 'instagram'], $p['redes']));
   if (isset($p['elegir']['dia']) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $p['elegir']['dia'])) {
     $id = preg_replace('/[^A-Za-z0-9_.-]/', '', (string)($p['elegir']['id'] ?? ''));
@@ -308,7 +352,7 @@ if ($accion === 'auto') {
   if (count($p) > 2) guardarJson('rrss-auto.json', $auto);
   $hoy = (new DateTime('now', new DateTimeZone('Europe/Madrid')))->format('Y-m-d');
   $prox = null; try { [$a, $por] = articuloDelDia($hoy, $auto, articulosBoletin()); if ($a) $prox = ['id' => $a['id'], 'titulo' => $a['titulo'], 'por' => $por]; } catch (Exception $e) {}
-  salir(['activo' => $auto['activo'], 'quien' => $auto['quien'], 'mia' => $auto['h'] === $h, 'hora' => $auto['hora'], 'redes' => $auto['redes'],
+  salir(['activo' => $auto['activo'], 'aviso' => $auto['aviso'], 'quien' => $auto['quien'], 'mia' => $auto['h'] === $h, 'hora' => $auto['hora'], 'redes' => $auto['redes'],
     'elegidas' => $auto['elegidas'], 'hoy' => $hoy, 'hecho' => $auto['hechos'][$hoy] ?? null, 'hoyToca' => $prox,
     'ultimos' => array_slice(array_reverse($auto['hechos'], true), 0, 10, true), 'conexion' => conexion(misClaves($h))]);
 }

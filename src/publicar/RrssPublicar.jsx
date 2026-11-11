@@ -200,7 +200,7 @@ function PublicacionAutomatica({ datos }) {
         </select>
       </label>
       {a.hecho
-        ? <p className="ok letra-pequena">✔ Hoy ya se ha publicado «{a.hecho.titulo}»: {Object.entries(a.hecho.redes).map(([r, v]) => `${NOMBRE_RED[r]} ${v.slice(0, 1)}`).join(' · ')}</p>
+        ? <p className="ok letra-pequena">✔ Hoy ya se ha publicado «{a.hecho.titulo}»: {Object.entries(a.hecho.redes).map(([r, v]) => `${NOMBRE_RED[r] || r} ${v.slice(0, 1)}`).join(' · ')}</p>
         : a.hoyToca && <p className="letra-pequena">Hoy saldrá a las {a.hora}:00: «{a.hoyToca.titulo}».</p>}
       <div className="acciones">
         {a.activo
@@ -208,10 +208,18 @@ function PublicacionAutomatica({ datos }) {
           : <button type="button" className="btn" onClick={() => guardar({ activo: true })}>Activar con mis cuentas</button>}
         {a.activo && !a.mia && <button type="button" className="btn-texto" onClick={() => guardar({ activo: true })}>Usar mis cuentas en vez de las de {a.quien}</button>}
       </div>
+      {!a.activo && (
+        <div className="rrss-auto-correo">
+          <p className="letra-pequena"><b>Sin cuentas conectadas también funciona:</b> cada día, a esa hora, llega por correo el artículo del día listo para publicar con un toque (X y Facebook se abren con el post ya escrito; para Instagram, la imagen y el texto).{a.aviso ? '' : ' Ahora está apagado.'}</p>
+          <label>Correo que lo recibe
+            <input type="email" defaultValue={a.aviso} placeholder="vacío = no se manda" onBlur={(e) => e.target.value !== a.aviso && guardar({ aviso: e.target.value })} />
+          </label>
+        </div>
+      )}
       {msg && <p className="error">{msg}</p>}
       {Object.keys(a.ultimos || {}).length > 0 && (
         <details className="rrss-mas"><summary>Últimos días</summary>
-          <ul>{Object.entries(a.ultimos).map(([d, x]) => <li key={d}><b>{d}</b> · «{x.titulo}» · {Object.entries(x.redes).map(([r, v]) => `${NOMBRE_RED[r]}: ${v}`).join(' · ')}</li>)}</ul>
+          <ul>{Object.entries(a.ultimos).map(([d, x]) => <li key={d}><b>{d}</b> · «{x.titulo}» · {Object.entries(x.redes).map(([r, v]) => `${NOMBRE_RED[r] || r}: ${v}`).join(' · ')}</li>)}</ul>
         </details>
       )}
     </div>
