@@ -1,0 +1,32 @@
+«LO QUE HAY QUE SABER» · BOLETÍN DE PATRIAM
+===========================================
+Publicado en https://boletinpatriam.netlify.app
+
+Cómo está hecho
+- web/                 → la web del boletín (index.html), el editor (editor.html), diseño y plantillas.
+- netlify/functions/   → el «servidor»: guarda boletines, usuarios, suscriptores y bajas en Netlify Blobs,
+                         publica al aprobar, da a cada boletín su dirección (/boletin/N) y a cada
+                         envío «Al momento» la suya (/a/nombre), con su imagen para WhatsApp y redes.
+- netlify/lib/         → piezas comunes (contraseñas cifradas con scrypt, sesiones firmadas, bajas).
+
+Uso diario: todo se hace desde el editor (boletinpatriam.netlify.app/editor.html).
+Escribir, aprobar y publicar NO necesita subir archivos ni volver a desplegar.
+Solo hace falta desplegar cuando se cambia el diseño o el funcionamiento.
+
+Variable necesaria en Netlify: SESION_SECRETO (clave para firmar las sesiones y los enlaces de baja).
+Diseño y desarrollo web: odlc.es
+
+Comunicaciones personales (pestaña «Comunicaciones» del editor, solo administradores)
+- «Buenos días, Nombre:» + texto + firma, a cada persona por separado, por correo y por WhatsApp.
+- Funcionan en Hostinger (web/com.php): no necesitan desplegar Netlify. Las comunicaciones, la firma y las
+  claves se guardan en una carpeta privada del servidor (patriam-privado, fuera de la web y de GitHub).
+- Las claves (Brevo, WhatsApp) se ponen desde el editor: pestaña Comunicaciones → «Claves de envío».
+- Plantilla de WhatsApp «comunicacion_patriam»: «Buenos días, {{1}}:\n\n{{2}}\n\nUn saludo,\nPATRIAM»
+- Sin la API de WhatsApp, «WhatsApp uno a uno» abre cada chat con el mensaje ya escrito.
+
+Estadísticas (botón «Estadísticas» del editor, todos los usuarios)
+- web/est.php: la página del boletín avisa de cada visita, clic en un enlace y vez que se comparte.
+  Sin cookies y sin guardar la IP (huella anónima que cambia cada día). Se guardan 13 meses en patriam-privado/est.
+- Reenvíos: lo que comparte un lector lleva su código (?c=…), así se ve cuánta gente entra por cada reenvío.
+- Comunicaciones personales: cada enlace pasa por web/ir.php con el código de la persona: se ve quién pincha qué.
+- web/importar.js: textos preparados que entran solos como firma invitada del próximo boletín al abrir el editor.

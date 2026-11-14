@@ -1,0 +1,9 @@
+# Las imágenes subidas desde el editor no llevan extensión: se sirven como imagen
+# (el navegador reconoce si es JPG, PNG o WebP), para que se vean siempre.
+<IfModule mod_mime.c>
+  ForceType image/jpeg
+</IfModule>
+<IfModule mod_headers.c>
+  Header unset X-Content-Type-Options
+  Header set Cache-Control "public, max-age=604800"
+</IfModule>

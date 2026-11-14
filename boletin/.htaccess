@@ -1,0 +1,8 @@
+# Solo se publica la carpeta web/; el resto del repositorio no se sirve
+RewriteEngine On
+# boletin.movimientopatriam.es/boletin/N (la dirección de cada boletín, con su tarjeta para compartir):
+# la .htaccess de la web principal no la pasa a web/ porque empieza por /boletin/, así que se pasa aquí
+RewriteCond %{HTTP_HOST} ^boletin\.movimientopatriam\.es$ [NC]
+RewriteCond %{REQUEST_URI} ^/boletin/(?!web/)[^/]+/?$
+RewriteRule ^ web/pagina.php [L]
+RewriteRule ^(?!web/) - [F]
