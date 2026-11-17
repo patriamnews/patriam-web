@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { getAjustes, getPagina, enviarSocio, registrarDonativo, referencia, euros } from '../lib/data'
 import { Metodos, Instrucciones } from '../components/Pago'
 import { useAuth } from '../lib/auth'
@@ -13,11 +13,10 @@ import { useSeo } from '../lib/seo'
 const lista = (s) => (s || '').split(',').map((x) => Number(x.trim())).filter(Boolean)
 
 export default function Adhesion() {
-  const [params, setParams] = useSearchParams()
-  const pestana = params.get('tipo') === 'donativo' ? 'donativo' : 'socio'
+  const pestana = 'socio' // Donativos retirados de la web (nov. 2026)
   const [intro, setIntro] = useState(null)
   const [aj, setAj] = useState(null)
-  useSeo({ titulo: 'Únete a PATRIAM', descripcion: 'Hazte socio de PATRIAM o colabora con un donativo: cuota mensual, descuentos para familias numerosas, estudiantes, jubilados y desempleados.', ruta: '/adhierete' })
+  useSeo({ titulo: 'Únete a PATRIAM', descripcion: 'Hazte socio de PATRIAM: cuota mensual de asociado, descuentos para familias numerosas, estudiantes, jubilados y desempleados.', ruta: '/adhierete' })
   const { tipo, socio } = useAuth()
 
   useEffect(() => {
@@ -29,10 +28,6 @@ export default function Adhesion() {
     <div className="contenedor estrecho bloque">
       <h1>{(intro?.titulo && intro.titulo !== 'Adhiérete' ? intro.titulo : 'Únete')}</h1>
       {intro?.contenido && <Texto>{intro.contenido}</Texto>}
-      <div className="pestanas grandes">
-        <button className={pestana === 'socio' ? 'activa' : ''} onClick={() => setParams({})}>Únete</button>
-        <button className={pestana === 'donativo' ? 'activa' : ''} onClick={() => setParams({ tipo: 'donativo' })}>Haz un donativo</button>
-      </div>
       {aj && pestana === 'socio' && socio && tipo !== 'equipo' ? (
         <div className="aviso-ok grande">
           <h2>Ya es asociado</h2>

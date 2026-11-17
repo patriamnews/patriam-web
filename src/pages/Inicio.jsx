@@ -199,11 +199,6 @@ export default function Inicio() {
             <p>Forma parte de la asociación con una cuota periódica.</p>
             <Link to="/unete" className="btn">Únete</Link>
           </div>
-          <div>
-            <h2>Haz un donativo</h2>
-            <p>Con tarjeta, de forma segura. Puede ser anónimo.</p>
-            <Link to="/adhierete?tipo=donativo" className="btn btn-claro">Donar</Link>
-          </div>
         </div>
       </section>
     </>

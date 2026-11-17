@@ -215,7 +215,6 @@ export default function Layout() {
           </div>
           <nav>
             <Link to="/unete">Únete</Link>
-            <Link to="/adhierete?tipo=donativo">Donativos</Link>
             <Link to="/comunicados">Comunicados</Link>
             <Link to="/medios">Medios</Link>
             <Link to="/revista">Revista</Link>
