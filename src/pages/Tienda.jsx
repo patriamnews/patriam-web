@@ -369,7 +369,7 @@ export function Carrito() {
   const { items, cambiar, vaciar, subtotal, conEnvio } = useCarrito()
   const { session, perfil } = useAuth()
   const [aj, setAj] = useState(null)
-  const [f, setF] = useState({ nombre: perfil?.nombre || '', email: session?.user?.email || '', entrega: 'envio', direccion: '', metodo: 'tarjeta' })
+  const [f, setF] = useState({ nombre: perfil?.nombre || '', email: session?.user?.email || '', entrega: 'envio', calle: '', cp: '', localidad: '', provincia: '', telefono: '', metodo: 'tarjeta' })
   const [acepta, setAcepta] = useState(false)
   const [ok, setOk] = useState(null)
   const [error, setError] = useState('')
@@ -393,6 +393,9 @@ export function Carrito() {
     e.preventDefault()
     setError('')
     if (!acepta) return setError('Debe aceptar las condiciones de venta y la política de privacidad.')
+    if (entrega === 'envio' && !/^[0-9]{5}$/.test(f.cp.trim())) return setError('El código postal debe tener 5 cifras.')
+    // Dirección de envío por partes: es la que se manda a Gelato
+    const destino = entrega === 'envio' ? { nombre: f.nombre.trim(), calle: f.calle.trim(), cp: f.cp.trim(), localidad: f.localidad.trim(), provincia: f.provincia.trim(), telefono: f.telefono.trim() } : null
     const refe = referencia('PED')
     const pedido = {
       referencia: refe,
@@ -403,13 +406,13 @@ export function Carrito() {
       nombre: f.nombre.trim(),
       email: f.email.trim(),
       entrega,
-      direccion: entrega === 'envio' ? f.direccion.trim() : null,
+      direccion: destino ? `${destino.calle}, ${destino.cp} ${destino.localidad} (${destino.provincia})${destino.telefono ? ' · Tel. ' + destino.telefono : ''}` : null,
       metodo: total > 0 ? f.metodo : 'gratuito',
       consentimiento: true,
     }
     const { error } = await supabase.from('pedidos').insert(pedido)
     if (error) return setError('No se ha podido completar el pedido: ' + error.message)
-    setOk(pedido)
+    setOk({ ...pedido, destino })
     vaciar()
   }
 
@@ -420,7 +423,7 @@ export function Carrito() {
           <h2>Pedido recibido</h2>
           <p>Referencia <b>{ok.referencia}</b>. Le enviaremos la confirmación a {ok.email}.</p>
           {ok.total > 0 ? (
-            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, items: ok.items.map((x) => ({ id: x.id, nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
+            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, destino: ok.destino, items: ok.items.map((x) => ({ id: x.id, nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
           ) : (
             <p>Su inscripción es gratuita. No tiene que pagar nada.</p>
           )}
@@ -478,7 +481,16 @@ export function Carrito() {
                 {items.some((i) => i.gelato) && (
                   <p className="caja-aviso">Los productos de la Colección PATRIAM los fabrica y envía Gelato, nuestro taller de impresión, a la dirección que indique (3 a 5 días laborables). {envio ? 'Los gastos de envío van aparte, desglosados arriba, y son los de Gelato, no de PATRIAM.' : 'Envío gratuito.'}</p>
                 )}
-                <label>Dirección completa (calle, número, CP, localidad)<textarea required rows={2} maxLength={300} value={f.direccion} onChange={set('direccion')} autoComplete="street-address" /></label>
+                <p className="letra-pequena">Por ahora solo enviamos a España.</p>
+                <label>Calle, número, piso y puerta<input required maxLength={200} value={f.calle} onChange={set('calle')} autoComplete="street-address" /></label>
+                <div className="dos-col">
+                  <label>Código postal<input required inputMode="numeric" pattern="[0-9]{5}" maxLength={5} value={f.cp} onChange={set('cp')} autoComplete="postal-code" /></label>
+                  <label>Localidad<input required maxLength={100} value={f.localidad} onChange={set('localidad')} autoComplete="address-level2" /></label>
+                </div>
+                <div className="dos-col">
+                  <label>Provincia<input required maxLength={100} value={f.provincia} onChange={set('provincia')} autoComplete="address-level1" /></label>
+                  <label>Teléfono (para el repartidor)<input type="tel" maxLength={30} value={f.telefono} onChange={set('telefono')} autoComplete="tel" /></label>
+                </div>
               </fieldset>
             )}
             {total > 0 && (
