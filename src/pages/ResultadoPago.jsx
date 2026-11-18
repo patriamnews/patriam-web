@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSeo } from '../lib/seo'
 
-// Páginas a las que vuelve Stripe después del pago
+// Páginas a las que se llega después del pago (PayPal o Stripe)
 export function PagoCorrecto() {
   useSeo({ titulo: 'Pago correcto', noindex: true })
   const [q] = useSearchParams()
@@ -9,7 +9,11 @@ export function PagoCorrecto() {
     <div className="contenedor estrecho bloque">
       <div className="aviso-ok grande">
         <h1>¡Pago realizado!</h1>
-        <p>Gracias por su apoyo. Stripe le enviará el justificante por correo.{q.get('ref') && <> Referencia: <b>{q.get('ref')}</b>.</>}</p>
+        <p>
+          Gracias por su apoyo. Le hemos enviado el justificante por correo.{q.get('ref') && <> Referencia: <b>{q.get('ref')}</b>.</>}
+          {q.get('tipo') === 'cuota' && ' La cuota se cobrará automáticamente cada mes con la misma tarjeta.'}
+          {q.get('tipo') === 'pedido' && ' Gelato, nuestro taller de impresión, fabricará y enviará su pedido en 3 a 5 días laborables.'}
+        </p>
         <p><Link to="/" className="btn">Volver al inicio</Link></p>
       </div>
     </div>
