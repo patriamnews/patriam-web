@@ -24,7 +24,7 @@ const APPS = [
     nota: 'Webhook: https://movimientopatriam.es/api/stripe-webhook.php con el evento checkout.session.completed.' },
   { id: 'paypal', nombre: 'PayPal (cuenta Business)', para: 'Cobros con tarjeta a través de PayPal: cuotas, donativos y tienda', url: 'https://developer.paypal.com/dashboard/applications/live',
     claves: [['paypalClientId', 'Client ID de la app (Apps & Credentials)', 'A…', true], ['paypalSecret', 'Secret de la app', 'E…', true], ['paypalModo', 'Modo: «sandbox» para pruebas o «live» para cobrar de verdad', 'sandbox', true], ['paypalWebhookId', 'Identificador del webhook (Webhook ID)', '', true]],
-    nota: 'Las claves están en developer.paypal.com › Apps & Credentials. Las de Sandbox (pruebas) y las de Live (reales) son distintas: ponga las que correspondan al modo elegido. El Webhook ID se rellena cuando esté montado el cobro con PayPal en la web.' },
+    nota: 'Las claves están en developer.paypal.com › Apps & Credentials. Las de Sandbox (pruebas) y las de Live (reales) son distintas: ponga las que correspondan al modo elegido. Webhook: https://movimientopatriam.es/api/paypal-webhook.php. Para cobrar con tarjeta, Google Pay y Apple Pay, PayPal tiene que aprobar los «pagos avanzados con tarjeta» de la cuenta y en la app tienen que estar marcados Accept payments, Vault, Apple Pay y Google Pay.' },
   { id: 'gelato', nombre: 'Gelato', para: 'Fabrica y envía camisetas, sudaderas y tazas de la tienda', url: 'https://dashboard.gelato.com',
     claves: [['gelato', 'Clave de la API (secret key)', '', true], ['gelatoTienda', 'Identificador de la tienda (Store ID)', '', true]],
     nota: 'Basta con la clave de la API: el Store ID se busca solo. Si tiene varias tiendas en Gelato, el Store ID está en la dirección de la tienda (…/stores/ESTE-CÓDIGO/…). Aviso de envíos: en Gelato › Developer › Webhooks, pegue la dirección de abajo y marque «Order status updated», «Order item tracking code updated» y «Store product created».' },
@@ -58,6 +58,48 @@ function Campo({ etiqueta, valor, onChange, secreto, placeholder }) {
         {valor && <button type="button" className="btn-texto" onClick={copiar}>Copiar</button>}
       </span>
     </label>
+  )
+}
+
+// Cuotas mensuales que se cobran solas con la tarjeta guardada en PayPal (api/paypal-cuotas.php)
+function CuotasPayPal() {
+  const [lista, setLista] = useState(null)
+  const [error, setError] = useState('')
+  const pedir = (cuerpo) =>
+    fetch('/api/paypal.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token: tokenEquipo(), ...cuerpo }) })
+      .then((r) => r.json())
+      .then((d) => (d.error ? setError(d.error) : setLista(d.cuotas || [])))
+      .catch(() => setError('No se ha podido conectar con el servidor.'))
+  useEffect(() => { pedir({ accion: 'cuotas' }) }, [])
+  const cancelar = (q) => {
+    if (window.confirm(`¿Dar de baja la cuota de ${q.email}? No se le cobrará nada más y se borrará su tarjeta de PayPal.`)) pedir({ accion: 'cancelar', ref: q.ref })
+  }
+  return (
+    <div className="cuenta-campo">
+      <span>Cuotas mensuales con tarjeta</span>
+      {error && <p className="error">{error}</p>}
+      {!lista ? <p className="vacio">Cargando…</p> : !lista.length ? <p className="letra-pequena">Todavía no hay ninguna.</p> : (
+        <div className="tabla-scroll">
+          <table className="tabla">
+            <thead><tr><th>Socio</th><th>Importe</th><th>Tarjeta</th><th>Alta</th><th>Próximo cobro</th><th>Estado</th><th></th></tr></thead>
+            <tbody>
+              {lista.map((q) => (
+                <tr key={q.ref}>
+                  <td>{q.email}<br /><small>{q.ref}</small></td>
+                  <td>{Number(q.importe).toFixed(2).replace('.', ',')} €</td>
+                  <td>{q.tarjeta}</td>
+                  <td>{q.alta}</td>
+                  <td>{q.estado === 'activa' ? q.proximo : '—'}</td>
+                  <td>{q.estado}{q.fallos ? ` (${q.fallos} fallos)` : ''}{q.baja ? ` · ${q.baja}` : ''}</td>
+                  <td>{q.estado !== 'cancelada' && <button type="button" className="btn-texto peligro" onClick={() => cancelar(q)}>Dar de baja</button>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p className="letra-pequena">Cuando un socio pida la baja, désela aquí para que deje de cobrarse.</p>
+    </div>
   )
 }
 
@@ -118,6 +160,7 @@ export default function Claves() {
                 <Campo key={k} etiqueta={t + (usada ? ' · la usa la web' : '')} valor={claves[k]} onChange={(v) => setClaves({ ...claves, [k]: v })} secreto={!['gelatoTienda', 'stripeDisenador', 'waPhone', 'waPlantilla', 'awin', 'supabaseUrl', 'paypalClientId', 'paypalModo', 'paypalWebhookId'].includes(k)} placeholder={ph} />
               ))}
               {a.nota && <p className="letra-pequena">{a.nota}</p>}
+              {a.id === 'paypal' && <CuotasPayPal />}
               {a.id === 'gelato' && webhook && <Campo etiqueta="Dirección del webhook (para pegar en Gelato)" valor={webhook} onChange={() => {}} />}
               <label className="cuenta-campo">
                 <span>Notas (verificación en dos pasos, móvil de recuperación…)</span>
