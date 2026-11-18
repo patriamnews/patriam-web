@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 //  - Bizum: alta de la asociación en "Bizum ONG" o Bizum para comercios a través del banco.
 //  - Transferencia: se muestra el IBAN de la asociación y una referencia para conciliar.
 import { euros } from '../lib/data'
+import { supabase } from '../lib/supabase'
 
 // Por ahora solo se paga con tarjeta. Bizum y transferencia están desactivados:
 // para volver a ofrecerlos, añadirlos de nuevo a esta lista.
@@ -71,7 +72,11 @@ function PagoPayPal({ pago, importe, conf }) {
   const esCuota = pago.tipo === 'cuota'
   const total = Number(importe).toFixed(2)
 
-  const crear = async (metodo) => (await apiPayPal({ accion: 'crear', metodo, ...pago })).id
+  // La sesión va con el pago para que el servidor compruebe el descuento de socio (si se ha pedido)
+  const crear = async (metodo) => {
+    const { data } = await supabase.auth.getSession()
+    return (await apiPayPal({ accion: 'crear', metodo, ...pago, token: data.session?.access_token || '' })).id
+  }
   const capturar = async (id) => apiPayPal({ accion: 'capturar', id })
   const terminar = (d) => { window.location.href = `/pago-correcto?ref=${encodeURIComponent(d.ref)}&tipo=${d.tipo}` }
   const fallo = (e) => { setError(e?.message && !/^script$/.test(e.message) ? e.message : 'No se ha podido completar el pago. Inténtelo de nuevo.'); setPagando(false) }
