@@ -12,6 +12,9 @@ import { Foto } from '../components/ImagenPrueba'
 import { useSeo, migas, productoLd } from '../lib/seo'
 import { SEO_TIENDA } from '../lib/seoTienda.js'
 
+// Descuento de la tienda para los socios de cuota (el servidor aplica el mismo en api/_cobro.php)
+const DESCUENTO_SOCIO = 10
+
 const ICONOS = {
   libros: 'M4 5a2 2 0 012-2h5v16H6a2 2 0 00-2 2zM20 5a2 2 0 00-2-2h-5v16h5a2 2 0 012 2z',
   ropa: 'M8 3l-5 3 2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 01-8 0z',
@@ -367,8 +370,9 @@ export function Producto() {
 export function Carrito() {
   useSeo({ titulo: 'Carrito', noindex: true })
   const { items, cambiar, vaciar, subtotal, conEnvio } = useCarrito()
-  const { session, perfil } = useAuth()
+  const { session, perfil, socio } = useAuth()
   const [aj, setAj] = useState(null)
+  const [pideDescuento, setPideDescuento] = useState(false)
   const [f, setF] = useState({ nombre: perfil?.nombre || '', email: session?.user?.email || '', entrega: 'envio', calle: '', cp: '', localidad: '', provincia: '', telefono: '', metodo: 'tarjeta' })
   const [acepta, setAcepta] = useState(false)
   const [ok, setOk] = useState(null)
@@ -386,7 +390,13 @@ export function Carrito() {
   // Envío de Gelato: la primera prenda y un poco más por cada prenda adicional del mismo pedido
   const prendas = items.filter((i) => i.gelato).reduce((t, i) => t + i.cantidad, 0) || items.reduce((t, i) => t + i.cantidad, 0)
   const envio = entrega === 'envio' && subtotal < gratisDesde ? calcularEnvio(items, aj) : 0
-  const total = subtotal + envio
+  // Descuento de socio: solo para socios de cuota al corriente que compran con el email de su ficha de socio
+  // (con su sesión abierta, para que nadie pueda usar el email de otro). El servidor lo vuelve a comprobar al cobrar.
+  const emailCuenta = (session?.user?.email || '').toLowerCase()
+  const esSocioCuota = !!(session && socio && socio.estado === 'alta' && (socio.email || '').toLowerCase() === emailCuenta)
+  const conDescuento = pideDescuento && esSocioCuota && f.email.trim().toLowerCase() === emailCuenta
+  const descuento = conDescuento ? Math.round((subtotal - items.reduce((t, i) => t + Math.round(i.precio * (100 - DESCUENTO_SOCIO)) / 100 * i.cantidad, 0)) * 100) / 100 : 0
+  const total = Math.round((subtotal - descuento + envio) * 100) / 100
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value })
 
   const pedir = async (e) => {
@@ -401,7 +411,7 @@ export function Carrito() {
       referencia: refe,
       items,
       envio,
-      subtotal,
+      subtotal: Math.round((subtotal - descuento) * 100) / 100,
       total,
       nombre: f.nombre.trim(),
       email: f.email.trim(),
@@ -412,7 +422,7 @@ export function Carrito() {
     }
     const { error } = await supabase.from('pedidos').insert(pedido)
     if (error) return setError('No se ha podido completar el pedido: ' + error.message)
-    setOk({ ...pedido, destino })
+    setOk({ ...pedido, destino, descuento: conDescuento })
     vaciar()
   }
 
@@ -423,7 +433,7 @@ export function Carrito() {
           <h2>Pedido recibido</h2>
           <p>Referencia <b>{ok.referencia}</b>. Le enviaremos la confirmación a {ok.email}.</p>
           {ok.total > 0 ? (
-            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, destino: ok.destino, items: ok.items.map((x) => ({ id: x.id, nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
+            <Instrucciones metodo={ok.metodo} importe={ok.total} refe={ok.referencia} aj={aj} pago={{ tipo: 'pedido', email: ok.email, envio: ok.envio, destino: ok.destino, descuento: ok.descuento, items: ok.items.map((x) => ({ id: x.id, nombre: x.nombre, opcion: x.opcion, precio: x.precio, cantidad: x.cantidad, gelato: x.gelato || null })) }} />
           ) : (
             <p>Su inscripción es gratuita. No tiene que pagar nada.</p>
           )}
@@ -457,6 +467,7 @@ export function Carrito() {
             </div>
             <div className="totales">
               <div><span>Subtotal</span><span>{euros(subtotal)}</span></div>
+              {descuento > 0 && <div><span>Descuento de socio (−{DESCUENTO_SOCIO} %)</span><span>−{euros(descuento)}</span></div>}
               {conEnvio && <div><span>Envío ({prendas} {prendas === 1 ? 'artículo' : 'artículos'})</span><span>{envio ? euros(envio) : 'Gratis'}</span></div>}
               <div className="total"><span>Total</span><span>{euros(total)}</span></div>
               {conEnvio && Number.isFinite(gratisDesde) && (
@@ -493,6 +504,20 @@ export function Carrito() {
                 </div>
               </fieldset>
             )}
+            <fieldset className="grupo">
+              <legend>Descuento</legend>
+              <label className="check">
+                <input type="checkbox" checked={pideDescuento} onChange={(e) => setPideDescuento(e.target.checked)} />
+                <span>Soy socio de PATRIAM: aplicar el descuento de socio ({DESCUENTO_SOCIO} %)</span>
+              </label>
+              {pideDescuento && !session && (
+                <p className="caja-aviso">Para el descuento de socio, <Link to="/acceso">entre en su cuenta</Link> con el mismo email con el que se hizo socio y vuelva al carrito.</p>
+              )}
+              {pideDescuento && session && !esSocioCuota && (
+                <p className="caja-aviso">El email {session.user.email} no corresponde a ningún socio al corriente de pago, así que no hay descuento.</p>
+              )}
+              {conDescuento && <p className="aviso-ok">Descuento de socio aplicado: −{euros(descuento)}.</p>}
+            </fieldset>
             {total > 0 && (
               <fieldset className="grupo">
                 <legend>Forma de pago</legend>
