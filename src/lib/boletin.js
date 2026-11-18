@@ -14,11 +14,20 @@ let cache = null
 export function cargarBoletin(base) {
   if (cache && cache.base === base) return cache.promesa
   const promesa = new Promise((resolver) => {
-    const s = document.createElement('script')
-    // Se renueva cada hora para coger el boletín nuevo
-    s.src = `${base}boletines.js?h=${Math.floor(Date.now() / 3600000)}`
-    s.async = true
-    s.onload = () => {
+    const cargar = (src) => new Promise((ok) => {
+      const s = document.createElement('script')
+      s.src = src
+      s.async = true
+      s.onload = () => ok(true)
+      s.onerror = () => ok(false)
+      document.head.appendChild(s)
+    })
+    const hora = Math.floor(Date.now() / 3600000)   // se renueva cada hora para coger el boletín nuevo
+    const alListo = (hay) => {
+      if (!hay) return resolver(null)
+      // Los boletines abiertos desde Publicar («Boletín paso a paso») y lo que se les mete no están en boletines.js:
+      // llegan en aportaciones.js y se unen igual que en la web del boletín. Si falla, se queda lo de boletines.js.
+      try { if (window.unirAportaciones) window.unirAportaciones(window.BOLETINES || [], window.PATRIAM_CONFIG, { lectores: true }) } catch { /* sigue con lo que haya */ }
       const cfg = window.PATRIAM_CONFIG || {}
       const lista = (window.BOLETINES || [])
         // Solo los que ya han salido: el número siguiente se ve únicamente en la vista previa temporal del equipo
@@ -40,8 +49,13 @@ export function cargarBoletin(base) {
         fraseAutor: ultimo.fraseMes ? ultimo.fraseMesAutor : cfg.fraseMesAutor,
       } : null)
     }
-    s.onerror = () => resolver(null)
-    document.head.appendChild(s)
+    cargar(`${base}boletines.js?h=${hora}`).then(async (hay) => {
+      if (hay) {
+        await cargar(`${base}aportaciones.js?h=${hora}`)
+        await cargar(`${base}aportaciones-unir.js?h=${hora}`)
+      }
+      alListo(hay)
+    })
   })
   cache = { base, promesa }
   return promesa
