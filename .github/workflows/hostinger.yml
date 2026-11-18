@@ -50,3 +50,9 @@ jobs:
           git add -A
           git commit -q -m "Web compilada desde ${GITHUB_SHA::7}"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" hostinger
+      # Cuotas mensuales con tarjeta (PayPal): en cada pasada programada se cobran las que toquen ese día.
+      # Es seguro: el servidor solo cobra las cuotas vencidas y nunca dos veces el mismo mes.
+      - name: Cobrar las cuotas del día (PayPal)
+        if: github.event_name == 'schedule'
+        continue-on-error: true
+        run: curl -fsS -m 120 -X POST https://movimientopatriam.es/api/paypal-cuotas.php || true
