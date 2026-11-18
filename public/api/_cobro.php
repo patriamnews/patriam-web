@@ -7,16 +7,38 @@ require_once __DIR__ . '/_comun.php';
 
 function centimos($n) { return (int)round(((float)$n) * 100); }
 
+/* Descuento de la tienda para los socios de cuota (al corriente: estado «alta»).
+   Solo si quien compra lo pide («Descuento de socio») y compra con el mismo email de su ficha de socio.
+   Se comprueba en el servidor con la sesión de quien compra (Supabase la valida: no se puede falsificar escribiendo
+   el email de otro) y las reglas de la base de datos solo dejan leer la propia ficha de socio. */
+const DESCUENTO_SOCIO = 10;   // %
+function esSocioDeCuota($token, $emailPedido) {
+  $token = trim((string)$token);
+  if (!preg_match('/^[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+$/', $token)) return false;
+  $url = 'https://igrjdsfcecbwnawwgdop.supabase.co';
+  $anon = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlncmpkc2ZjZWNid25hd3dnZG9wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI1MzAwMzcsImV4cCI6MjEwODEwNjAzN30.HCT6LM_Xly-s-Z2KLlBDgxVzDWAwKKkMXzSjFub5qBc';
+  $cab = ['apikey: ' . $anon, 'Authorization: Bearer ' . $token];
+  [$c, $u] = pedirHttp($url . '/auth/v1/user', $cab);
+  if ($c !== 200 || empty($u['id'])) return false;
+  [$c, $filas] = pedirHttp($url . '/rest/v1/socios?select=usuario_id,email,estado,baja_solicitada&estado=eq.alta', $cab);
+  if ($c !== 200 || !is_array($filas)) return false;
+  $email = mb_strtolower((string)($u['email'] ?? ''));
+  if ($email === '' || $email !== mb_strtolower((string)$emailPedido)) return false;   // tiene que comprar con su email
+  foreach ($filas as $f)
+    if (($f['usuario_id'] ?? '') === $u['id'] || ($email !== '' && mb_strtolower((string)($f['email'] ?? '')) === $email)) return true;
+  return false;
+}
+
 /* Devuelve:
    tipo, ref, email, reducida (cuotas),
    lineas: [[nombre, cantidad, céntimos por unidad, categoría]] (sin el envío),
-   envio (céntimos), total (céntimos), gelato (artículos para Gelato) */
+   envio (céntimos), total (céntimos), gelato (artículos para Gelato), socio (si se ha aplicado el descuento de socio) */
 function prepararCobro($p) {
   $tipo = $p['tipo'] ?? '';
   $ref = preg_replace('/[^A-Za-z0-9-]/', '', (string)($p['referencia'] ?? ''));
   $email = filter_var($p['email'] ?? '', FILTER_VALIDATE_EMAIL) ?: '';
   if (!$ref) salir(['error' => 'Falta la referencia.'], 400);
-  $c = ['tipo' => $tipo, 'ref' => $ref, 'email' => $email, 'reducida' => false, 'lineas' => [], 'envio' => 0, 'gelato' => []];
+  $c = ['tipo' => $tipo, 'ref' => $ref, 'email' => $email, 'reducida' => false, 'lineas' => [], 'envio' => 0, 'gelato' => [], 'socio' => false];
 
   if ($tipo === 'cuota') {
     // 10 € al mes, 5 € la reducida (o lo que esté puesto en Ajustes)
@@ -39,6 +61,7 @@ function prepararCobro($p) {
     $prod = [];
     foreach ($filas as $r) $prod[(int)$r['id']] = $r;
     $subtotal = 0;
+    $c['socio'] = !empty($p['descuento']) && esSocioDeCuota($p['token'] ?? '', $email);
     foreach ($items as $n => $it) {
       $r = $prod[(int)($it['id'] ?? 0)] ?? null;
       if (!$r || !empty($r['enlace_externo'])) salir(['error' => 'Algún producto del carrito ya no está a la venta. Vacíe el carrito y vuelva a añadirlo.'], 400);
@@ -53,8 +76,9 @@ function prepararCobro($p) {
       $cent = centimos((float)$r['precio'] + $sup);
       $cant = max(1, min(50, (int)($it['cantidad'] ?? 1)));
       if ($cent <= 0) continue;
-      $subtotal += $cent * $cant;
-      $nombre = mb_substr($r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : ''), 0, 120);
+      $subtotal += $cent * $cant;   // el envío gratis se calcula con el precio normal
+      if ($c['socio']) $cent = (int)round($cent * (100 - DESCUENTO_SOCIO) / 100);   // precio de socio, por unidad
+      $nombre = mb_substr($r['nombre'] . ($opcion !== '' ? ' (' . $opcion . ')' : ''), 0, 120) . ($c['socio'] ? ' · precio de socio' : '');
       $c['lineas'][] = [$nombre, $cant, $cent, 'PHYSICAL_GOODS'];
       // Artículo de Gelato de esa talla/color: «Opción=código», «código@delante|detrás» o «código#variante»
       $lineas = array_values(array_filter(array_map('trim', explode("\n", (string)($r['gelato_uids'] ?? '')))));
