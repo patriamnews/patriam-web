@@ -1840,3 +1840,15 @@ html, body, .sitio { background: var(--crema) !important; }
 .bp-rev-fila button { flex: none; }
 .bp-rev-ok { margin: .2rem 0 0; color: #1f6b3a; font-weight: 700; }
 .bp-rev-cambios { margin: .2rem 0 0; color: #a3242f; font-weight: 700; white-space: pre-wrap; }
+
+/* Pago con PayPal: tarjeta, Google Pay y Apple Pay */
+.pago-paypal { display: grid; gap: 0.6rem; max-width: 460px; margin: 0.8rem 0; }
+.pago-carteras { display: grid; gap: 0.5rem; }
+.pago-carteras > div:empty { display: none; }
+.pago-carteras > div { min-height: 44px; }
+.pago-carteras apple-pay-button { --apple-pay-button-width: 100%; --apple-pay-button-height: 44px; --apple-pay-button-border-radius: 4px; display: block; }
+.pago-o { display: flex; align-items: center; gap: 0.6rem; color: #7b6a58; font-size: 0.9rem; margin: 0.2rem 0; }
+.pago-o::before, .pago-o::after { content: ''; flex: 1; border-top: 1px solid #cfc6b8; }
+.pago-tarjeta { display: grid; gap: 0.2rem; }
+.pago-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.pago-paypal [hidden] { display: none !important; }
