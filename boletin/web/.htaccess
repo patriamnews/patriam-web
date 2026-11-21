@@ -1,0 +1,45 @@
+# Boletín PATRIAM en Hostinger
+Options -Indexes
+# Las páginas (editor, boletín) no se guardan en caché: así cada cambio se ve al momento.
+# Los .js y .css ya llevan versión (?v=…) en el enlace.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+# Piezas internas de PHP: no se abren desde fuera
+<FilesMatch "^(_|revisar\.php)">
+  Require all denied
+</FilesMatch>
+RewriteEngine On
+# sitemap.xml para Google (se genera al pedirlo)
+RewriteRule ^sitemap\.xml$ sitemap.php [L]
+# Lo que se sube desde Publicar (se genera al pedirlo)
+RewriteRule ^aportaciones\.js$ aportar.php?accion=js [L,QSA]
+# Vista previa del equipo (enlace temporal con clave)
+RewriteRule ^previa/([0-9a-f]{24})/?$ previa.php?t=$1 [L,QSA]
+# Revisión del autor: su artículo, con su clave, para dar el visto bueno
+RewriteRule ^revision/([0-9a-f]{24})/?$ revision.php?t=$1 [L,QSA]
+# Pasa la cabecera Authorization a PHP
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+# Comunicaciones personales: en Hostinger (com.php), sin pasar por Netlify
+RewriteRule ^api/com-(datos|guardar|claves|enviar|enlace-carlos)$ com.php?accion=$1 [QSA,L]
+# Página propia de Carlos para sus comunicaciones (semanal y mensual)
+RewriteRule ^carlos/([0-9a-f]{24})/?$ carlos.php?k=$1 [QSA,L]
+RewriteRule ^img-com/([0-9a-f]{32}\.(png|jpg|gif|webp))$ com.php?img=$1 [L]
+# Funciones (provisionalmente en Netlify) a través del puente
+RewriteCond %{REQUEST_FILENAME} !-f
+# Cada boletín (/boletin/N) se sirve aquí con su propia tarjeta para compartir
+RewriteRule ^boletin/[^/]+/?$ pagina.php [L,QSA]
+RewriteRule ^(api/[A-Za-z0-9_-]+|img/[^/]+|a/[^/]+|boletines\.js)$ proxy.php?__r=$1 [QSA,L]
+# «España al día» con su propia tarjeta para compartir (WhatsApp, X, Facebook)
+RewriteRule ^(mipatriaaldia|españaaldia|espanaaldia)/?$ mipatria.php [L,QSA]
+RewriteRule ^espana-al-dia(/(politica|economia))?/?$ /mipatriaaldia [R=301,L]
+# Enlace para compartir un artículo, con su propia tarjeta (título, entradilla e imagen)
+RewriteRule ^articulo/([A-Za-z0-9_-]+)/?$ pagina.php [L,QSA]
+# Textos para redes (página interna del equipo)
+RewriteRule ^(post-redes-alvaro|redes-3a5d3ed620ba)/?$ /redes/ [R=301,L]
+# Todo lo demás: la página del boletín, con la tarjeta de cada pieza (editorial, artículo, noticia…) para compartir
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ pagina.php [L]

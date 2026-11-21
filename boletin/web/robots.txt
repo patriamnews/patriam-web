@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /editor.html
+Disallow: /api/
+Disallow: /baja
+Disallow: /buscar/
+
+Sitemap: https://boletin.movimientopatriam.es/sitemap.xml
+Sitemap: https://movimientopatriam.es/sitemap.xml
