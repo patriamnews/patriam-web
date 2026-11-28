@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Textos para redes · PATRIAM</title>
+<link rel="icon" href="https://boletin.movimientopatriam.es/icono-192.png">
+<style>
+@font-face{font-family:S;font-weight:400;src:url(https://boletin.movimientopatriam.es/fuentes/spectral-latin-400-normal.woff2)}
+@font-face{font-family:S;font-weight:600;src:url(https://boletin.movimientopatriam.es/fuentes/spectral-latin-600-normal.woff2)}
+@font-face{font-family:S;font-weight:800;src:url(https://boletin.movimientopatriam.es/fuentes/spectral-latin-800-normal.woff2)}
+:root{--granate:#7b1c2c;--crema:#faf5ec;--tinta:#2a211d;--gris:#7a6d66;--borde:#e3d6c1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--crema);color:var(--tinta);font-family:S,Georgia,serif;line-height:1.5}
+header{background:#fff;border-bottom:4px solid var(--granate);text-align:center;padding:20px 16px 14px}
+header img{height:64px}
+header .lema{letter-spacing:.3em;font-size:12px;font-weight:600;margin-top:4px}
+header h1{font-weight:800;color:var(--granate);font-size:28px;margin:12px 0 2px}
+header p{margin:0;color:var(--gris);font-size:15px}
+.aviso{max-width:760px;margin:16px auto 0;padding:10px 14px;background:#f7efe1;border:1px solid var(--borde);font-size:14px}
+main{max-width:760px;margin:0 auto;padding:8px 16px 48px}
+h2{font-weight:800;color:var(--granate);font-size:24px;margin:34px 0 4px;border-bottom:1px solid var(--borde);padding-bottom:4px}
+.enlace{font-size:14px;color:var(--gris);margin:0 0 10px;word-break:break-all}
+.enlace a{color:var(--granate)}
+
+
+.foto{padding:14px 14px 0}.foto img{width:100%;height:auto;display:block;border:1px solid var(--borde)}.foto a{display:inline-block;margin-top:6px;color:var(--granate);font-weight:600;font-size:14px}
+.post{background:#fff;border:1px solid var(--borde);margin:14px 0;}
+.cab{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--borde);background:#fdfaf4}
+.red{font-weight:800;font-size:17px}
+.red small{display:block;font-weight:400;font-size:13px;color:var(--gris)}
+button{font:600 15px S,Georgia,serif;background:var(--granate);color:#fff;border:0;padding:9px 16px;cursor:pointer;white-space:nowrap}
+button.ok{background:#2f6b3a}
+pre{margin:0;padding:14px;white-space:pre-wrap;word-wrap:break-word;font:16px/1.55 S,Georgia,serif}
+.nota{font-size:14px;color:var(--gris);margin:6px 0 0}
+.elegir{background:#fff;border:1px solid var(--borde);padding:12px 14px;margin:10px 0 4px}
+.elegir label{font-weight:600;display:block;margin-bottom:6px}
+.elegir select{width:100%;font:16px S,Georgia,serif;padding:8px;border:1px solid var(--borde);background:#fdfaf4}
+.elegir .dia{display:inline-block;margin-top:8px;font-size:13px;color:#fff;background:var(--granate);padding:2px 8px}
+footer{text-align:center;font-size:13px;color:var(--gris);padding:20px}
+
+</style>
+</head>
+<body>
+<header>
+  <img src="https://boletin.movimientopatriam.es/logo.png" alt="PATRIAM">
+  <div class="lema">DIOS · PATRIA · JUSTICIA</div>
+  <h1>Textos para redes</h1>
+  <p>Cada botón copia la imagen y el texto a la vez</p>
+</header>
+<div class="aviso">🔒 Página interna del equipo. No la compartáis fuera: solo se entra con este enlace.</div>
+<main>
+
+
+<h2>Noticia para enviar</h2>
+<p class="enlace">Elige una sola noticia del boletín y copia su texto con su imagen. Arriba sale la noticia del día.</p>
+<div class="elegir"><label for="selNoticia">Noticia</label><select id="selNoticia"></select><span class="dia" id="esDia" hidden>★ Noticia del día</span></div>
+<p class="enlace" id="nEnlace"></p>
+<div id="nPosts"></div>
+
+<h2>Boletín «Lo que hay que saber: con criterio»</h2>
+<p class="enlace">Enlace: <a href="https://boletin.movimientopatriam.es" target="_blank" rel="noopener">https://boletin.movimientopatriam.es</a></p>
+
+<div class="post"><div class="cab"><div class="red">LinkedIn</div><button class="todo" data-c="b-li">Copiar todo</button></div>
+<div class="foto"><img src="https://boletin.movimientopatriam.es/compartir.jpg" alt="" crossorigin="anonymous"><a href="https://boletin.movimientopatriam.es/compartir.jpg" download>⬇ Descargar imagen</a></div>
+<pre id="b-li">Cada dos viernes, «Lo que hay que saber: con criterio».
+
+PATRIAM publica su boletín semanal. No es un resumen de prensa más. Seleccionamos las noticias que importan, las resumimos y debajo de cada una va nuestro comentario.
+
+En cada número encontrarás:
+▪️ Una editorial
+▪️ La actualidad de la semana, comentada
+▪️ Artículos de firma en Sociedad, Historia y Actualidad
+▪️ Una recomendación de la semana: libro, podcast o película
+
+Se lee en cinco minutos, es gratis y llega a tu correo.
+
+👉 https://boletin.movimientopatriam.es
+
+Si te gusta, compártelo. Y si quieres escribir en él, en la sección de Colaboradores hay sitio para plumas invitadas.
+
+Dios, Patria, Justicia.
+
+#PATRIAM #Boletín #Actualidad #España #ConCriterio</pre></div>
+
+<div class="post"><div class="cab"><div class="red">X</div><button class="todo" data-c="b-x">Copiar todo</button></div>
+<div class="foto"><img src="https://boletin.movimientopatriam.es/compartir.jpg" alt="" crossorigin="anonymous"><a href="https://boletin.movimientopatriam.es/compartir.jpg" download>⬇ Descargar imagen</a></div>
+<pre id="b-x">Cada dos viernes, «Lo que hay que saber: con criterio», el boletín de @patriam_es: la actualidad comentada, firmas, historia y una recomendación de la semana. Gratis y en tu correo.
+
+👉 https://boletin.movimientopatriam.es
+
+#PATRIAM #DiosPatriaJusticia</pre></div>
+
+<div class="post"><div class="cab"><div class="red">Instagram<small>El enlace va en la bio o en una historia con el sticker de enlace</small></div><button class="todo" data-c="b-ig">Copiar todo</button></div>
+<div class="foto"><img src="https://boletin.movimientopatriam.es/compartir.jpg" alt="" crossorigin="anonymous"><a href="https://boletin.movimientopatriam.es/compartir.jpg" download>⬇ Descargar imagen</a></div>
+<pre id="b-ig">📰 Ya está aquí «Lo que hay que saber: con criterio».
+
+El boletín de PATRIAM sale cada dos viernes con:
+🇪🇸 La editorial de la semana
+🇪🇸 Las noticias que importan, con nuestro comentario
+🇪🇸 Firmas de Sociedad, Historia y Actualidad
+🇪🇸 Un libro, un podcast o una película que merecen la pena
+
+Es gratis. Suscríbete y te llega al correo.
+
+🔗 Enlace en la bio → boletin.movimientopatriam.es
+
+Dios, Patria, Justicia 🇪🇸
+
+#PATRIAM #boletín #España #actualidad #concriterio #DiosPatriaJusticia</pre></div>
+
+<h2>España al día</h2>
+<p class="enlace">Enlace: <a href="https://boletin.movimientopatriam.es/mipatriaaldia" target="_blank" rel="noopener">https://boletin.movimientopatriam.es/mipatriaaldia</a></p>
+
+<div class="post"><div class="cab"><div class="red">X</div><button class="todo" data-c="e-x">Copiar todo</button></div>
+<div class="foto"><img src="https://boletin.movimientopatriam.es/espana-al-dia-og.jpg" alt="" crossorigin="anonymous"><a href="https://boletin.movimientopatriam.es/espana-al-dia-og.jpg" download>⬇ Descargar imagen</a></div>
+<pre id="e-x">🇪🇸 España al día: un clipping diario de noticias políticas y económicas de España, con lo que se publica en los medios. Se actualiza cada 3 horas.
+
+👉 https://boletin.movimientopatriam.es/mipatriaaldia
+
+#EspañaAlDía #PATRIAM</pre></div>
+
+<div class="post"><div class="cab"><div class="red">Instagram<small>El enlace va en la bio o en una historia con el sticker de enlace</small></div><button class="todo" data-c="e-ig">Copiar todo</button></div>
+<div class="foto"><img src="https://boletin.movimientopatriam.es/espana-al-dia-og.jpg" alt="" crossorigin="anonymous"><a href="https://boletin.movimientopatriam.es/espana-al-dia-og.jpg" download>⬇ Descargar imagen</a></div>
+<pre id="e-ig">🇪🇸 ESPAÑA AL DÍA
+
+Si no tienes tiempo de leerlo todo, nosotros lo ordenamos por ti.
+
+Es un clipping diario de noticias políticas y económicas de España, con lo que se publica en los medios.
+
+🕕 Se actualiza cada 3 horas
+🗞️ Si una noticia sale en varios medios, la juntamos en una sola
+📅 Siempre tienes la última semana a mano
+
+Guárdalo en favoritos y pásalo a quien le interese.
+
+🔗 Enlace en la bio → boletin.movimientopatriam.es/mipatriaaldia
+
+#EspañaAlDía #PATRIAM #política #economía #España #noticias</pre></div>
+
+</main>
+<script src="/importar.js?v=20261114x"></script>
+<script src="/aportaciones.js?m=redes"></script>
+<script>
+(function(){
+  // los artículos preparados y los subidos desde Publicar (ya aprobados): cada uno con su dirección y su tarjeta
+  var A=window.PATRIAM_APORTACIONES||{}, M=A.cambios||{};
+  var L=(window.PATRIAM_IMPORTAR||[]).filter(function(x){var c=M['imp-'+x.id]||{};return !c.quitado}).map(function(x){var c=M['imp-'+x.id]||{};return c.datos?Object.assign({},x,c.datos):x});
+  (A.items||[]).forEach(function(it){if(it.tipo==='firma'&&(!it.estado||it.estado==='aprobado'))L.push(Object.assign({},it.datos||{},{id:it.id,numero:it.numero,alta:it.creado||''}))});
+  L=L.filter(function(x){return x.titulo&&x.texto&&x.imagen});
+  L.sort(function(a,b){return (Number(b.numero)||0)-(Number(a.numero)||0)||String(b.alta||'').localeCompare(String(a.alta||''))});
+  var dia=window.PATRIAM_REDES_DIA, sel=document.getElementById('selNoticia');
+  L.sort(function(a,b){return (b.id===dia)-(a.id===dia)});
+  L.forEach(function(x){var o=document.createElement('option');o.value=x.id;o.textContent=(x.id===dia?'★ ':'')+'Nº '+(x.numero||'')+' · '+x.titulo+' · '+(x.autor||'');sel.appendChild(o)});
+  function plano(t){return String(t||'').replace(/\[([^\]]*)\]\([^)]*\)/g,'$1').replace(/\*\*|\*/g,'')}
+  function tag(t){return '#'+String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Za-z0-9]/g,'')}
+  function pinta(){
+    var x=L.filter(function(y){return y.id===sel.value})[0]; if(!x)return;
+    document.getElementById('esDia').hidden=x.id!==dia;
+    var url='https://boletin.movimientopatriam.es/articulo/'+encodeURIComponent(x.id), ent=plano(x.entradilla), firma=x.autor||'PATRIAM';
+    var tags='#PATRIAM '+(x.tema?tag(x.tema)+' ':'')+'#ConCriterio';
+    document.getElementById('nEnlace').innerHTML='Enlace (sale con su imagen al compartirlo): <a target="_blank" rel="noopener" href="'+url+'">'+url+'</a>';
+    var P=[
+      ['WhatsApp','','*'+x.titulo+'*\n\n'+ent+'\n\n✍️ '+firma+' · Boletín «Lo que hay que saber: con criterio»\n👉 '+url],
+      ['X','',x.titulo+'\n\n'+(ent.length>150?ent.slice(0,147).replace(/\s+\S*$/,'')+'…':ent)+'\n\n✍️ '+firma+' en el boletín de @patriam_es\n👉 '+url+'\n\n'+tags],
+      ['Instagram','El enlace va en la bio o en una historia con el sticker de enlace','📰 '+x.titulo.toUpperCase()+'\n\n'+ent+'\n\n✍️ '+firma+'\n\nLéelo entero en el boletín de PATRIAM.\n🔗 Enlace en la bio → boletin.movimientopatriam.es\n\nDios, Patria, Justicia 🇪🇸\n\n'+tags+' #España #actualidad'],
+      ['LinkedIn','',x.titulo+'\n\n'+ent+'\n\nArtículo de '+firma+' en «Lo que hay que saber: con criterio», el boletín de PATRIAM.\n\n👉 '+url+'\n\n'+tags],
+      ['Facebook','',x.titulo+'\n\n'+ent+'\n\n✍️ '+firma+'\n👉 '+url]
+    ];
+    var h='';
+    P.forEach(function(p,i){
+      h+='<div class="post"><div class="cab"><div class="red">'+p[0]+(p[1]?'<small>'+p[1]+'</small>':'')+'</div><button class="todo" data-c="n-'+i+'">Copiar todo</button></div>'+
+        '<div class="foto"><img src="'+x.imagen+'" alt="" crossorigin="anonymous"><a href="'+x.imagen+'" download>⬇ Descargar imagen</a></div>'+
+        '<pre id="n-'+i+'"></pre></div>';
+    });
+    var c=document.getElementById('nPosts'); c.innerHTML=h;
+    P.forEach(function(p,i){document.getElementById('n-'+i).textContent=p[2]});
+    c.querySelectorAll('button[data-c]').forEach(conectar);
+  }
+  sel.onchange=pinta; window.__pintaNoticia=pinta;
+})();
+</script>
+<footer>Asociación PATRIAM · uso interno</footer>
+<script>
+function aPng(img){return new Promise(function(ok,mal){
+  var c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;
+  try{c.getContext('2d').drawImage(img,0,0);c.toBlob(function(b){b?ok(b):mal()},'image/png')}catch(e){mal(e)}
+})}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function viejo(t){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove()}
+function aviso(b,txt,ok){b.textContent=txt;b.classList.toggle('ok',ok);setTimeout(function(){b.textContent='Copiar todo';b.classList.remove('ok')},2500)}
+function conectar(b){
+  b.addEventListener('click',function(){
+    var pre=document.getElementById(b.dataset.c), t=pre.innerText, img=pre.parentNode.querySelector('.foto img');
+    var html='<img src="'+img.src+'"><br><br>'+esc(t).replace(/\n/g,'<br>');
+    if(window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){
+      var item=new ClipboardItem({
+        'image/png':aPng(img),
+        'text/html':new Blob([html],{type:'text/html'}),
+        'text/plain':new Blob([t],{type:'text/plain'})
+      });
+      navigator.clipboard.write([item]).then(function(){aviso(b,'✓ Imagen y texto copiados',true)},function(){
+        navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([t],{type:'text/plain'})})])
+          .then(function(){aviso(b,'✓ Copiado',true)},function(){viejo(t);aviso(b,'✓ Texto copiado',true)});
+      });
+    }else{viejo(t);aviso(b,'✓ Texto copiado',true)}
+  });
+}
+document.querySelectorAll('button[data-c]').forEach(conectar);
+if(window.__pintaNoticia)window.__pintaNoticia();
+</script>
+</body>
+</html>

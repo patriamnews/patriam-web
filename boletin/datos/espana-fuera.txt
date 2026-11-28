@@ -1,0 +1,4 @@
+# Noticias de España al día que no deben salir (una dirección por línea). Lo de detrás de # no cuenta.
+# Los filtros automáticos ya quitan deportes, cultura, religión, famosos, esquelas de actores, loterías…
+https://www.eldebate.com/espana/comunidad-valenciana/20261111/muere-82-anos-elisa-ramirez-actriz-reino-estudio-1_479748.html
+https://www.eldebate.com/espana/la-voz-de-cordoba/deportes/20261111/cordoba-inyecta-cordobesismo-cantera_479741.html

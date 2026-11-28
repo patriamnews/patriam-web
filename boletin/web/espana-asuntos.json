@@ -1,0 +1,73 @@
+{
+ "_leeme": "Asuntos de España al día. Cada noticia va al PRIMER asunto cuyo patrón encaje en su titular o resumen (expresión regular, sin distinguir mayúsculas ni tildes). Para añadir uno nuevo, copia una línea. Lo que no encaja va a «Otros».",
+ "asuntos": [
+  {
+   "nombre": "Huelga general",
+   "patron": "huelga|piquete|servicios minimos|ccoo|\\bugt\\b|sindicat|11n|unai sordo|pepe alvarez"
+  },
+  {
+   "nombre": "Ley de nietos",
+   "patron": "ley de nietos|\\bnietos\\b|nacionalidad|memoria democratica"
+  },
+  {
+   "nombre": "Elecciones y encuestas",
+   "patron": "eleccion|electoral|encuesta|sondeo|\\bcis\\b|urnas|candidat|comicios|adelanto electoral"
+  },
+  {
+   "nombre": "Tribunales y corrupción",
+   "patron": "koldo|abalos|cerdan|leire|aldama|begona|hermano de sanchez|fiscal general|garcia ortiz|imputad|investigad|\\bjuez\\b|jueza|tribunal|supremo|audiencia nacional|ucO\\b|\\buco\\b|corrupci|sumario|cloacas|declara ante"
+  },
+  {
+   "nombre": "Accidente de Urda",
+   "patron": "urda"
+  },
+  {
+   "nombre": "Seguridad e Interior",
+   "patron": "policia|guardia civil|marlaska|interior|etarra|\\beta\\b|terroris|frontex|crimen organizado|narcotrafic|agente muerto|seguridad ciudadana"
+  },
+  {
+   "nombre": "Cataluña y amnistía",
+   "patron": "puigdemont|junts|amnist|independentis|cataluna|generalitat|\\berc\\b|illa\\b"
+  },
+  {
+   "nombre": "Inmigración",
+   "patron": "inmigra|migrant|cayuco|patera|regulariz|menores no acompanados|\\bmena"
+  },
+  {
+   "nombre": "Vivienda",
+   "patron": "vivienda(s)? (publica|protegida|asequible|social)|precio de la vivienda|acceso a la vivienda|ley de (la )?vivienda|ministerio de vivienda|inmobiliari|alquiler|inquilin|hipotec|okupa|desahucio"
+  },
+  {
+   "nombre": "Presupuestos e impuestos",
+   "patron": "presupuesto|impuesto|\\birpf\\b|\\biva\\b|hacienda|montero|deficit|deuda publica|recaudaci|tributar"
+  },
+  {
+   "nombre": "Empleo, sueldos y pensiones",
+   "patron": "\\bparo\\b|empleo|desemple|pensi|salario|sueldo|\\bsmi\\b|afiliad|afiliaci|poder adquisitivo|jornada laboral|autonomos"
+  },
+  {
+   "nombre": "Energía",
+   "patron": "electric|\\bluz\\b|apagon|nuclear|energ|renovable|\\bgas\\b|gasolina|carburante|petroleo"
+  },
+  {
+   "nombre": "Empresas y bolsa",
+   "patron": "\\bbolsa\\b|ibex|beneficio|resultados|trimestre|\\bopa\\b|accionist|facturaci|cotiza|banco|banca|\\bbbva\\b|sabadell|santander|telefonica|inditex|iberdrola|repsol"
+  },
+  {
+   "nombre": "Defensa",
+   "patron": "ejercito|defensa|militar|armada|submarino|otan|antidron|fuerzas armadas"
+  },
+  {
+   "nombre": "Transporte y trenes",
+   "patron": "cercanias|\\badif\\b|renfe|\\btren|alta velocidad|\\bave\\b|peaje|aeropuert|vuelos|ministerio de transportes|puente\\b|autovia|carretera"
+  },
+  {
+   "nombre": "Temporal y emergencias",
+   "patron": "borrasca|\\bdana\\b|temporal|lluvias|inundaci|aemet|alerta roja|incendio"
+  },
+  {
+   "nombre": "Partidos y líderes",
+   "patron": "feijoo|abascal|\\bvox\\b|\\bpp\\b|psoe|sanchez|aznar|sumar|podemos|yolanda diaz|ayuso|moncloa|congreso|senado|consejo de ministros|ministr"
+  }
+ ]
+}
